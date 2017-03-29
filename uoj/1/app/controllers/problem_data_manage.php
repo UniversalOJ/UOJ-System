@@ -1,3 +1,4 @@
+
 <?php
 	requirePHPLib('form');
 	requirePHPLib('judger');
@@ -19,7 +20,7 @@
 
 <p>{$myUser['username']}您好，</p>
 <p>您的svn密码是：{$myUser['svn_password']}</p>
-<p>Universal Online Judge</p>
+<p>BNDS Online Judge</p>
 
 <style type="text/css">
 body{font-size:14px;font-family:arial,verdana,sans-serif;line-height:1.666;padding:0;margin:0;overflow:auto;white-space:normal;word-wrap:break-word;min-height:100px}
@@ -67,19 +68,115 @@ EOD;
 		echo "\n</pre>";
 	}
 
+
+	//edit by dhxh begin
+
+	//上传数据
+	if($_POST['problem_data_file_submit']=='submit'){
+		if ($_FILES["problem_data_file"]["error"] > 0)
+  		{
+  			$errmsg = "Error: ".$_FILES["problem_data_file"]["error"];
+			becomeMsgPage('<div>' . $errmsg . '</div><a href="/problem/'.$problem['id'].'/manage/data">返回</a>');
+  		}
+		else
+  		{
+			//if($_FILES["problem_data_file"]["type"]=='application/zip'){
+				$up_filename="/tmp/".rand(0,100000000)."data.zip";
+				move_uploaded_file($_FILES["problem_data_file"]["tmp_name"], $up_filename);
+				$zip = new ZipArchive;
+				if ($zip->open($up_filename) === TRUE)
+				{
+					$zip->extractTo("/var/svn/problem/{$problem['id']}/cur/{$problem['id']}/1");
+					$zip->close();
+					echo "<script>alert('上传成功！')</script>";
+				}else{
+					$errmsg = "解压失败！";
+					becomeMsgPage('<div>' . $errmsg . '</div><a href="/problem/'.$problem['id'].'/manage/data">返回</a>');
+				}
+				unlink($up_filename);
+			//}else{
+				//$errmsg = "请上传zip文件！";
+				//becomeMsgPage('<div>' . $errmsg . '</div><a href="/problem/'.$problem['id'].'/manage/data">返回</a>');
+			//}
+  		}
+	}
+
+	//添加配置文件
+	if($_POST['problem_settings_file_submit']=='submit'){
+
+		if($_POST['use_builtin_checker'] and $_POST['n_tests'] and $_POST['input_pre'] and $_POST['input_suf'] and $_POST['output_pre'] and $_POST['output_suf'] and $_POST['time_limit'] and $_POST['memory_limit']){
+				if(!is_dir("/var/svn/problem/{$problem['id']}/cur/{$problem['id']}/1/")){
+					mkdir("/var/svn/problem/{$problem['id']}/cur/{$problem['id']}/1/");
+				}
+				$set_filename="/var/svn/problem/{$problem['id']}/cur/{$problem['id']}/1/problem.conf";
+				$has_legacy=false;
+				if(file_exists($set_filename)){
+					$has_legacy=true;
+					unlink($set_filename);
+				}
+				$setfile = fopen($set_filename, "w");
+				fwrite($setfile, "use_builtin_judger on\n");
+				fwrite($setfile, "use_builtin_checker ".$_POST['use_builtin_checker']."\n");
+				fwrite($setfile, "n_tests ".$_POST['n_tests']."\n");
+				if($_POST['n_ex_tests']){
+					fwrite($setfile, "n_ex_tests ".$_POST['n_ex_tests']."\n");
+				}else{
+					fwrite($setfile, "n_ex_tests 0\n");
+				}
+				if($_POST['n_sample_tests']){
+					fwrite($setfile, "n_sample_tests ".$_POST['n_sample_tests']."\n");
+				}else{
+					fwrite($setfile, "n_sample_tests 0\n");
+				}
+				fwrite($setfile, "input_pre ".$_POST['input_pre']."\n");
+				fwrite($setfile, "input_suf ".$_POST['input_suf']."\n");
+				fwrite($setfile, "output_pre ".$_POST['output_pre']."\n");
+				fwrite($setfile, "output_suf ".$_POST['output_suf']."\n");
+				fwrite($setfile, "time_limit ".$_POST['time_limit']."\n");
+				fwrite($setfile, "memory_limit ".$_POST['memory_limit']."\n");
+				fclose($setfile);
+				if(!$has_legacy){
+					echo "<script>alert('添加成功！')</script>";
+				}else{
+					echo "<script>alert('替换成功!')</script>";
+				}
+
+		}else{
+			$errmsg = "添加配置文件失败，请检查是否所有输入框都已填写！";
+			becomeMsgPage('<div>' . $errmsg . '</div><a href="/problem/'.$problem['id'].'/manage/data">返回</a>');
+		}
+	}
+
+
+	//dhxh end
+
+
 	$info_form = new UOJForm('info');
 	$http_host = HTML::escape(UOJContext::httpHost());
-	$download_url = HTML::escape(HTML::url("/download.php?type=problem&id={$problem['id']}"));
+	//$download_url = HTML::escape(HTML::url("/download.php?type=problem&id={$problem['id']}"));
+	$download_url = HTML::url("/download.php?type=problem&id={$problem['id']}");
 	$info_form->appendHTML(<<<EOD
 <div class="form-group">
 	<label class="col-sm-3 control-label">SVN地址</label>
 	<div class="col-sm-9">
 		<div class="form-control-static">
-			<button id="button-getsvn" type="button" class="btn btn-info btn-xs pull-right">把我的svn密码发到我的邮箱</button>
-			<a>svn://{$http_host}/problem/{$problem['id']}</a>
+			<div type="" class="btn-info btn-xs pull-right">您的svn密码：{$myUser['svn_password']}</div>
+			<p><a>svn://{$http_host}/problem/{$problem['id']}</a></p>
+		</div>
+	</div>
+	<label class="col-sm-3 control-label">zip上传数据</label>
+	<div class="col-sm-9">
+		<div class="form-control-static">
+			<row>
+			<button type="button" style="width:30%" class="btn btn-primary" data-toggle="modal" data-target="#UploadDataModal">上传数据</button>
+			<button type="submit" style="width:30%" id="button-submit-data" name="submit-data" value="data" class="btn btn-danger">与svn仓库同步</button>
+			</row>
 		</div>
 	</div>
 </div>
+
+
+
 <script type="text/javascript">
 $('#button-getsvn').click(function(){
 	if (!confirm("确定要发送你的svn密码到${myUser['email']}吗")) {
@@ -429,6 +526,7 @@ EOD
 	$hackable_form->handle = function() {
 		global $problem;
 		$problem['hackable'] = !$problem['hackable'];
+		//$problem['hackable'] = 0;
 		$ret = svnSyncProblemData($problem);
 		if ($ret) {
 			becomeMsgPage('<div>' . $ret . '</div><a href="/problem/'.$problem['id'].'/manage/data">返回</a>');
@@ -648,6 +746,130 @@ EOD
 		<div class="top-buffer-md">
 			<?php $rejudge_form->printHTML(); ?>
 		</div>
+
+		<?php //dhxh begin ?>
+		<div class="top-buffer-md">
+			<button type="button" class="btn btn-block btn-primary" data-toggle="modal" data-target="#UploadDataModal">上传数据</button>
+		</div>
+		<div class="top-buffer-md">
+			<button type="button" class="btn btn-block btn-primary" data-toggle="modal" data-target="#ProblemSettingsFileModal">试题配置</button>
+		</div>
+		<?php //dhxh end ?>
+
 	</div>
+
+	<?php //dhxh begin ?>
+	<div class="modal fade" id="UploadDataModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  		<div class="modal-dialog">
+    			<div class="modal-content">
+      				<div class="modal-header">
+        				<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+        				<h4 class="modal-title" id="myModalLabel">上传数据</h4>
+      				</div>
+      				<div class="modal-body">
+        				<form action="" method="post" enctype="multipart/form-data" role="form">
+  						<div class="form-group">
+    							<label for="exampleInputFile">文件</label>
+    							<input type="file" name="problem_data_file" id="problem_data_file">
+    							<p class="help-block">请上传.zip文件</p>
+  						</div>
+						<input type="hidden" name="problem_data_file_submit" value="submit">
+  						<button type="submit" class="btn btn-success">上传</button>
+					</form>
+      				</div>
+      				<div class="modal-footer">
+        				<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+      				</div>
+    			</div>
+  		</div>
+	</div>
+
+	<div class="modal fade" id="ProblemSettingsFileModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  		<div class="modal-dialog">
+    			<div class="modal-content">
+      				<div class="modal-header">
+        				<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+        				<h4 class="modal-title" id="myModalLabel">试题配置</h4>
+      				</div>
+      				<div class="modal-body">
+        				<form class="form-horizontal" action="" method="post" role="form">
+        					<div class="form-group">
+    							<label for="use_builtin_checker" class="col-sm-5 control-label">比对函数</label>
+    							<div class="col-sm-7">
+								<select class="form-control" id="use_builtin_checker" name="use_builtin_checker">
+  									<option value="ncmp">单行整数序列</option>
+  									<option value="wcmp">单行字符串序列</option>
+  									<option value="fcmp">多行数据(忽略行末空格以及最后一行空行)</option>
+								</select>
+      								<!--<input type="hidden" class="form-control" id="use_builtin_checker" name="use_builtin_checker" placeholder="比对函数">-->
+    							</div>
+  							</div>
+  							<div class="form-group">
+    							<label for="n_tests" class="col-sm-5 control-label">n_tests</label>
+    							<div class="col-sm-7">
+      								<input type="text" class="form-control" id="n_tests" name="n_tests" placeholder="数据点个数">
+    							</div>
+  							</div>
+  							<div class="form-group">
+    							<label for="n_ex_tests" class="col-sm-5 control-label">n_ex_tests</label>
+    							<div class="col-sm-7">
+      								<input type="text" class="form-control" id="n_ex_tests" name="n_ex_tests" placeholder="额外数据点个数">
+    							</div>
+  							</div>
+  							<div class="form-group">
+    							<label for="n_sample_tests" class="col-sm-5 control-label">n_sample_tests</label>
+    							<div class="col-sm-7">
+      								<input type="text" class="form-control" id="n_sample_tests" name="n_sample_tests" placeholder="样例测试点个数">
+    							</div>
+  							</div>
+  							<div class="form-group">
+    							<label for="input_pre" class="col-sm-5 control-label">input_pre</label>
+    							<div class="col-sm-7">
+      								<input type="text" class="form-control" id="input_pre" name="input_pre" placeholder="输入文件名称">
+    							</div>
+  							</div>
+  							<div class="form-group">
+    							<label for="input_suf" class="col-sm-5 control-label">input_suf</label>
+    							<div class="col-sm-7">
+      								<input type="text" class="form-control" id="input_suf" name="input_suf" placeholder="输入文件后缀">
+    							</div>
+  							</div>
+  							<div class="form-group">
+    							<label for="output_pre" class="col-sm-5 control-label">output_pre</label>
+    							<div class="col-sm-7">
+      								<input type="text" class="form-control" id="output_pre" name="output_pre" placeholder="输出文件名称">
+    							</div>
+  							</div>
+  							<div class="form-group">
+    							<label for="output_suf" class="col-sm-5 control-label">output_suf</label>
+    							<div class="col-sm-7">
+      								<input type="text" class="form-control" id="output_suf" name="output_suf" placeholder="输出文件后缀">
+    							</div>
+  							</div>
+  							<div class="form-group">
+    							<label for="time_limit" class="col-sm-5 control-label">time_limit</label>
+    							<div class="col-sm-7">
+      								<input type="text" class="form-control" id="time_limit" name="time_limit" placeholder="时间限制（不能为小数！）">
+    							</div>
+  							</div>
+  							<div class="form-group">
+    							<label for="memory_limit" class="col-sm-5 control-label">memory_limit</label>
+    							<div class="col-sm-7">
+      								<input type="text" class="form-control" id="memory_limit" name="memory_limit" placeholder="内存限制">
+    							</div>
+  							</div>
+							<input type="hidden" name="problem_settings_file_submit" value="submit">
+  							<div align="center"><button type="submit" class="btn btn-success">确定</button></div>
+						</form>
+      				</div>
+      				<div class="modal-footer">
+        				<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+      				</div>
+    			</div>
+  		</div>
+	</div>
+
+	<?php //dhxh end ?>
+
 </div>
 <?php echoUOJPageFooter() ?>
