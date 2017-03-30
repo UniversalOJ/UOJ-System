@@ -799,7 +799,7 @@ EOD
 								<select class="form-control" id="use_builtin_checker" name="use_builtin_checker">
   									<option value="ncmp">单行整数序列</option>
   									<option value="wcmp">单行字符串序列</option>
-  									<option value="fcmp">多行数据(忽略行末空格以及最后一行空行)</option>
+  									<option value="fcmp">多行数据（不忽略行末空格，但忽略文末回车）</option>
 								</select>
       								<!--<input type="hidden" class="form-control" id="use_builtin_checker" name="use_builtin_checker" placeholder="比对函数">-->
     							</div>
