@@ -10,12 +10,12 @@ return [
 		'domain' => null,
 		'main' => [
 			'protocol' => 'http',
-			'host' => 'local_uoj.ac',
+			'host' => isset($_SERVER['HTTP_X_FORWARDED_HOST']) ? $_SERVER['HTTP_X_FORWARDED_HOST'] : (isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : ''),
 			'port' => 80
 		],
 		'blog' => [
 			'protocol' => 'http',
-			'host' => 'blog.local_uoj.ac',
+			'host' => isset($_SERVER['HTTP_X_FORWARDED_HOST']) ? $_SERVER['HTTP_X_FORWARDED_HOST'] : (isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : ''),
 			'port' => 80
 		]
 	],
@@ -51,6 +51,6 @@ return [
 	'switch' => [
 		'ICP-license' => false,
 		'web-analytics' => false,
-		'blog-use-subdomain' => true
+		'blog-use-subdomain' => false
 	]
 ];
