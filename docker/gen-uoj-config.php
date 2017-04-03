@@ -28,13 +28,16 @@ $config = [
 		'host' => '127.0.0.1'
 	],
 	'web' => [
+		'domain' => null,
 		'main' => [
 			'protocol' => 'http',
-			'host' => 'local_uoj.ac'
+			'host' => '23333',
+			'port' => 80
 		],
 		'blog' => [
 			'protocol' => 'http',
-			'host' => 'blog.local_uoj.ac'
+			'host' => '23333',
+			'port' => 80
 		]
 	],
 	'security' => [
@@ -62,6 +65,11 @@ $config = [
 			'username' => 'our-root',
 			'password' => rand_str(32)
 		]
+	],
+	'switch' => [
+		'ICP-license' => false,
+		'web-analytics' => false,
+		'blog-use-subdomain' => false
 	]
 ];
 
@@ -88,6 +96,7 @@ translate('post-commit.sh', '/var/svn/problem/post-commit.sh', $translate_table)
 
 translate('uoj-passwd', '/var/svn/uoj/conf/passwd', $translate_table);
 translate('uoj-post-commit', '/var/svn/uoj/hooks/post-commit', $translate_table);
-file_put_contents('uoj_config.php', "<?php\nreturn ".var_export($config, true).";\n");
+file_put_contents('uoj_config.php', "<?php\nreturn ".str_replace('\'23333\'','isset($_SERVER[\'HTTP_X_FORWARDED_HOST\']) ? $_SERVER[\'HTTP_X_FORWARDED_HOST\'] : (isset($_SERVER[\'HTTP_HOST\']) ? $_SERVER[\'HTTP_HOST\'] : \'\')',var_export($config, true)).";\n");
 file_put_contents('judge_client_config.json', json_encode($judge_client_config, JSON_PRETTY_PRINT));
 translate('install', 'install', $translate_table);
+
