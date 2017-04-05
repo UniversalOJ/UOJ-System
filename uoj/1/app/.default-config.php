@@ -1,5 +1,13 @@
 <?php
 return [
+	'profile' => [
+		'oj-name'  => 'Universal Online Judge',
+		'oj-name-small' => 'UOJ',
+		'administrator' => 'vfleaking',
+		'admin-email' => 'vfleaking@163.com',
+		'qq-group' => '197293072',
+		'ICP-license' => '鄂ICP备14016048号'
+	],
 	'database' => [
 		'database'  => 'app_uoj233',
 		'username' => 'root',
@@ -10,12 +18,12 @@ return [
 		'domain' => null,
 		'main' => [
 			'protocol' => 'http',
-			'host' => isset($_SERVER['HTTP_X_FORWARDED_HOST']) ? $_SERVER['HTTP_X_FORWARDED_HOST'] : (isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : ''),
+			'host' => UOJContext::httpHost(),
 			'port' => 80
 		],
 		'blog' => [
 			'protocol' => 'http',
-			'host' => isset($_SERVER['HTTP_X_FORWARDED_HOST']) ? $_SERVER['HTTP_X_FORWARDED_HOST'] : (isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : ''),
+			'host' => UOJContext::httpHost(),
 			'port' => 80
 		]
 	],
@@ -49,7 +57,6 @@ return [
 		]
 	],
 	'switch' => [
-		'ICP-license' => false,
 		'web-analytics' => false,
 		'blog-use-subdomain' => false
 	]

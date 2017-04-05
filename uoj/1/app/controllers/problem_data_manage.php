@@ -11,6 +11,7 @@
 		become403Page();
 	}
 	
+	$oj-name = UOJConfig::$data['profile']['oj-name'];
 	$problem_extra_config = getProblemExtraConfig($problem);
 
 	if (isset($_POST['getsvn'])) {
@@ -20,7 +21,7 @@
 
 <p>{$myUser['username']}您好，</p>
 <p>您的svn密码是：{$myUser['svn_password']}</p>
-<p>BNDS Online Judge</p>
+<p>{$oj-name}</p>
 
 <style type="text/css">
 body{font-size:14px;font-family:arial,verdana,sans-serif;line-height:1.666;padding:0;margin:0;overflow:auto;white-space:normal;word-wrap:break-word;min-height:100px}
