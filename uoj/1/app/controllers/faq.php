@@ -56,7 +56,7 @@
 		<header>
 			<h4>7. 联系方式</h4>
 		</header>
-		<p>如果你想出题、想办比赛，或者发现了BUG，以及对网站有什么建议，可以通过下面的方式联系我们：</p>
+		<p>如果你想出题、想办比赛、发现了BUG或者对网站有什么建议，可以通过下面的方式联系我们：</p>
 		<ul>
 			<li>私信联系<?= UOJConfig::$data['profile']['administrator'] ?>。</li>
 			<li>邮件联系<?= UOJConfig::$data['profile']['admin-email'] ?>。</li>
