@@ -2,11 +2,11 @@
 return [
 	'profile' => [
 		'oj-name'  => 'Universal Online Judge',
-		'oj-name-small' => 'UOJ',
-		'administrator' => 'vfleaking',
-		'admin-email' => 'vfleaking@163.com',
-		'qq-group' => '197293072',
-		'ICP-license' => '鄂ICP备14016048号'
+		'oj-name-short' => 'UOJ',
+		'administrator' => 'admin',
+		'admin-email' => 'admin@uoj',
+		'qq-group' => '',
+		'ICP-license' => ''
 	],
 	'database' => [
 		'database'  => 'app_uoj233',
