@@ -20,14 +20,14 @@
 		$password = $user["password"];
 		
 		$oj-name = UOJConfig::$data['profile']['oj-name'];
-		$oj-name-small = UOJConfig::$data['profile']['oj-name-small'];
+		$oj-name-short = UOJConfig::$data['profile']['oj-name-short'];
 		$sufs = base64url_encode($user['username'] . "." . md5($user['username'] . "+" . $password));
 		$url = HTML::url("/reset-password", array('params' => array('p' => $sufs)));
 		$html = <<<EOD
 <base target="_blank" />
 
 <p>{$user['username']}您好，</p>
-<p>您刚刚启用了{$oj-name-small}密码找回功能，请进入下面的链接重设您的密码：</p>
+<p>您刚刚启用了{$oj-name-short}密码找回功能，请进入下面的链接重设您的密码：</p>
 <p><a href="$url">$url</a></p>
 <p>{$oj-name}</p>
 
@@ -39,7 +39,7 @@ EOD;
 		
 		$mailer = UOJMail::noreply();
 		$mailer->addAddress($user['email'], $user['username']);
-		$mailer->Subject = $oj-name-small."密码找回";
+		$mailer->Subject = $oj-name-short."密码找回";
 		$mailer->msgHTML($html);
 		if (!$mailer->send()) {  
 			error_log($mailer->ErrorInfo);

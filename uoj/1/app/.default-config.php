@@ -2,7 +2,7 @@
 return [
 	'profile' => [
 		'oj-name'  => 'Universal Online Judge',
-		'oj-name-small' => 'UOJ',
+		'oj-name-short' => 'UOJ',
 		'administrator' => 'vfleaking',
 		'admin-email' => 'vfleaking@163.com',
 		'qq-group' => '197293072',

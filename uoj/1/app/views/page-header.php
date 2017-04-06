@@ -23,7 +23,7 @@
 		$PageMainTitle = UOJConfig::$data['profile']['oj-name'];
 	}
 	if (!isset($PageMainTitleOnSmall)) {
-		$PageMainTitleOnSmall = UOJConfig::$data['profile']['oj-name-small'];
+		$PageMainTitleOnSmall = UOJConfig::$data['profile']['oj-name-short'];
 	}
 	if (!isset($ShowPageHeader)) {
 		$ShowPageHeader = true;
@@ -37,7 +37,7 @@
 		<?php if (isset($_GET['locale'])): ?>
 		<meta name="robots" content="noindex, nofollow" />
 		<?php endif ?>
-		<title><?= isset($PageTitle) ? $PageTitle : UOJConfig::$data['profile']['oj-name-small'] ?> - <?= $PageMainTitle ?></title>
+		<title><?= isset($PageTitle) ? $PageTitle : UOJConfig::$data['profile']['oj-name-short'] ?> - <?= $PageMainTitle ?></title>
 		
 		<script type="text/javascript">uojHome = '<?= HTML::url('/') ?>'</script>
 
