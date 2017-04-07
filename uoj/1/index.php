@@ -1,5 +1,7 @@
 <?php
 
+Session_Start();
+
 require $_SERVER['DOCUMENT_ROOT'] . '/app/uoj-lib.php';
 
 require UOJContext::documentRoot().'/app/route.php';

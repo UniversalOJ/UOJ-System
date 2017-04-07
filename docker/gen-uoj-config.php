@@ -21,6 +21,14 @@ $svn_pwd = rand_str(32);
 $svn_cert = '--username root --password '.$svn_pwd;
 
 $config = [
+	'profile' => [
+		'oj-name'  => 'Universal Online Judge',
+		'oj-name-short' => 'UOJ',
+		'administrator' => 'admin',
+		'admin-email' => 'admin@uoj',
+		'qq-group' => '',
+		'ICP-license' => ''
+	],
 	'database' => [
 		'database'  => 'app_uoj233',
 		'username' => 'root',
