@@ -463,6 +463,8 @@ void init_conf(const RunProgramConfig &config) {
 
 		syscall_max_cnt[__NR_uname          ] = -1; // for javac = =
 		syscall_max_cnt[__NR_sysinfo        ] = -1; // for javac = =
+		syscall_max_cnt[__NR_statfs         ] = -1; // for cp
+		syscall_max_cnt[__NR_fadvise64      ] = -1; // for cp
 
 		syscall_should_soft_ban[__NR_socket   ] = true; // for javac
 		syscall_should_soft_ban[__NR_connect  ] = true; // for javac
@@ -495,6 +497,34 @@ void init_conf(const RunProgramConfig &config) {
 		readable_file_name_set.insert("/etc/fpc.cfg");
 
 		statable_file_name_set.insert("/*");
+	} else if (config.type == "PHP") {
+		syscall_max_cnt[__NR_set_tid_address         ] = -1;
+		syscall_max_cnt[__NR_set_robust_list         ] = -1;
+		syscall_max_cnt[__NR_futex                   ] = -1;
+		syscall_max_cnt[__NR_getdents                ] = -1;
+		syscall_max_cnt[__NR_clone                   ] = -1;
+		syscall_max_cnt[__NR_socket                  ] = -1;
+		syscall_max_cnt[__NR_connect                 ] = -1;
+		readable_file_name_set.insert("/usr");
+		readable_file_name_set.insert("/usr/bin");
+		readable_file_name_set.insert("/usr/bin/php");
+		readable_file_name_set.insert("/usr/bin/php5");
+		readable_file_name_set.insert("/etc/alternatives/php");
+		readable_file_name_set.insert("/etc/php5/cli/php.ini");
+		readable_file_name_set.insert("/etc/php5/cli/conf.d");
+		readable_file_name_set.insert("/etc/php5/cli/conf.d/*");
+		readable_file_name_set.insert("/usr/lib/php5/20121212/*");
+		readable_file_name_set.insert("/etc/nsswitch.conf");
+		readable_file_name_set.insert("/lib/tls/x86_64");
+		readable_file_name_set.insert("/lib/x86_64");
+		readable_file_name_set.insert("/lib/tls");
+		readable_file_name_set.insert("/lib");
+		readable_file_name_set.insert("/usr/lib/tls/x86_64");
+		readable_file_name_set.insert("/usr/lib/x86_64");
+		readable_file_name_set.insert("/usr/lib/tls");
+		readable_file_name_set.insert("/usr/lib");
+		readable_file_name_set.insert("/etc/services");
+
 	}
 }
 

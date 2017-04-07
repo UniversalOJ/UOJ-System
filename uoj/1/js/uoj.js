@@ -605,6 +605,8 @@ function get_codemirror_mode(lang) {
 		case 'Java7':
 		case 'Java8':
 			return 'text/x-java';
+		case 'PHP':
+			return 'text/x-php';
 		case 'Pascal':
 			return 'text/x-pascal';
 		case 'text':

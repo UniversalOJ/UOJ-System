@@ -411,6 +411,9 @@ function echoSubmissionContent($submission, $requirement) {
 				case 'Pascal':
 					$sh_class = 'sh_pascal';
 					break;
+				case 'PHP':
+					$sh_class = 'sh_php';
+					break;
 				default:
 					$sh_class = '';
 					break;

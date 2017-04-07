@@ -213,7 +213,11 @@ void parse_args(int argc, char **argv) {
 	} else if (run_program_config.type == "java8u31") {
 		string pre[3] = {abspath(0, string(self_path) + "/../runtime/jdk1.8.0_31/bin/java"), "-Xmx1024m", "-Xss1024m"};
 		run_program_config.argv.insert(run_program_config.argv.begin(), pre, pre + 3);
+	} else if (run_program_config.type == "PHP"){
+		string pre[1] = {"/usr/bin/php"};
+		run_program_config.argv.insert(run_program_config.argv.begin(), pre, pre + 1);
 	}
+
 }
 
 void set_limit(int r, int rcur, int rmax = -1)  {

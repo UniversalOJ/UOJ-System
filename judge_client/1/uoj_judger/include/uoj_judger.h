@@ -170,6 +170,7 @@ string realpath(const string &path) {
 
 
 int execute(const char *cmd) {
+	cerr<<cmd<<endl;
 	return system(cmd);
 }
 
@@ -831,6 +832,8 @@ RunResult run_submission_program(
 	} else if (lang == "Java8") {
 		program_name += "." + conf_str(name + "_main_class");
 		program_type = "java8u31";
+	} else if (lang == "PHP") {
+		program_type = "PHP";
 	}
 
 	rpc.result_file_name = result_path + "/run_submission_program.txt";
@@ -1067,6 +1070,11 @@ RunCompilerResult prepare_java_source(const string &name, const string &path = w
 	return res;
 }
 
+RunCompilerResult compile_non(const string &name, const string &path = work_path) {
+	return run_compiler(path.c_str(), 
+			"/bin/cp", (name + ".code").c_str(), name.c_str(), NULL);
+}
+
 RunCompilerResult compile_c(const string &name, const string &path = work_path) {
 	return run_compiler(path.c_str(), 
 			"/usr/bin/gcc-4.8", "-o", name.c_str(), "-x", "c", (name + ".code").c_str(), "-lm", "-O2", "-DONLINE_JUDGE", NULL);
@@ -1156,6 +1164,9 @@ RunCompilerResult compile(const char *name)  {
 	}
 	if (lang == "Pascal") {
 		return compile_pas(name);
+	}
+	if (lang == "PHP") {
+		return compile_non(name);
 	}
 
 	RunCompilerResult res = RunCompilerResult::failed_result();
