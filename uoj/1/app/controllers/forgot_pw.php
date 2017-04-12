@@ -20,14 +20,14 @@
 		$password = $user["password"];
 		
 		$oj_name = UOJConfig::$data['profile']['oj-name'];
-		$oj_name-short = UOJConfig::$data['profile']['oj-name-short'];
+		$oj_name_short = UOJConfig::$data['profile']['oj-name-short'];
 		$sufs = base64url_encode($user['username'] . "." . md5($user['username'] . "+" . $password));
 		$url = HTML::url("/reset-password", array('params' => array('p' => $sufs)));
 		$html = <<<EOD
 <base target="_blank" />
 
 <p>{$user['username']}您好，</p>
-<p>您刚刚启用了{$oj_name-short}密码找回功能，请进入下面的链接重设您的密码：</p>
+<p>您刚刚启用了{$oj_name_short}密码找回功能，请进入下面的链接重设您的密码：</p>
 <p><a href="$url">$url</a></p>
 <p>{$oj_name}</p>
 

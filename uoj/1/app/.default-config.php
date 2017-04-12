@@ -3,9 +3,9 @@ return [
 	'profile' => [
 		'oj-name'  => 'Universal Online Judge',
 		'oj-name-short' => 'UOJ',
-		'administrator' => 'admin',
-		'admin-email' => 'admin@uoj',
-		'qq-group' => '',
+		'administrator' => 'root',
+		'admin-email' => 'admin@local_uoj.ac',
+		'QQ-group' => '',
 		'ICP-license' => ''
 	],
 	'database' => [

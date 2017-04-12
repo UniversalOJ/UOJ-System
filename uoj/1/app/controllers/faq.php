@@ -60,8 +60,8 @@
 		<ul>
 			<li>私信联系<?= UOJConfig::$data['profile']['administrator'] ?>。</li>
 			<li>邮件联系<?= UOJConfig::$data['profile']['admin-email'] ?>。</li>
-			<?php if (UOJConfig::$data['profile']['qq-group']!=''): ?>
-			<li>你也可以进QQ群水水，群号是<?= UOJConfig::$data['profile']['qq-group'] ?>。</li>
+			<?php if (UOJConfig::$data['profile']['QQ-group']!=''): ?>
+			<li>你也可以进QQ群水水，群号是<?= UOJConfig::$data['profile']['QQ-group'] ?>。</li>
 			<?php endif ?>
 		</ul>
 	</section>

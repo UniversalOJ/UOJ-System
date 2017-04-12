@@ -20,7 +20,7 @@
 <base target="_blank" />
 
 <p>{$myUser['username']}您好，</p>
-<p>您的svn密码是：{$myUser['svn_password']}</p>
+<p>您的SVN密码是：{$myUser['svn_password']}</p>
 <p>{$oj_name}</p>
 
 <style type="text/css">
@@ -31,7 +31,7 @@ EOD;
 			
 			$mailer = UOJMail::noreply();
 			$mailer->addAddress($myUser['email'], $myUser['username']);
-			$mailer->Subject = "svn密码";
+			$mailer->Subject = "SVN密码";
 			$mailer->msgHTML($html);
 			if ($mailer->send()) {  
 				echo 'good';
@@ -161,16 +161,16 @@ EOD;
 	<label class="col-sm-3 control-label">SVN地址</label>
 	<div class="col-sm-9">
 		<div class="form-control-static">
-			<div type="" class="btn-info btn-xs pull-right">您的svn密码：{$myUser['svn_password']}</div>
+			<div type="" class="btn-info btn-xs pull-right">您的SVN密码：{$myUser['svn_password']}</div>
 			<p><a>svn://{$http_host}/problem/{$problem['id']}</a></p>
 		</div>
 	</div>
-	<label class="col-sm-3 control-label">zip上传数据</label>
+	<label class="col-sm-3 control-label">ZIP上传数据</label>
 	<div class="col-sm-9">
 		<div class="form-control-static">
 			<row>
 			<button type="button" style="width:30%" class="btn btn-primary" data-toggle="modal" data-target="#UploadDataModal">上传数据</button>
-			<button type="submit" style="width:30%" id="button-submit-data" name="submit-data" value="data" class="btn btn-danger">与svn仓库同步</button>
+			<button type="submit" style="width:30%" id="button-submit-data" name="submit-data" value="data" class="btn btn-danger">与SVN仓库同步</button>
 			</row>
 		</div>
 	</div>
@@ -180,7 +180,7 @@ EOD;
 
 <script type="text/javascript">
 $('#button-getsvn').click(function(){
-	if (!confirm("确定要发送你的svn密码到${myUser['email']}吗")) {
+	if (!confirm("确定要发送你的SVN密码到${myUser['email']}吗")) {
 		return;
 	}
 	$.post('${_SERVER['REQUEST_URI']}', {
@@ -189,7 +189,7 @@ $('#button-getsvn').click(function(){
 		if (res == "good") {
 			BootstrapDialog.show({
 				title   : "操作成功",
-				message : "svn密码已经发送至您的邮箱，请查收。",
+				message : "SVN密码已经发送至您的邮箱，请查收。",
 				type    : BootstrapDialog.TYPE_SUCCESS,
 				buttons: [{
 					label: '好的',
