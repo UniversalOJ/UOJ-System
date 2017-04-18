@@ -39,7 +39,7 @@ EOD;
 		
 		$mailer = UOJMail::noreply();
 		$mailer->addAddress($user['email'], $user['username']);
-		$mailer->Subject = $oj_name-short."密码找回";
+		$mailer->Subject = $oj_name_short."密码找回";
 		$mailer->msgHTML($html);
 		if (!$mailer->send()) {  
 			error_log($mailer->ErrorInfo);
