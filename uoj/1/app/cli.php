@@ -2,7 +2,7 @@
 
 $_SERVER['DOCUMENT_ROOT'] = dirname(__DIR__);
 
-require $_SERVER['DOCUMENT_ROOT'] . '/app/uoj-lib.php';
+require $_SERVER['DOCUMENT_ROOT'] . '/app/libs/uoj-lib.php';
 
 // TODO: more beautiful argv parser
 
