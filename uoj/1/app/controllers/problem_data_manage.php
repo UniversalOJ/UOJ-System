@@ -1,4 +1,3 @@
-
 <?php
 	requirePHPLib('form');
 	requirePHPLib('judger');
@@ -43,7 +42,7 @@ EOD;
 	$data_dir = "/var/uoj_data/${problem['id']}";
 
 	function echoFileNotFound($file_name) {
-		echo '<h4>', htmlspecialchars($file_name), '<sub class="text-danger"> ', 'file not found', '</sub></h4>';
+		echo '<h4>', htmlspecialchars($file_name), '<sub class="text-danger"> ', '文件未找到', '</sub></h4>';
 	}
 	function echoFilePre($file_name) {
 		global $data_dir;
@@ -69,8 +68,6 @@ EOD;
 		echo "\n</pre>";
 	}
 
-
-	//edit by dhxh begin
 
 	//上传数据
 	if($_POST['problem_data_file_submit']=='submit'){
@@ -148,9 +145,6 @@ EOD;
 	}
 
 
-	//dhxh end
-
-
 	$info_form = new UOJForm('info');
 	$http_host = HTML::escape(UOJContext::httpHost());
 	//$download_url = HTML::escape(HTML::url("/download.php?type=problem&id={$problem['id']}"));
@@ -160,11 +154,11 @@ EOD;
 	<label class="col-sm-3 control-label">SVN地址</label>
 	<div class="col-sm-9">
 		<div class="form-control-static">
-			<div type="" class="btn-info btn-xs pull-right">您的SVN密码：{$myUser['svn_password']}</div>
-			<p><a>svn://{$http_host}/problem/{$problem['id']}</a></p>
+			<button id="button-getsvn" type="button" class="btn btn-info btn-xs pull-right">查看/发送SVN密码</button>
+			<a>svn://{$http_host}/problem/{$problem['id']}</a>
 		</div>
 	</div>
-	<label class="col-sm-3 control-label">上传数据</label>
+	<!--<label class="col-sm-3 control-label">zip上传数据</label>
 	<div class="col-sm-9">
 		<div class="form-control-static">
 			<row>
@@ -172,14 +166,13 @@ EOD;
 			<button type="submit" style="width:30%" id="button-submit-data" name="submit-data" value="data" class="btn btn-danger">与SVN仓库同步</button>
 			</row>
 		</div>
-	</div>
+	</div>-->
 </div>
-
 
 
 <script type="text/javascript">
 $('#button-getsvn').click(function(){
-	if (!confirm("确定要发送你的SVN密码到${myUser['email']}吗")) {
+	if (!confirm("您的SVN密码是：{$myUser['svn_password']}。是否要发送SVN密码到${myUser['email']}？")) {
 		return;
 	}
 	$.post('${_SERVER['REQUEST_URI']}', {
@@ -548,7 +541,7 @@ EOD
 		}
 	};
 	$data_form->submit_button_config['class_str'] = 'btn btn-danger btn-block';
-	$data_form->submit_button_config['text'] = '与svn仓库同步';
+	$data_form->submit_button_config['text'] = '与SVN仓库同步';
 	$data_form->submit_button_config['smart_confirm'] = '';
 	
 	$clear_data_form = new UOJForm('clear_data');
@@ -616,7 +609,7 @@ EOD
 			
 			$user_std = queryUser('std');
 			if (!$user_std) {
-				becomeMsgPage('Please create an user named "std"');
+				becomeMsgPage('请建立"std"账号。');
 			}
 			
 			$requirement = json_decode($problem['submission_requirement'], true);
@@ -695,7 +688,7 @@ EOD
 			<script type="text/javascript">
 				curFileName = '';
 				$('#div-file_list a').click(function(e) {
-					$('#div-file_content').html('<h3>loading...</h3>');
+					$('#div-file_content').html('<h3>Loading...</h3>');
 					$(this).tab('show');
 
 					var fileName = $(this).text();
@@ -747,18 +740,15 @@ EOD
 			<?php $rejudge_form->printHTML(); ?>
 		</div>
 
-		<?php //dhxh begin ?>
+		
 		<div class="top-buffer-md">
 			<button type="button" class="btn btn-block btn-primary" data-toggle="modal" data-target="#UploadDataModal">上传数据</button>
 		</div>
 		<div class="top-buffer-md">
 			<button type="button" class="btn btn-block btn-primary" data-toggle="modal" data-target="#ProblemSettingsFileModal">试题配置</button>
 		</div>
-		<?php //dhxh end ?>
-
 	</div>
 
-	<?php //dhxh begin ?>
 	<div class="modal fade" id="UploadDataModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
   		<div class="modal-dialog">
     			<div class="modal-content">
@@ -869,8 +859,5 @@ EOD
     			</div>
   		</div>
 	</div>
-
-	<?php //dhxh end ?>
-
 </div>
 <?php echoUOJPageFooter() ?>
