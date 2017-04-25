@@ -362,4 +362,34 @@ EOD
 			error_log('hack successfully but sync failed.');
 		}
 	}
+	
+	function svnCommitZipData($problem, $type) {
+		$id = $problem['id'];
+		$cur_dir = "/var/svn/problem/$id/cur/$id";
+		$svnusr = UOJConfig::$data['svn']['our-root']['username'];
+		$svnpwd = UOJConfig::$data['svn']['our-root']['password'];
+		
+		if($type=='conf'){
+			exec(
+<<<EOD
+cd $cur_dir
+svn add 1/problem.conf --username $svnusr --password $svnpwd
+svn commit -m "update problem.conf by online conf editor." --username $svnusr --password $svnpwd
+EOD
+			);
+		}
+		else if($type=='data'){
+			exec(
+<<<EOD
+cd $cur_dir
+svn add * --username $svnusr --password $svnpwd
+svn commit -m "add testdata from zip file online." --username $svnusr --password $svnpwd
+EOD
+			);
+		}
+		else{
+			error_log("svnCommitZipData: invalid argument");
+			return "invalid argument";
+		}
+	}
 ?>

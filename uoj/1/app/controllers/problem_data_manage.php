@@ -74,21 +74,19 @@ EOD;
 
 	//上传数据
 	if($_POST['problem_data_file_submit']=='submit'){
-		if ($_FILES["problem_data_file"]["error"] > 0)
-  		{
+		if ($_FILES["problem_data_file"]["error"] > 0){
   			$errmsg = "Error: ".$_FILES["problem_data_file"]["error"];
 			becomeMsgPage('<div>' . $errmsg . '</div><a href="/problem/'.$problem['id'].'/manage/data">返回</a>');
   		}
-		else
-  		{
+		else{
 			//if($_FILES["problem_data_file"]["type"]=='application/zip'){
 				$up_filename="/tmp/".rand(0,100000000)."data.zip";
 				move_uploaded_file($_FILES["problem_data_file"]["tmp_name"], $up_filename);
 				$zip = new ZipArchive;
-				if ($zip->open($up_filename) === TRUE)
-				{
+				if ($zip->open($up_filename) === TRUE){
 					$zip->extractTo("/var/svn/problem/{$problem['id']}/cur/{$problem['id']}/1");
 					$zip->close();
+					svnCommitZipData($problem['id'], 'data');
 					echo "<script>alert('上传成功！')</script>";
 				}else{
 					$errmsg = "解压失败！";
@@ -104,7 +102,6 @@ EOD;
 
 	//添加配置文件
 	if($_POST['problem_settings_file_submit']=='submit'){
-
 		if($_POST['use_builtin_checker'] and $_POST['n_tests'] and $_POST['input_pre'] and $_POST['input_suf'] and $_POST['output_pre'] and $_POST['output_suf'] and $_POST['time_limit'] and $_POST['memory_limit']){
 				if(!is_dir("/var/svn/problem/{$problem['id']}/cur/{$problem['id']}/1/")){
 					mkdir("/var/svn/problem/{$problem['id']}/cur/{$problem['id']}/1/");
@@ -138,12 +135,12 @@ EOD;
 				fwrite($setfile, "time_limit ".$_POST['time_limit']."\n");
 				fwrite($setfile, "memory_limit ".$_POST['memory_limit']."\n");
 				fclose($setfile);
+				svnCommitZipData($problem['id'], 'conf');
 				if(!$has_legacy){
 					echo "<script>alert('添加成功！')</script>";
 				}else{
 					echo "<script>alert('替换成功!')</script>";
 				}
-
 		}else{
 			$errmsg = "添加配置文件失败，请检查是否所有输入框都已填写！";
 			becomeMsgPage('<div>' . $errmsg . '</div><a href="/problem/'.$problem['id'].'/manage/data">返回</a>');
@@ -167,7 +164,7 @@ EOD;
 			<p><a>svn://{$http_host}/problem/{$problem['id']}</a></p>
 		</div>
 	</div>
-	<label class="col-sm-3 control-label">ZIP上传数据</label>
+	<label class="col-sm-3 control-label">上传数据</label>
 	<div class="col-sm-9">
 		<div class="form-control-static">
 			<row>
@@ -771,16 +768,16 @@ EOD
       				</div>
       				<div class="modal-body">
         				<form action="" method="post" enctype="multipart/form-data" role="form">
-  						<div class="form-group">
-    							<label for="exampleInputFile">文件</label>
-    							<input type="file" name="problem_data_file" id="problem_data_file">
-    							<p class="help-block">请上传.zip文件</p>
-  						</div>
-						<input type="hidden" name="problem_data_file_submit" value="submit">
-  						<button type="submit" class="btn btn-success">上传</button>
-					</form>
+							<div class="form-group">
+									<label for="exampleInputFile">文件</label>
+									<input type="file" name="problem_data_file" id="problem_data_file">
+									<p class="help-block">请上传.zip文件</p>
+							</div>
+							<input type="hidden" name="problem_data_file_submit" value="submit">
       				</div>
       				<div class="modal-footer">
+						<button type="submit" class="btn btn-success">上传</button>
+						</form>
         				<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
       				</div>
     			</div>
@@ -863,10 +860,10 @@ EOD
     							</div>
   							</div>
 							<input type="hidden" name="problem_settings_file_submit" value="submit">
-  							<div align="center"><button type="submit" class="btn btn-success">确定</button></div>
-						</form>
       				</div>
       				<div class="modal-footer">
+						<button type="submit" class="btn btn-success">确定</button>
+						</form>
         				<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
       				</div>
     			</div>
