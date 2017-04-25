@@ -117,7 +117,9 @@ EOD;
 				}
 				$setfile = fopen($set_filename, "w");
 				fwrite($setfile, "use_builtin_judger on\n");
-				fwrite($setfile, "use_builtin_checker ".$_POST['use_builtin_checker']."\n");
+				if($_POST['use_builtin_checker'] != 'ownchk'){
+					fwrite($setfile, "use_builtin_checker ".$_POST['use_builtin_checker']."\n");
+				}
 				fwrite($setfile, "n_tests ".$_POST['n_tests']."\n");
 				if($_POST['n_ex_tests']){
 					fwrite($setfile, "n_ex_tests ".$_POST['n_ex_tests']."\n");
@@ -801,6 +803,7 @@ EOD
   									<option value="ncmp">单行整数序列</option>
   									<option value="wcmp">单行字符串序列</option>
   									<option value="fcmp">多行数据（不忽略行末空格，但忽略文末回车）</option>
+									<option value="ownchk">自定义校验器</option>
 								</select>
       								<!--<input type="hidden" class="form-control" id="use_builtin_checker" name="use_builtin_checker" placeholder="比对函数">-->
     							</div>
