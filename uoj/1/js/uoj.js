@@ -287,7 +287,7 @@ $.fn.uoj_problem_tag = function() {
 }
 $.fn.uoj_blog_tag = function() {
 	return this.each(function() {
-		$(this).attr('href', '/archive?tag=' + encodeURIComponent($(this).text()));
+		$(this).attr('href', uojBlogUrl + '/archive?tag=' + encodeURIComponent($(this).text()));
 	});
 }
 

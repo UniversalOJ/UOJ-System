@@ -18,3 +18,6 @@
 		</div><!--/.nav-collapse -->
 	</div>
 </div>
+<script type="text/javascript">
+	var uojBlogUrl = '<?= HTML::blog_url(UOJContext::userid(), '')?>';
+</script>
