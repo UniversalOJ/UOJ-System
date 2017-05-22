@@ -1,4 +1,8 @@
-<?php echoUOJPageHeader(UOJLocale::get('help')) ?>
+<?php
+	requireLib('shjs');
+	requireLib('mathjax');
+	echoUOJPageHeader(UOJLocale::get('help')) 
+?>
 <article>
 	<header>
 		<h2 class="page-header">常见问题及其解答(FAQ)</h2>
