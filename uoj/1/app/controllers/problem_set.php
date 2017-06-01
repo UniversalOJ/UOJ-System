@@ -56,6 +56,7 @@ EOD;
 	$cond = array();
 	
 	$search_tag = null;
+	$search_word = $_GET["search"];
 	
 	$cur_tab = isset($_GET['tab']) ? $_GET['tab'] : 'all';
 	if ($cur_tab == 'template') {
@@ -66,6 +67,9 @@ EOD;
 	}
 	if ($search_tag) {
 		$cond[] = "'".DB::escape($search_tag)."' in (select tag from problems_tags where problems_tags.problem_id = problems.id)";
+	}
+	if($search_word) { 
+        $cond[]="title like '%".$search_word."%' or id like '%".$search_word."%'";
 	}
 	
 	if ($cond) {
@@ -132,11 +136,23 @@ EOD;
 		<?= HTML::tablist($tabs_info, $cur_tab, 'nav-pills') ?>
 	</div>
 	<div class="col-sm-4 col-sm-push-4 checkbox text-right">
-		<label class="checkbox-inline" for="input-show_tags_mode"><input type="checkbox" id="input-show_tags_mode" <?= isset($_COOKIE['show_tags_mode']) ? 'checked="checked" ': ''?>/> <?= UOJLocale::get('problems::show tags') ?></label>
-		<label class="checkbox-inline" for="input-show_submit_mode"><input type="checkbox" id="input-show_submit_mode" <?= isset($_COOKIE['show_submit_mode']) ? 'checked="checked" ': ''?>/> <?= UOJLocale::get('problems::show statistics') ?></label>
+		<label class="checkbox-inline" for="input-show_tags_mode">
+			<input type="checkbox" id="input-show_tags_mode" <?= isset($_COOKIE['show_tags_mode']) ? 'checked="checked" ': ''?>/> <?= UOJLocale::get('problems::show tags') ?>
+		</label>
+		<label class="checkbox-inline" for="input-show_submit_mode">
+			<input type="checkbox" id="input-show_submit_mode" <?= isset($_COOKIE['show_submit_mode']) ? 'checked="checked" ': ''?>/> <?= UOJLocale::get('problems::show statistics') ?>
+		</label>
+	</div>
+	<div class="col-sm-4 col-sm-pull-4 input-group">
+		<form id="form-search" class="form-inline" method="get">
+			<span class="input-group-btn">
+				<input type="text" class="form-control" name="search" placeholder="<?= UOJLocale::get('search')?>" />  
+				<button type="submit" id="submit-search" class="btn btn-info btn-search"><span class="glyphicon glyphicon-search"></span></button>  
+			</span>
+		</form>
 	</div>
 	<div class="col-sm-4 col-sm-pull-4">
-	<?php echo $pag->pagination(); ?>
+		<?php echo $pag->pagination(); ?>
 	</div>
 </div>
 <div class="top-buffer-sm"></div>
@@ -168,6 +184,10 @@ $('#input-show_submit_mode').click(function() {
 	
 	foreach ($pag->get() as $idx => $row) {
 		echoProblem($row);
+		echo "\n";
+	}
+	if ($pag->isEmpty()) {
+		echo '<tr><td class="text-center" colspan="233">'.UOJLocale::get('none').'</td></tr>';
 	}
 	
 	echo '</tbody>';
