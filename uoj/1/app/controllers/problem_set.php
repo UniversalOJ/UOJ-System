@@ -135,7 +135,10 @@ EOD;
 	<div class="col-sm-4">
 		<?= HTML::tablist($tabs_info, $cur_tab, 'nav-pills') ?>
 	</div>
-	<div class="col-sm-4 col-sm-push-4 checkbox text-right">
+	<div class="col-sm-4">
+		<?php echo $pag->pagination(); ?>
+	</div>
+	<div class="col-sm-4 checkbox text-right">
 		<label class="checkbox-inline" for="input-show_tags_mode">
 			<input type="checkbox" id="input-show_tags_mode" <?= isset($_COOKIE['show_tags_mode']) ? 'checked="checked" ': ''?>/> <?= UOJLocale::get('problems::show tags') ?>
 		</label>
@@ -143,16 +146,15 @@ EOD;
 			<input type="checkbox" id="input-show_submit_mode" <?= isset($_COOKIE['show_submit_mode']) ? 'checked="checked" ': ''?>/> <?= UOJLocale::get('problems::show statistics') ?>
 		</label>
 	</div>
-	<div class="col-sm-4 col-sm-pull-4 input-group">
-		<form id="form-search" class="form-inline" method="get">
+</div>
+<div class="row">
+	<div class="col-xs-10 col-xs-push-1 col-sm-6 col-sm-push-3 input-group">
+		<form id="form-search" class="input-group form-group" method="get">
+			<input type="text" class="form-control" name="search" placeholder="<?= UOJLocale::get('search')?>" />  
 			<span class="input-group-btn">
-				<input type="text" class="form-control" name="search" placeholder="<?= UOJLocale::get('search')?>" />  
-				<button type="submit" id="submit-search" class="btn btn-info btn-search"><span class="glyphicon glyphicon-search"></span></button>  
+				<button type="submit" class="btn btn-search btn-primary" id="submit-search"><span class="glyphicon glyphicon-search"></span></button>  
 			</span>
 		</form>
-	</div>
-	<div class="col-sm-4 col-sm-pull-4">
-		<?php echo $pag->pagination(); ?>
 	</div>
 </div>
 <div class="top-buffer-sm"></div>
