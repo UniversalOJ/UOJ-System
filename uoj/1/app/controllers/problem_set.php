@@ -56,7 +56,6 @@ EOD;
 	$cond = array();
 	
 	$search_tag = null;
-	$search_word = $_GET["search"];
 	
 	$cur_tab = isset($_GET['tab']) ? $_GET['tab'] : 'all';
 	if ($cur_tab == 'template') {
@@ -68,8 +67,8 @@ EOD;
 	if ($search_tag) {
 		$cond[] = "'".DB::escape($search_tag)."' in (select tag from problems_tags where problems_tags.problem_id = problems.id)";
 	}
-	if($search_word) { 
-        $cond[]="title like '%".$search_word."%' or id like '%".$search_word."%'";
+	if (isset($_GET["search"])) { 
+        $cond[]="title like '%".DB::escape($_GET["search"])."%' or id like '%".DB::escape($_GET["search"])."%'";
 	}
 	
 	if ($cond) {
@@ -136,7 +135,12 @@ EOD;
 		<?= HTML::tablist($tabs_info, $cur_tab, 'nav-pills') ?>
 	</div>
 	<div class="col-sm-4">
-		<?php echo $pag->pagination(); ?>
+		<form id="form-search" class="input-group form-group" method="get">
+			<input type="text" class="form-control" name="search" placeholder="<?= UOJLocale::get('search')?>" />  
+			<span class="input-group-btn">
+				<button type="submit" class="btn btn-search btn-primary" id="submit-search"><span class="glyphicon glyphicon-search"></span></button>  
+			</span>
+		</form>
 	</div>
 	<div class="col-sm-4 checkbox text-right">
 		<label class="checkbox-inline" for="input-show_tags_mode">
@@ -149,12 +153,7 @@ EOD;
 </div>
 <div class="row">
 	<div class="col-xs-10 col-xs-push-1 col-sm-6 col-sm-push-3 input-group">
-		<form id="form-search" class="input-group form-group" method="get">
-			<input type="text" class="form-control" name="search" placeholder="<?= UOJLocale::get('search')?>" />  
-			<span class="input-group-btn">
-				<button type="submit" class="btn btn-search btn-primary" id="submit-search"><span class="glyphicon glyphicon-search"></span></button>  
-			</span>
-		</form>
+		<?php echo $pag->pagination(); ?>
 	</div>
 </div>
 <div class="top-buffer-sm"></div>
