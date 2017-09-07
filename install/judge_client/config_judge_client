@@ -14,16 +14,16 @@ cid = raw_input('uoj container id: ')
 ip = raw_input('uoj ip: ')
 name = raw_input('judger name: ')
 
-os.system("docker cp " + cid + ":/home/local_main_judger/judge_client/.conf.json docker/judge_client/conf.json")
+os.system("docker cp " + cid + ":/home/local_main_judger/judge_client/.conf.json conf.json")
 
-with open('docker/judge_client/conf.json', 'r') as f:
+with open('conf.json', 'r') as f:
 	conf = json.load(f)
 
 conf['uoj_host'] = ip
 conf['judger_name'] = name
 conf['judger_password'] = ''.join(random.choice('0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ') for i in range(32))
 
-with open('docker/judge_client/conf.json', 'w') as f:
+with open('conf.json', 'w') as f:
 	json.dump(conf, f, indent=4, separators=(',', ': '))
 	print >>f
 
@@ -32,7 +32,7 @@ translate_table = {
 	'uoj_host': ip
 }
 
-translate('docker/judge_client/install', 'docker/judge_client/cur_install', translate_table)
+translate('install', 'cur_install', translate_table)
 
 print "please modify the database after getting the judger server ready:"
 print "insert into judger_info (judger_name, password, ip) values ('%s', '%s', '__judger_ip_here__');" % (name, conf['judger_password'])
