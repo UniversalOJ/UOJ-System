@@ -389,7 +389,7 @@ void init_conf(const RunProgramConfig &config) {
 		soft_ban_file_name_set.insert("/etc/nsswitch.conf");
 		soft_ban_file_name_set.insert("/etc/passwd");
 
-		add_file_permission(abspath(0, string(self_path) + "/../runtime/jdk1.7.0_76") + "/", 'r');
+		add_file_permission(abspath(0, string(self_path) + "/../runtime/jdk1.7.0_latest") + "/", 'r');
 		readable_file_name_set.insert("/sys/devices/system/cpu/");
 		readable_file_name_set.insert("/proc/");
 		statable_file_name_set.insert("/usr/java/");
@@ -421,7 +421,7 @@ void init_conf(const RunProgramConfig &config) {
 		soft_ban_file_name_set.insert("/etc/nsswitch.conf");
 		soft_ban_file_name_set.insert("/etc/passwd");
 
-		add_file_permission(abspath(0, string(self_path) + "/../runtime/jdk1.8.0_31") + "/", 'r');
+		add_file_permission(abspath(0, string(self_path) + "/../runtime/jdk1.8.0_latest") + "/", 'r');
 		readable_file_name_set.insert("/sys/devices/system/cpu/");
 		readable_file_name_set.insert("/proc/");
 		statable_file_name_set.insert("/usr/java/");
