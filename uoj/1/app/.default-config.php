@@ -1,7 +1,7 @@
 <?php
 return [
 	'profile' => [
-		'oj-name'  => 'Universal Online Judge',
+		'oj-name' => 'Universal Online Judge',
 		'oj-name-short' => 'UOJ',
 		'administrator' => 'root',
 		'admin-email' => 'admin@local_uoj.ac',
@@ -9,21 +9,21 @@ return [
 		'ICP-license' => ''
 	],
 	'database' => [
-		'database'  => 'app_uoj233',
+		'database' => 'app_uoj233',
 		'username' => 'root',
-		'password' => '',
+		'password' => '_database_password_',
 		'host' => '127.0.0.1'
 	],
 	'web' => [
 		'domain' => null,
 		'main' => [
 			'protocol' => 'http',
-			'host' => UOJContext::httpHost(),
+			'host' => '_httpHost_',
 			'port' => 80
 		],
 		'blog' => [
 			'protocol' => 'http',
-			'host' => UOJContext::httpHost(),
+			'host' => '_httpHost_',
 			'port' => 80
 		]
 	],
@@ -37,9 +37,9 @@ return [
 	],
 	'mail' => [
 		'noreply' => [
-			'username' => 'noreply@none',
-			'password' => 'noreply',
-			'host' => 'smtp.sina.com',
+			'username' => 'noreply@local_uoj.ac',
+			'password' => '_mail_noreply_password_',
+			'host' => 'smtp.local_uoj.ac',
 			'secure' => '',
 			'port' => 25
 		]
@@ -47,13 +47,13 @@ return [
 	'judger' => [
 		'socket' => [
 			'port' => '233',
-			'password' => 'password233'
+			'password' => '_judger_socket_password_'
 		]
 	],
 	'svn' => [
 		'our-root' => [
 			'username' => 'our-root',
-			'password' => 'our-root'
+			'password' => '_svn_ourroot_password_'
 		]
 	],
 	'switch' => [

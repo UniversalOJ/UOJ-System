@@ -1,30 +1,23 @@
-FROM vfleaking/uoj
-MAINTAINER vfleaking vfleaking@163.com
-COPY docker/sources.list /etc/apt/sources.list
-COPY uoj/1 /root/uoj_1
-COPY judge_client/1 /root/judge_client_1
+FROM ubuntu:14.04
+MAINTAINER MascoSkray <MascoSkray@gmail.com>
 
-COPY docker/new_problem.sh \
-	docker/post-commit.sh \
-	docker/uoj-passwd \
-	docker/uoj-post-commit \
-	docker/gen-uoj-config.php \
-	docker/app_uoj233.sql \
-	/root/
+#Update apt and install git
+RUN apt-get update -y && apt-get install -y git
+#Clone the latest UOJ Community verison to local
+RUN cd ~ && git clone https://github.com/UniversalOJ/UOJ-System.git
+#Install environment and set startup script
+RUN cd ~/UOJ-System/install/bundle && bash install.sh -e && echo "\
+#!/bin/bash\n\
+if [ ! -f "/var/svn/.UOJSetupDone" ]; then\n\
+	cd ~/UOJ-System/install/bundle && bash install.sh -c\n\
+fi\n\
+service ntp start\n\
+service mysql start\n\
+service apache2 start\n\
+svnserve -d -r /var/svn\n\
+su local_main_judger -c \"~/judge_client/judge_client start\"\n\
+exec bash\n" >/root/up && chmod +x /root/up
 
-COPY docker/jdk-7u76-linux-x64.tar.gz \
-	docker/jdk-8u31-linux-x64.tar.gz \
-	/home/local_main_judger/
-
-COPY docker/install /root/install
-
-RUN cd /root && php gen-uoj-config.php && chmod +x install
-RUN cd /root && ./install && rm * -rf
-
-COPY docker/up /root/up
-
-RUN chmod +x /root/up
-
+ENV LANG=C.UTF-8 TZ=Asia/Shanghai
 EXPOSE 80 3690
-
 CMD /root/up
