@@ -161,7 +161,7 @@ setWebConf(){
 \$config = include '/var/www/uoj/app/.default-config.php';
 \$config['database']['password']='$_database_password_';
 \$config['security']['user']['client_salt']='$(genRandStr 32)';
-\$config['security']['user']['checksum_salt']=['$(genRandStr 16)','$(genRandStr 16)','$(genRandStr 16)'];
+\$config['security']['cookie']['checksum_salt']=['$(genRandStr 16)','$(genRandStr 16)','$(genRandStr 16)'];
 \$config['judger']['socket']['port']='$_judger_socket_port_';
 \$config['judger']['socket']['password']='$_judger_socket_password_';
 \$config['svn']['our-root']['password']='$_svn_certroot_password_';
