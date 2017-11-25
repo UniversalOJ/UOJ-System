@@ -6,6 +6,7 @@ RUN apt-get update -y && apt-get install -y git
 #Clone the latest UOJ Community verison to local
 RUN cd ~ && git clone https://github.com/UniversalOJ/UOJ-System.git
 #Install environment and set startup script
+RUN cd ~/UOJ-System/ && git checkout php7
 RUN cd ~/UOJ-System/install/bundle && bash install.sh -e && echo "\
 #!/bin/bash\n\
 if [ ! -f "/var/svn/.UOJSetupDone" ]; then\n\
