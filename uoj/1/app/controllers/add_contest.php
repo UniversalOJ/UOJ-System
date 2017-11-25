@@ -39,9 +39,9 @@
 		
 		$esc_name = $_POST['name'];
 		$esc_name = $purifier->purify($esc_name);
-		$esc_name = mysql_real_escape_string($esc_name);
+		$esc_name = DB::escape($esc_name);
 		
-		mysql_query("insert into contests (name, start_time, last_min, status) values ('$esc_name', '$start_time_str', ${_POST['last_min']}, 'unfinished')");
+		DB::query("insert into contests (name, start_time, last_min, status) values ('$esc_name', '$start_time_str', ${_POST['last_min']}, 'unfinished')");
 	};
 	$time_form->succ_href="/contests";
 	$time_form->runAtServer();

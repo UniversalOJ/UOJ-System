@@ -15,23 +15,23 @@
 				return 'fail';
 			}
 			$receiver = $_POST['receiver'];
-			$esc_message = mysql_real_escape_string($_POST['message']);
+			$esc_message = DB::escape($_POST['message']);
 			$sender = $myUser['username'];
 
 			if (!validateUsername($receiver) || !queryUser($receiver)) {
 				return 'fail';
 			}
 
-			mysql_query("insert into user_msg (sender, receiver, message, send_time) values ('$sender', '$receiver', '$esc_message', now())");
+			DB::query("insert into user_msg (sender, receiver, message, send_time) values ('$sender', '$receiver', '$esc_message', now())");
 			return "ok";
 	}
 
 	function getConversations() {
 			global $myUser;
 			$username = $myUser['username'];
-			$result = mysql_query( "select * from user_msg where sender = '$username' or receiver = '$username' order by send_time DESC" );
+			$result = DB::query( "select * from user_msg where sender = '$username' or receiver = '$username' order by send_time DESC" );
 			$ret = array();
-			while ($msg = mysql_fetch_array($result)) {
+			while ($msg = DB::fetch($result)) {
 					if ($msg['sender'] !== $username) {
 							if (isset($ret[$msg['sender']])) {
 									$ret[$msg['sender']][1] |= ($msg['read_time'] == null);
@@ -63,11 +63,11 @@
 
 		$conversationName = $_GET['conversationName'];
 		$pageNumber = ($_GET['pageNumber'] - 1) * 10;
-		mysql_query("update user_msg set read_time = now() where sender = '$conversationName'  and  receiver = '$username' and read_time is null");
+		DB::query("update user_msg set read_time = now() where sender = '$conversationName'  and  receiver = '$username' and read_time is null");
 
-		$result = mysql_query("select * from user_msg where (sender = '$username' and receiver = '$conversationName') or (sender = '$conversationName' and receiver = '$username')	order by send_time DESC limit $pageNumber, 11");
+		$result = DB::query("select * from user_msg where (sender = '$username' and receiver = '$conversationName') or (sender = '$conversationName' and receiver = '$username')	order by send_time DESC limit $pageNumber, 11");
 		$ret = array();
-		while ($msg = mysql_fetch_array($result)) {
+		while ($msg = DB::fetch($result)) {
 			$ret[] = array($msg['message'], $msg['send_time'], $msg['read_time'], $msg['id'], ($msg['sender'] == $username));
 		}
 		return json_encode($ret);
@@ -81,13 +81,13 @@ select * from user_msg
 where id = $msgId
 and read_time is null
 EOD;
-    $result = mysql_query($str);
-    if (mysql_fetch_array($result)) {
+    $result = DB::query($str);
+    if (DB::fetch($result)) {
         $str = <<<EOD
 delete from user_msg
 where id = $msgId
 EOD;
-        mysql_query($str);
+        DB::query($str);
         return 1;
     }
     return 0;

@@ -14,7 +14,7 @@
 	$register_form = new UOJForm('register');
 	$register_form->handle = function() {
 		global $myUser, $contest;
-		mysql_query("insert into contests_registrants (username, user_rating, contest_id, has_participated) values ('{$myUser['username']}', {$myUser['rating']}, {$contest['id']}, 0)");
+		DB::query("insert into contests_registrants (username, user_rating, contest_id, has_participated) values ('{$myUser['username']}', {$myUser['rating']}, {$contest['id']}, 0)");
 		updateContestPlayerNum($contest);
 	};
 	$register_form->submit_button_config['class_str'] = 'btn btn-primary';

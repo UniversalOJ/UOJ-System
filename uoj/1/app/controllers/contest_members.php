@@ -16,7 +16,7 @@
 			$unregister_form = new UOJForm('unregister');
 			$unregister_form->handle = function() {
 				global $myUser, $contest;
-				mysql_query("delete from contests_registrants where username = '{$myUser['username']}' and contest_id = {$contest['id']}");
+				DB::query("delete from contests_registrants where username = '{$myUser['username']}' and contest_id = {$contest['id']}");
 				updateContestPlayerNum($contest);
 			};
 			$unregister_form->submit_button_config['class_str'] = 'btn btn-danger btn-xs';

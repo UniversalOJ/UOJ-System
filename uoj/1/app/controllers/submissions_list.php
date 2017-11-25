@@ -19,7 +19,7 @@
 		$conds[] = "score <= $q_max_score";
 	}
 	if ($q_language != null) {
-		$conds[] = sprintf("language = '%s'", mysql_real_escape_string($q_language));
+		$conds[] = sprintf("language = '%s'", DB::escape($q_language));
 	}
 	
 	$html_esc_q_language = htmlspecialchars($q_language);

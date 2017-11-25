@@ -18,9 +18,9 @@
 	}
 
 	if (isset($_POST['check_notice'])) {
-		$result = mysql_query("select * from contests_notice where contest_id = '${contest['id']}' order by time desc limit 1");
+		$result = DB::query("select * from contests_notice where contest_id = '${contest['id']}' order by time desc limit 1");
 		try {
-			while ($row = mysql_fetch_array($result)) {
+			while ($row = DB::fetch($result)) {
 				if (new DateTime($row['time']) > new DateTime($_POST['last_time'])) {
 					die(json_encode(array('msg' => $row['title'] . ' : ' . $row['content'], 'time' => UOJTime::$time_now_str)));
 				}
@@ -44,18 +44,18 @@
 		$problems = array();
 		$prob_pos = array();
 		$n_problems = 0;
-		$result = mysql_query("select problem_id from contests_problems where contest_id = ${contest['id']} order by problem_id");
-		while ($row = mysql_fetch_array($result, MYSQL_NUM)) {
+		$result = DB::query("select problem_id from contests_problems where contest_id = ${contest['id']} order by problem_id");
+		while ($row = DB::fetch($result, MYSQLI_NUM)) {
 			$prob_pos[$problems[] = (int)$row[0]] = $n_problems++;
 		}
 		
 		$data = array();
 		if ($contest['cur_progress'] < CONTEST_FINISHED) {
-			$result = mysql_query("select id, submit_time, submitter, problem_id, score from submissions where contest_id = {$contest['id']} and score is not null order by id");
+			$result = DB::query("select id, submit_time, submitter, problem_id, score from submissions where contest_id = {$contest['id']} and score is not null order by id");
 		} else {
-			$result = mysql_query("select submission_id, date_add('{$contest['start_time_str']}', interval penalty second), submitter, problem_id, score from contests_submissions where contest_id = {$contest['id']}");
+			$result = DB::query("select submission_id, date_add('{$contest['start_time_str']}', interval penalty second), submitter, problem_id, score from contests_submissions where contest_id = {$contest['id']}");
 		}
-		while ($row = mysql_fetch_array($result, MYSQL_NUM)) {
+		while ($row = DB::fetch($result, MYSQLI_NUM)) {
 			$row[0] = (int)$row[0];
 			$row[3] = $prob_pos[$row[3]];
 			$row[4] = (int)$row[4];
@@ -63,8 +63,8 @@
 		}
 		
 		$people = array();
-		$result = mysql_query("select username, user_rating from contests_registrants where contest_id = {$contest['id']} and has_participated = 1");
-		while ($row = mysql_fetch_array($result, MYSQL_NUM)) {
+		$result = DB::query("select username, user_rating from contests_registrants where contest_id = {$contest['id']} and has_participated = 1");
+		while ($row = DB::fetch($result, MYSQLI_NUM)) {
 			$row[1] = (int)$row[1];
 			$people[] = $row;
 		}
@@ -137,8 +137,8 @@
 			$start_test_form = new UOJForm('start_test');
 			$start_test_form->handle = function() {
 				global $contest;
-				$result = mysql_query("select id, problem_id, content from submissions where contest_id = {$contest['id']}");
-				while ($submission = mysql_fetch_array($result, MYSQL_ASSOC)) {
+				$result = DB::query("select id, problem_id, content from submissions where contest_id = {$contest['id']}");
+				while ($submission = DB::fetch($result, MYSQLI_ASSOC)) {
 					if (!isset($contest['extra_config']["problem_{$submission['problem_id']}"])) {
 	 					$content = json_decode($submission['content'], true);
 						if (isset($content['final_test_config'])) {
@@ -148,11 +148,11 @@
 						if (isset($content['first_test_config'])) {
 							unset($content['first_test_config']);
 						}
-						$esc_content = mysql_real_escape_string(json_encode($content));
+						$esc_content = DB::escape(json_encode($content));
 						DB::update("update submissions set judge_time = NULL, result = '', score = NULL, status = 'Waiting Rejudge', content = '$esc_content' where id = {$submission['id']}");
 					}
 				}
-				mysql_query("update contests set status = 'testing' where id = {$contest['id']}");
+				DB::query("update contests set status = 'testing' where id = {$contest['id']}");
 			};
 			$start_test_form->submit_button_config['class_str'] = 'btn btn-danger btn-block';
 			$start_test_form->submit_button_config['smart_confirm'] = '';
@@ -202,10 +202,10 @@ EOD;
 EOD;
 					}
 					sendSystemMsg($user['username'], 'Rating变化通知', $content);
-					mysql_query("update user_info set rating = {$ratings[$i]} where username = '{$standings[$i][2][0]}'");
-					mysql_query("update contests_registrants set rank = {$standings[$i][3]} where contest_id = {$contest['id']} and username = '{$standings[$i][2][0]}'");
+					DB::query("update user_info set rating = {$ratings[$i]} where username = '{$standings[$i][2][0]}'");
+					DB::query("update contests_registrants set rank = {$standings[$i][3]} where contest_id = {$contest['id']} and username = '{$standings[$i][2][0]}'");
 				}
-				mysql_query("update contests set status = 'finished' where id = {$contest['id']}");
+				DB::query("update contests set status = 'finished' where id = {$contest['id']}");
 			};
 			$publish_result_form->submit_button_config['class_str'] = 'btn btn-danger btn-block';
 			$publish_result_form->submit_button_config['smart_confirm'] = '';
@@ -412,7 +412,7 @@ EOD;
 		global $contest;
 		$title = DB::escape($_POST['title']);
 		$content = DB::escape($_POST['content']);
-		mysql_query("insert into contests_notice (contest_id, title, content, time) values ('{$contest['id']}', '$title', '$content', now())");
+		DB::query("insert into contests_notice (contest_id, title, content, time) values ('{$contest['id']}', '$title', '$content', now())");
 	};
 	$post_notice->runAtServer();
 	

@@ -29,7 +29,7 @@
 		{
 			return "失败：无效电子邮箱。";
 		}
-		$esc_email = mysql_real_escape_string($email);
+		$esc_email = DB::escape($email);
 		DB::update("update user_info set email = '$esc_email' where username = '{$myUser['username']}'");
 
 		if ($_POST['Qtag'])
@@ -39,7 +39,7 @@
 			{
 				return "失败：无效QQ。";
 			}
-			$esc_qq = mysql_real_escape_string($qq);
+			$esc_qq = DB::escape($qq);
 			DB::update("update user_info set qq = '$esc_qq' where username = '{$myUser['username']}'");
 		}
 		else
@@ -47,7 +47,7 @@
 		if ($_POST['sex'] == "U" || $_POST['sex'] == 'M' || $_POST['sex'] == 'F')
 		{
 			$sex = $_POST['sex'];
-			$esc_sex = mysql_real_escape_string($sex);
+			$esc_sex = DB::escape($sex);
 			DB::update("update user_info set sex = '$esc_sex' where username = '{$myUser['username']}'");
 		}
 		

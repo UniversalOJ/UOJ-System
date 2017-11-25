@@ -3,63 +3,81 @@
 class DB {
 	public static function init() {
 		global $uojMySQL;
-		@$uojMySQL = mysql_connect(UOJConfig::$data['database']['host'] . ':3306', UOJConfig::$data['database']['username'], UOJConfig::$data['database']['password']);
+		$uojMySQL = new mysqli(UOJConfig::$data['database']['host'] . ':3306', UOJConfig::$data['database']['username'], UOJConfig::$data['database']['password'], UOJConfig::$data['database']['database']);
+		if($uojMySQL == null){
+			echo '-----------------------\n';
+			echo $uojMySQL->connect_errno;
+			echo '========================\n';
+		}
 		if (!$uojMySQL) {
-			echo 'There is something wrong with database >_<.... ' . mysql_error();
+			echo 'There is something wrong with database >_<.... ' . mysqli_error($uojMySQL);
 			die();
 		}
-		mysql_select_db(UOJConfig::$data['database']['database']);
 	}
 	public static function escape($str) {
-		return mysql_real_escape_string($str);
+		global $uojMySQL;
+		return mysqli_real_escape_string($uojMySQL, $str);
 	}
-	public static function fetch($r, $opt = MYSQL_ASSOC) {
-		return mysql_fetch_array($r, $opt);
+	public static function fetch($r, $opt = MYSQLI_ASSOC) {
+		global $uojMySQL;
+		return mysqli_fetch_array($r, $opt);
 	}
 	
 	public static function query($q) {
-		return mysql_query($q);
+		global $uojMySQL;
+		return mysqli_query($uojMySQL, $q);
 	}
 	public static function update($q) {
-		return mysql_query($q);
+		global $uojMySQL;
+		return mysqli_query($uojMySQL, $q);
 	}
 	public static function insert($q) {
-		return mysql_query($q);
+		global $uojMySQL;
+		return mysqli_query($uojMySQL, $q);
 	}
 	public static function insert_id() {
-		return mysql_insert_id();
+		global $uojMySQL;
+		return mysqli_insert_id($uojMySQL);
 	}
 		
 	public static function delete($q) {
-		return mysql_query($q);
+		global $uojMySQL;
+		return mysqli_query($uojMySQL, $q);
 	}
 	public static function select($q) {
-		return mysql_query($q);
+		global $uojMySQL;
+		return mysqli_query($uojMySQL, $q);
 	}
-	public static function selectAll($q, $opt = MYSQL_ASSOC) {
+	public static function selectAll($q, $opt = MYSQLI_ASSOC) {
+		global $uojMySQL;
 		$res = array();
-		$qr = mysql_query($q);
-		while ($row = mysql_fetch_array($qr, $opt)) {
+		$qr = mysqli_query($uojMySQL, $q);
+		while ($row = mysqli_fetch_array($qr, $opt)) {
 			$res[] = $row;
 		}
 		return $res;
 	}
-	public static function selectFirst($q, $opt = MYSQL_ASSOC) {
-		return mysql_fetch_array(mysql_query($q), $opt);
+	public static function selectFirst($q, $opt = MYSQLI_ASSOC) {
+		global $uojMySQL;
+		return mysqli_fetch_array(mysqli_query($uojMySQL, $q), $opt);
 	}
 	public static function selectCount($q) {
-		list($cnt) = mysql_fetch_array(mysql_query($q), MYSQL_NUM);
+		global $uojMySQL;
+		list($cnt) = mysqli_fetch_array(mysqli_query($uojMySQL, $q), MYSQLI_NUM);
 		return $cnt;
 	}
 	
 	public static function checkTableExists($name) {
+		global $uojMySQL;
 		return DB::query("select 1 from $name") !== false;
 	}
 	
 	public static function num_rows() {
-		return mysql_num_rows();
+		global $uojMySQL;
+		return mysqli_num_rows($uojMySQL);
 	}
 	public static function affected_rows() {
-		return mysql_affected_rows();
+		global $uojMySQL;
+		return mysqli_affected_rows($uojMySQL);
 	}
 }

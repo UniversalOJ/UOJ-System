@@ -74,7 +74,7 @@
 	$blog_link_contests->handle = function() {
 		$blog_id = $_POST['blog_id'];
 		$contest_id = $_POST['contest_id'];
-		$str = mysql_fetch_array(mysql_query("select * from contests where id='${contest_id}'"));
+		$str = DB::selectFirst(("select * from contests where id='${contest_id}'"));
 		$all_config = json_decode($str['extra_config'], true);
 		$config = $all_config['links'];
 
@@ -97,8 +97,8 @@
 
 		$all_config['links'] = $config;
 		$str = json_encode($all_config);
-		$str = mysql_real_escape_string($str);
-		mysql_query("update contests set extra_config='${str}' where id='${contest_id}'");
+		$str = DB::escape($str);
+		DB::query("update contests set extra_config='${str}' where id='${contest_id}'");
 	};
 	$blog_link_contests->runAtServer();
 	

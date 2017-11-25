@@ -8,8 +8,8 @@
 			
 			$visible = isProblemVisibleToUser($problem, $myUser);
 			if (!$visible && $myUser != null) {
-				$result = mysql_query("select contest_id from contests_problems where problem_id = {$_GET['id']}");
-				while (list($contest_id) = mysql_fetch_array($result, MYSQL_NUM)) {
+				$result = DB::query("select contest_id from contests_problems where problem_id = {$_GET['id']}");
+				while (list($contest_id) = DB::fetch($result, MYSQLI_NUM)) {
 					$contest = queryContest($contest_id);
 					genMoreContestInfo($contest);
 					if ($contest['cur_progress'] != CONTEST_NOT_STARTED && hasRegistered($myUser, $contest) && queryContestProblemRank($contest, $problem)) {

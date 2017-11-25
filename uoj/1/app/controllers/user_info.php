@@ -107,10 +107,10 @@
 var rating_data = [[
 <?php
 	$user_rating_min = $user_rating_max = 1500;
-	$result = mysql_query("select contest_id, rank, user_rating from contests_registrants where username = '{$user['username']}' and has_participated = 1 order by contest_id");
+	$result = DB::query("select contest_id, rank, user_rating from contests_registrants where username = '{$user['username']}' and has_participated = 1 order by contest_id");
 	$is_first_row = true;
 	$last_rating = 1500;
-	while ($row = mysql_fetch_array($result)) {
+	while ($row = DB::fetch($result)) {
 		$contest = queryContest($row['contest_id']);
 		$rating_delta = $row['user_rating'] - $last_rating;
 		if (!$is_first_row) {

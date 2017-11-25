@@ -526,7 +526,7 @@ EOD
 		}
 		
 		$hackable = $problem['hackable'] ? 1 : 0;
-		mysql_query("update problems set hackable = $hackable where id = ${problem['id']}");
+		DB::query("update problems set hackable = $hackable where id = ${problem['id']}");
 	};
 	$hackable_form->submit_button_config['class_str'] = 'btn btn-warning btn-block';
 	$hackable_form->submit_button_config['text'] = $problem['hackable'] ? '禁止使用hack' : '允许使用hack';
@@ -598,7 +598,7 @@ EOD
 		$config['view_all_details_type'] = $_POST['view_all_details_type'];
 		$config['view_details_type'] = $_POST['view_details_type'];
 		$esc_config = DB::escape(json_encode($config));
-		mysql_query("update problems set extra_config = '$esc_config' where id = '{$problem['id']}'");
+		DB::query("update problems set extra_config = '$esc_config' where id = '{$problem['id']}'");
 	};
 	$view_type_form->submit_button_config['class_str'] = 'btn btn-warning btn-block top-buffer-sm';
 	

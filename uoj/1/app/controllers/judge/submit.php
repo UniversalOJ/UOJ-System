@@ -42,7 +42,7 @@
 				$content['first_test_config'] = $content['config'];
 				$content['config'] = $content['final_test_config'];
 				unset($content['final_test_config']);
-				$esc_content = mysql_real_escape_string(json_encode($content));
+				$esc_content = DB::escape(json_encode($content));
 			
 				DB::update("update submissions set status = 'Judged, Waiting', content = '$esc_content' where id = ${_POST['id']}");
 			}
@@ -77,11 +77,11 @@
 		$ok = DB::update("update hacks set success = {$result['score']}, details = '$esc_details' where id = {$_POST['id']}");
 		
 		if ($ok) {
-			list($hack_input) = mysql_fetch_array(mysql_query("select input from hacks where id = {$_POST['id']}"), MYSQL_NUM);
+			list($hack_input) = DB::fetch(DB::query("select input from hacks where id = {$_POST['id']}"), MYSQLI_NUM);
 			unlink(UOJContext::storagePath().$hack_input);
 
 			if ($result['score']) {
-				list($problem_id) = mysql_fetch_array(mysql_query("select problem_id from hacks where id = ${_POST['id']}"), MYSQL_NUM);
+				list($problem_id) = DB::selectFirst("select problem_id from hacks where id = ${_POST['id']}", MYSQLI_NUM);
 				if (validateUploadedFile('hack_input') && validateUploadedFile('std_output')) {
 					svnAddExtraTest(queryProblemBrief($problem_id), $_FILES["hack_input"]["tmp_name"], $_FILES["std_output"]["tmp_name"]);
 				} else {

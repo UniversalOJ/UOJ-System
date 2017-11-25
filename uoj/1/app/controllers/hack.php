@@ -23,7 +23,7 @@
 		$delete_form = new UOJForm('delete');
 		$delete_form->handle = function() {
 			global $hack;
-			mysql_query("delete from hacks where id = {$hack['id']}");
+			DB::query("delete from hacks where id = {$hack['id']}");
 		};
 		$delete_form->submit_button_config['class_str'] = 'btn btn-danger';
 		$delete_form->submit_button_config['text'] = '删除此Hack';

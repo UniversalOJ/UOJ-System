@@ -39,22 +39,22 @@
 	$cur = queryZanVal($id, $type, $myUser);
 	
 	if ($cur != $delta) {
-		$row = mysql_fetch_array(mysql_query("select zan from $table_name where id = $id"));
+		$row = DB::selectFirst("select zan from $table_name where id = $id");
 		if ($row == null) {
 			die('<div class="text-danger">failed</div>');
 		}
 		$cur += $delta;
 		if ($cur == 0) {
-			mysql_query("delete from click_zans where username = '{$myUser['username']}' and type = '$type' and target_id = $id");
+			DB::query("delete from click_zans where username = '{$myUser['username']}' and type = '$type' and target_id = $id");
 		} else if ($cur != $delta) {
-			mysql_query("update click_zans set val = '$cur' where username = '{$myUser['username']}' and type = '$type' and target_id = $id");
+			DB::query("update click_zans set val = '$cur' where username = '{$myUser['username']}' and type = '$type' and target_id = $id");
 		} else {
-			mysql_query("insert into click_zans (username, type, target_id, val) values ('{$myUser['username']}', '$type', $id, $cur)");
+			DB::query("insert into click_zans (username, type, target_id, val) values ('{$myUser['username']}', '$type', $id, $cur)");
 		}
 		$cnt = $row['zan'] + $delta;
-		mysql_query("update $table_name set zan = $cnt where id = $id");
+		DB::query("update $table_name set zan = $cnt where id = $id");
 	} else {
-		$row = mysql_fetch_array(mysql_query("select zan from $table_name where id = $id"));
+		$row = DB::selectFirst("select zan from $table_name where id = $id");
 		if ($row == null) {
 			die('<div class="text-danger">failed</div>');
 		}

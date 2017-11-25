@@ -23,12 +23,11 @@ $mail->FromName = 'List manager';
 $mail->Host     = 'smtp1.example.com;smtp2.example.com';
 $mail->Mailer   = 'smtp';
 
-@mysqli_connect('localhost','root','password');
-@mysqli_select_db("my_company");
+@$mm = new mysqli('localhost','root','password', 'my_company');
 $query = "SELECT full_name, email, photo FROM employee";
-$result = @mysqli_query($query);
+$result = @mysqli_query($mm, $query);
 
-while ($row = mysqli_fetch_assoc($result))
+while ($row = mysqli_fetch_assoc($mm, $result))
 {
     // HTML body
     $body  = "Hello &lt;font size=\"4\"&gt;" . $row['full_name'] . "&lt;/font&gt;, &lt;p&gt;";

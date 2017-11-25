@@ -9,10 +9,10 @@
 		exec("cd /var/uoj_data; rm $id.zip; zip $id.zip $id -r -q");
 	}
 	function svnRefreshPasswordOfProblem($id) {
-		$result = mysql_query("select user_info.username, svn_password from problems_permissions, user_info where problem_id = $id and user_info.username = problems_permissions.username");
+		$result = DB::query("select user_info.username, svn_password from problems_permissions, user_info where problem_id = $id and user_info.username = problems_permissions.username");
 		$content = "[users]\n";
 		$content .= UOJConfig::$data['svn']['our-root']['username']." = ".UOJConfig::$data['svn']['our-root']['password']."\n";
-		while ($row = mysql_fetch_array($result, MYSQL_NUM)) {
+		while ($row = DB::fetch($result, MYSQLI_NUM)) {
 			$content .= "${row[0]} = ${row[1]}\n";
 		}
 		file_put_contents("/var/svn/problem/$id/conf/passwd", $content);
