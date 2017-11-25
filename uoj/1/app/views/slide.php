@@ -17,7 +17,7 @@
 	<head>
 		<meta charset="utf-8">
 
-		<title><?= isset($PageTitle) ? $PageTitle : 'UOJ' ?> - <?= isset($PageMainTitle) ? $PageMainTitle : 'Universal Online Judge' ?></title>
+		<title><?= isset($PageTitle) ? $PageTitle : UOJConfig::$data['profile']['oj-name-short'] ?> - <?= isset($PageMainTitle) ? $PageMainTitle : UOJConfig::$data['profile']['oj-name'] ?></title>
 
 		<meta name="apple-mobile-web-app-capable" content="yes" />
 		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />

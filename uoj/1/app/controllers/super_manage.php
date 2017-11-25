@@ -20,9 +20,9 @@
 		null
 	);
 	$options = array(
-		'ban' => '封禁',
-		'deblocking' => '解封',
-		'login' => '登录'
+		'banneduser' => '设为封禁用户',
+		'normaluser' => '设为普通用户',
+		'superuser' => '设为超级用户'
 	);
 	$user_form->addSelect('op-type', $options, '操作类型', '');
 	$user_form->handle = function() {
@@ -30,15 +30,14 @@
 		
 		$username = $_POST['username'];
 		switch ($_POST['op-type']) {
-			case 'ban':
+			case 'banneduser':
 				DB::update("update user_info set usergroup = 'B' where username = '{$username}'");
 				break;
-			case 'deblocking':
+			case 'normaluser':
 				DB::update("update user_info set usergroup = 'U' where username = '{$username}'");
 				break;
-			case 'login':
-				Auth::login($username);
-				$user_form->succ_href = "/";
+			case 'superuser':
+				DB::update("update user_info set usergroup = 'S' where username = '{$username}'");
 				break;
 		}
 	};
