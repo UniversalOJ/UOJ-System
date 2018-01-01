@@ -7,7 +7,6 @@ _database_password_=root
 _judger_socket_port_=2333
 _judger_socket_password_=$(genRandStr 10)
 _main_judger_password_=$(genRandStr 32)
-_svn_ourroot_password_=$(genRandStr 10)
 _svn_certroot_password_=$(genRandStr 32)
 
 getAptPackage(){
@@ -112,7 +111,7 @@ password-db = passwd
 EOD
 
 svnusr="our-root"
-svnpwd="$_svn_ourroot_password_"
+svnpwd="$_svn_certroot_password_"
 
 cat >\$path/conf/passwd <<EOD
 [users]
@@ -133,7 +132,7 @@ UOJEOF
 	cat >/var/svn/problem/post-commit.sh <<UOJEOF
 #!/bin/sh
 svnusr="our-root"
-svnpwd="$_svn_ourroot_password_"
+svnpwd="$_svn_certroot_password_"
 cd /var/svn/problem/\$1/cur/\$1
 svn update --username \$svnusr --password \$svnpwd
 chown www-data /var/svn/problem/\$1 -R
@@ -149,7 +148,7 @@ UOJEOF
 setWebConf(){
 	echo -e "\n\n==> Setting web files"
 	#Commit web source file
-	svn co svn://127.0.0.1/uoj --username root --password $_svn_certroot_password_ 
+	svn co svn://127.0.0.1/uoj --username root --password $_svn_certroot_password_
 	mv ../../uoj/1 uoj/1 && cd uoj
 	svn add 1 && svn ci -m "Installtion commit" --username root --password $_svn_certroot_password_
 	cd .. && rm uoj /var/www/uoj -r
