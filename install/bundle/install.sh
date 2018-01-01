@@ -84,7 +84,7 @@ UOJEOF
 	#Set SVN hook scripts
 	cat >/var/svn/uoj/hooks/post-commit <<UOJEOF
 #!/bin/sh
-cd /var/svn/uoj/cur/uoj && svn update --username root --password $_svn_ourroot_password_
+cd /var/svn/uoj/cur/uoj && svn update --username root --password $_svn_certroot_password_
 UOJEOF
 	chmod +x /var/svn/uoj/hooks/post-commit
 	cat >/var/svn/judge_client/hooks/post-commit <<UOJEOF
