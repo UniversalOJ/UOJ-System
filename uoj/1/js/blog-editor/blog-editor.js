@@ -86,7 +86,7 @@ function blog_editor_init(name, editor_config) {
 	input_content_md.wrap('<div class="blog-content-md-editor-in"></div>');
 	
 	var codeeditor;
-	if (editor_config.type == 'blog') {
+	if (editor_config.type == 'blog' || editor_config.type == 'problem') {
 		codeeditor = CodeMirror.fromTextArea(input_content_md[0], {
 			mode: 'gfm',
 			lineNumbers: true,
