@@ -13,6 +13,7 @@
 	
 	$problem_editor = new UOJBlogEditor();
 	$problem_editor->name = 'problem';
+	$problem_editor->type = 'problem';
 	$problem_editor->blog_url = "/problem/{$problem['id']}";
 	$problem_editor->cur_data = array(
 		'title' => $problem['title'],
