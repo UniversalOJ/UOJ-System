@@ -128,7 +128,7 @@ EOD;
 EOD;
 			$this->add($name, $html,
 				function($opt) use ($options) {
-					return isset($options, $opt) ? '' : "无效选项";
+					return isset($options[$opt]) ? '' : "无效选项";
 				},
 				'always_ok'
 			);
@@ -165,7 +165,7 @@ EOD;
 EOD;
 			$this->add($name, $html,
 				function($opt) use ($options) {
-					return isset($options, $opt) ? '' : "无效选项";
+					return isset($options[$opt]) ? '' : "无效选项";
 				},
 				'always_ok'
 			);
