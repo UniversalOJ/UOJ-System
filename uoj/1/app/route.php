@@ -8,7 +8,7 @@ Route::pattern('rand_str_id', '[0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKL
 Route::pattern('upgrade_name', '[a-zA-Z0-9_]{1,50}');
 
 Route::group([
-		'domain' => UOJConfig::$data['web']['main']['host']."|127.0.0.1"
+		'domain' => '('.UOJConfig::$data['web']['main']['host'].'|127.0.0.1'.')'
 	], function() {
 		Route::any('/', '/index.php');
 		Route::any('/problems', '/problem_set.php');
@@ -27,6 +27,7 @@ Route::group([
 		Route::any('/contest/{id}/manage', '/contest_manage.php');
 		Route::any('/contest/{id}/submissions', '/contest_inside.php?tab=submissions');
 		Route::any('/contest/{id}/standings', '/contest_inside.php?tab=standings');
+		Route::any('/contest/{id}/backstage', '/contest_inside.php?tab=backstage');
 		Route::any('/contest/{contest_id}/problem/{id}', '/problem.php');
 		Route::any('/contest/{contest_id}/problem/{id}/statistics', '/problem_statistics.php');
 		

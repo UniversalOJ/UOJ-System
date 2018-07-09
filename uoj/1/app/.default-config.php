@@ -40,8 +40,8 @@ return [
 			'username' => 'noreply@local_uoj.ac',
 			'password' => '_mail_noreply_password_',
 			'host' => 'smtp.local_uoj.ac',
-			'secure' => '',
-			'port' => 25
+			'secure' => 'tls',
+			'port' => 587
 		]
 	],
 	'judger' => [
