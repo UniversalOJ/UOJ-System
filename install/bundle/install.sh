@@ -5,8 +5,9 @@ genRandStr(){
 #Set some vars
 _database_password_=root
 _judger_socket_port_=2333
-_judger_socket_password_=$(genRandStr 10)
+_judger_socket_password_=$(genRandStr 32)
 _main_judger_password_=$(genRandStr 32)
+_svn_ourroot_password_=$(genRandStr 32)
 _svn_certroot_password_=$(genRandStr 32)
 
 getAptPackage(){
@@ -111,7 +112,7 @@ password-db = passwd
 EOD
 
 svnusr="our-root"
-svnpwd="$_svn_certroot_password_"
+svnpwd="$_svn_ourroot_password_"
 
 cat >\$path/conf/passwd <<EOD
 [users]
@@ -132,7 +133,7 @@ UOJEOF
 	cat >/var/svn/problem/post-commit.sh <<UOJEOF
 #!/bin/sh
 svnusr="our-root"
-svnpwd="$_svn_certroot_password_"
+svnpwd="$_svn_ourroot_password_"
 cd /var/svn/problem/\$1/cur/\$1
 svn update --username \$svnusr --password \$svnpwd
 chown www-data /var/svn/problem/\$1 -R
@@ -163,7 +164,7 @@ setWebConf(){
 \$config['security']['cookie']['checksum_salt']=['$(genRandStr 16)','$(genRandStr 16)','$(genRandStr 16)'];
 \$config['judger']['socket']['port']='$_judger_socket_port_';
 \$config['judger']['socket']['password']='$_judger_socket_password_';
-\$config['svn']['our-root']['password']='$_svn_certroot_password_';
+\$config['svn']['our-root']['password']='$_svn_ourroot_password_';
 file_put_contents('/var/www/uoj/app/.config.php', "<?php\nreturn ".str_replace('\'_httpHost_\'','UOJContext::httpHost()',var_export(\$config, true)).";\n");
 UOJEOF
 	#Import MySQL database
