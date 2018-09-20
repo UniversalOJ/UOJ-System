@@ -95,7 +95,7 @@ class UOJBlogEditor {
 		
 		$this->post_data['title'] = HTML::escape($this->post_data['title']);
 		
-		if ($this->type == 'blog') {
+		if ($this->type == 'blog'||$this->type =='problem') {
 			$content_md = $_POST[$this->name . '_content_md'];
 			try {
 				$v8 = new V8Js('POST');
@@ -110,8 +110,12 @@ class UOJBlogEditor {
 				$content_less = substr($this->post_data['content'], 0, $matches[0][1]);
 				$content_more = substr($this->post_data['content'], $matches[0][1] + strlen($matches[0][0]));
 				$this->post_data['content'] = $purifier->purify($content_less).'<!-- readmore -->'.$purifier->purify($content_more);
-			} else {
-				$this->post_data['content'] = $purifier->purify($this->post_data['content']);
+			} else { 
+				
+				if($this->type =='blog') {
+					$this->post_data['content'] = $purifier->purify($this->post_data['content']);
+				}
+				// type == 'problem' won't be purified
 			}
 		} else if ($this->type == 'slide') {
 			$content_array = yaml_parse($this->post_data['content_md']);
@@ -200,7 +204,7 @@ EOD
 		
 		if (isset($_POST['need_preview'])) {
 			ob_start();
-			if ($this->type == 'blog') {
+			if ($this->type == 'blog' || $this->type == 'problem' ) {
 				echoUOJPageHeader('博客预览', array('ShowPageHeader' => false, 'REQUIRE_LIB' => array('mathjax' => '', 'shjs' => '')));
 				echo '<article>';
 				echo $this->post_data['content'];
