@@ -13,10 +13,11 @@ _svn_certroot_password_=$(genRandStr 32)
 getAptPackage(){
     echo -e "\n\n==> Getting environment packages"
     #Set MySQL root password
+	export DEBIAN_FRONTEND=noninteractive
     debconf-set-selections <<< "mysql-server mysql-server/root_password password $_database_password_" && debconf-set-selections <<< "mysql-server mysql-server/root_password_again password $_database_password_"
     #Update apt sources and install
-    echo "deb http://ppa.launchpad.net/pinepain/libv8/ubuntu xenial main" | tee -a /etc/apt/sources.list.d/pinepain-libv8.list && apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 60C60AA4
-    apt-get update -y && apt-get install -y vim ntp zip unzip curl wget subversion apache2 libapache2-mod-xsendfile libapache2-mod-php php php-dev php-pear php-zip php-mysql mysql-server cmake fp-compiler re2c libv8-6.6-dev libyaml-dev python python3 python-requests
+    echo "deb http://ppa.launchpad.net/pinepain/libv8/ubuntu artful main" | tee -a /etc/apt/sources.list.d/pinepain-libv8.list && apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 60C60AA4
+    apt-get update && apt-get install -y vim ntp zip unzip curl wget subversion apache2 libapache2-mod-xsendfile libapache2-mod-php php php-dev php-pear php-zip php-mysql php-mbstring mysql-server cmake fp-compiler re2c libv8-6.6-dev libyaml-dev python python3 python-requests
     #Install PHP extensions
     cp -a /opt/libv8*/* /usr && echo -e "\n\n" | pecl install v8js yaml
 }
@@ -26,12 +27,12 @@ getOracleJDK(){
     #Add judger user
     useradd -m local_main_judger && usermod -a -G www-data local_main_judger
     #Get newest jdk dist file
-    JDK_MIRROR_LINK=http://ftp.osuosl.org/pub/funtoo/distfiles/oracle-java/
-    JDK_CNMIRROR_LINK=http://funtoo.neu.edu.cn/funtoo/distfiles/oracle-java/
+    JDK_MIRROR_LINK=https://build.funtoo.org/distfiles/oracle-java/
+    #Deprecated #JDK_CNMIRROR_LINK=http://funtoo.neu.edu.cn/funtoo/distfiles/oracle-java/ 
     curl -s ${JDK_MIRROR_LINK} | grep -oP '>jdk-[7,8].*-linux-x64.tar' | sed -e 's/[\",>]//g' -e 's/-linux-x64.tar//g' >jdkdist.list
-    wget ${JDK_MIRROR_LINK}$(sed -n '1p' jdkdist.list)-linux-x64.tar.gz && wget ${JDK_MIRROR_LINK}$(sed -n '2p' jdkdist.list)-linux-x64.tar.gz
+    wget ${JDK_MIRROR_LINK}$(sed -n '1p' jdkdist.list)-linux-x64.tar.gz && wget ${JDK_MIRROR_LINK}$(sed -n '$p' jdkdist.list)-linux-x64.tar.gz
     #Change jdk version to faq.php
-    sed -i -e "s/jdk-7u76/$(sed -n '1p' jdkdist.list)/g" -e "s/jdk-8u31/$(sed -n '2p' jdkdist.list)/g" ../../uoj/1/app/controllers/faq.php
+    sed -i -e "s/jdk-7u76/$(sed -n '1p' jdkdist.list)/g" -e "s/jdk-8u31/$(sed -n '$p' jdkdist.list)/g" ../../uoj/1/app/controllers/faq.php
     #Move jdk file to judge user root
     chown local_main_judger jdkdist.list jdk-*-linux-x64.tar.gz
     mv jdkdist.list jdk-*-linux-x64.tar.gz /home/local_main_judger/
@@ -58,11 +59,10 @@ setLAMPConf(){
 UOJEOF
     #Enable modules and make UOJ site conf enabled
     a2ensite 000-uoj.conf && a2dissite 000-default.conf
-    a2enmod rewrite headers && sed -i -e '166s/AllowOverride None/AllowOverride All/' /etc/apache2/apache2.conf
+    a2enmod rewrite headers && sed -i -e '172s/AllowOverride None/AllowOverride All/' /etc/apache2/apache2.conf
     #Create UOJ session save dir and make PHP extensions available
     mkdir --mode=733 /var/lib/php/uoj_sessions && chmod +t /var/lib/php/uoj_sessions
-    sed -i -e 's/session.save_path \/var\/lib\/php5\/uoj/session.save_path \/var\/lib\/php\/uoj_sessions/g' ../../uoj/1/.htaccess
-    sed -i -e '876a\extension=v8js.so\nextension=yaml.so' /etc/php/7.0/apache2/php.ini
+    sed -i -e '865a\extension=v8js.so\nextension=yaml.so' /etc/php/7.2/apache2/php.ini
     #Set MySQL user directory and connection config
     usermod -d /var/lib/mysql/ mysql
     cat >/etc/mysql/mysql.conf.d/uoj_mysqld.cnf <<UOJEOF
@@ -177,7 +177,7 @@ setWebConf(){
 file_put_contents('/var/www/uoj/app/.config.php', "<?php\nreturn ".str_replace('\'_httpHost_\'','UOJContext::httpHost()',var_export(\$config, true)).";\n");
 UOJEOF
     #Import MySQL database
-    service mysql start
+    service mysql restart
     mysql -u root --password=$_database_password_ <app_uoj233.sql
 }
 

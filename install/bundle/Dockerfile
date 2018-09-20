@@ -1,16 +1,15 @@
-FROM ubuntu:16.04
+FROM ubuntu:18.04
 MAINTAINER MascoSkray <MascoSkray@gmail.com>
 
 #Update apt and install git
-RUN apt-get update -y && apt-get install -y git
+RUN apt-get update && apt-get install -y git gnupg
 #Clone the latest UOJ Community verison to local
-RUN cd ~ && git clone https://github.com/UniversalOJ/UOJ-System.git
+RUN cd ~ && git clone https://github.com/UniversalOJ/UOJ-System.git --depth 1 -b php7
 #Install environment and set startup script
-RUN cd ~/UOJ-System/ && git checkout php7
 RUN cd ~/UOJ-System/install/bundle && bash install.sh -e && echo "\
 #!/bin/bash\n\
 if [ ! -f "/var/svn/.UOJSetupDone" ]; then\n\
-	cd ~/UOJ-System/install/bundle && bash install.sh -c\n\
+  cd ~/UOJ-System/install/bundle && bash install.sh -c\n\
 fi\n\
 service ntp start\n\
 service mysql start\n\
