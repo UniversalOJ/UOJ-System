@@ -296,7 +296,7 @@ void init_conf(const RunProgramConfig &config) {
 	}
 	statable_file_name_set.insert(config.work_path + "/");
 
-	if (config.type != "java7u76" && config.type != "java8u31") {
+	if (config.type != "java7" && config.type != "java8") {
 		add_file_permission(config.program_name, 'r');
 	} else {
 		int p = config.program_name.find('.');
@@ -343,7 +343,7 @@ void init_conf(const RunProgramConfig &config) {
 
 		statable_file_name_set.insert("/usr");
 		statable_file_name_set.insert("/usr/bin");
-	} else if (config.type == "python3.4") {
+	} else if (config.type == "python3") {
 		syscall_max_cnt[__NR_set_tid_address] = 1;
 		syscall_max_cnt[__NR_set_robust_list] = 1;
 		syscall_max_cnt[__NR_futex          ] = -1;
@@ -351,11 +351,20 @@ void init_conf(const RunProgramConfig &config) {
 		syscall_max_cnt[__NR_getdents       ] = -1;
 		syscall_max_cnt[__NR_getdents64     ] = -1;
 
+		readable_file_name_set.insert("/usr/bin/python3");
+		readable_file_name_set.insert("/usr/lib/python3/");
+		# ifndef UOJ_JUDGER_PYTHON3_VERSION
 		readable_file_name_set.insert("/usr/bin/python3.4");
 		readable_file_name_set.insert("/usr/lib/python3.4/");
-		readable_file_name_set.insert("/usr/lib/python3/");
 		readable_file_name_set.insert("/usr/bin/lib/python3.4/");
 		readable_file_name_set.insert("/usr/local/lib/python3.4/");
+		# endif
+		# ifdef UOJ_JUDGER_PYTHON3_VERSION
+		readable_file_name_set.insert("/usr/bin/python" UOJ_JUDGER_PYTHON3_VERSION);
+		readable_file_name_set.insert("/usr/lib/python" UOJ_JUDGER_PYTHON3_VERSION "/");
+		readable_file_name_set.insert("/usr/bin/lib/python" UOJ_JUDGER_PYTHON3_VERSION "/");
+		readable_file_name_set.insert("/usr/local/lib/python" UOJ_JUDGER_PYTHON3_VERSION "/");
+		# endif
 		readable_file_name_set.insert("/usr/bin/pyvenv.cfg");
 		readable_file_name_set.insert("/usr/pyvenv.cfg");
 		readable_file_name_set.insert("/usr/bin/Modules/");
@@ -365,7 +374,7 @@ void init_conf(const RunProgramConfig &config) {
 		statable_file_name_set.insert("/usr");
 		statable_file_name_set.insert("/usr/bin");
 		statable_file_name_set.insert("/usr/lib");
-	} else if (config.type == "java7u76") {
+	} else if (config.type == "java7") {
 		syscall_max_cnt[__NR_gettid         ] = -1;
 		syscall_max_cnt[__NR_set_tid_address] = 1;
 		syscall_max_cnt[__NR_set_robust_list] = 14;
@@ -392,12 +401,12 @@ void init_conf(const RunProgramConfig &config) {
 		soft_ban_file_name_set.insert("/etc/nsswitch.conf");
 		soft_ban_file_name_set.insert("/etc/passwd");
 
-		add_file_permission(abspath(0, string(self_path) + "/../runtime/jdk1.7.0_latest") + "/", 'r');
+		add_file_permission(abspath(0, string(self_path) + "/../runtime/jdk1.7.0") + "/", 'r');
 		readable_file_name_set.insert("/sys/devices/system/cpu/");
 		readable_file_name_set.insert("/proc/");
 		statable_file_name_set.insert("/usr/java/");
 		statable_file_name_set.insert("/tmp/");
-	} else if (config.type == "java8u31") {
+	} else if (config.type == "java8") {
 		syscall_max_cnt[__NR_gettid         ] = -1;
 		syscall_max_cnt[__NR_set_tid_address] = 1;
 		syscall_max_cnt[__NR_set_robust_list] = 15;
@@ -424,7 +433,7 @@ void init_conf(const RunProgramConfig &config) {
 		soft_ban_file_name_set.insert("/etc/nsswitch.conf");
 		soft_ban_file_name_set.insert("/etc/passwd");
 
-		add_file_permission(abspath(0, string(self_path) + "/../runtime/jdk1.8.0_latest") + "/", 'r');
+		add_file_permission(abspath(0, string(self_path) + "/../runtime/jdk1.8.0") + "/", 'r');
 		readable_file_name_set.insert("/sys/devices/system/cpu/");
 		readable_file_name_set.insert("/proc/");
 		statable_file_name_set.insert("/usr/java/");
@@ -494,7 +503,12 @@ void init_conf(const RunProgramConfig &config) {
 		soft_ban_file_name_set.insert("/etc/passwd"); // for javac = =
 
 		readable_file_name_set.insert("/etc/timezone");
+		# ifndef UOJ_JUDGER_FPC_VERSION
 		readable_file_name_set.insert("/etc/fpc-2.6.2.cfg.d/");
+		# endif
+		# ifdef UOJ_JUDGER_FPC_VERSION
+		readable_file_name_set.insert("/etc/fpc-" UOJ_JUDGER_FPC_VERSION ".cfg.d/");
+		# endif
 		readable_file_name_set.insert("/etc/fpc.cfg");
 
 		statable_file_name_set.insert("/*");

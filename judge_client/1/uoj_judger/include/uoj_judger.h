@@ -591,13 +591,13 @@ struct RunProgramConfig {
 		if (lang == "Python2.7") {
 			type = "python2.7";
 		} else if (lang == "Python3") {
-			type = "python3.4";
+			type = "python3";
 		} else if (lang == "Java7") {
 			program_name += "." + conf_str(name + "_main_class");
-			type = "java7u76";
+			type = "java7";
 		} else if (lang == "Java8") {
 			program_name += "." + conf_str(name + "_main_class");
-			type = "java8u31";
+			type = "java8";
 		}
 
 		set_argv(program_name.c_str(), NULL);
@@ -1136,19 +1136,19 @@ RunCompilerResult prepare_java_source(const string &name, const string &path = w
 
 RunCompilerResult compile_c(const string &name, const string &path = work_path) {
 	return run_compiler(path.c_str(), 
-			"/usr/bin/gcc-4.8", "-o", name.c_str(), "-x", "c", (name + ".code").c_str(), "-lm", "-O2", "-DONLINE_JUDGE", NULL);
+			"/usr/bin/gcc", "-o", name.c_str(), "-x", "c", (name + ".code").c_str(), "-lm", "-O2", "-DONLINE_JUDGE", NULL);
 }
 RunCompilerResult compile_pas(const string &name, const string &path = work_path) {
 	return run_compiler(path.c_str(),
-			"/usr/bin/fpc-2.6.2", (name + ".code").c_str(), "-O2", NULL);
+			"/usr/bin/fpc", (name + ".code").c_str(), "-O2", NULL);
 }
 RunCompilerResult compile_cpp(const string &name, const string &path = work_path) {
 	return run_compiler(path.c_str(),
-			"/usr/bin/g++-4.8", "-o", name.c_str(), "-x", "c++", (name + ".code").c_str(), "-lm", "-O2", "-DONLINE_JUDGE", NULL);
+			"/usr/bin/g++", "-o", name.c_str(), "-x", "c++", (name + ".code").c_str(), "-lm", "-O2", "-DONLINE_JUDGE", NULL);
 }
 RunCompilerResult compile_cpp11(const string &name, const string &path = work_path) {
 	return run_compiler(path.c_str(),
-			"/usr/bin/g++-4.8", "-o", name.c_str(), "-x", "c++", (name + ".code").c_str(), "-lm", "-O2", "-DONLINE_JUDGE", "-std=c++11", NULL);
+			"/usr/bin/g++", "-o", name.c_str(), "-x", "c++", (name + ".code").c_str(), "-lm", "-O2", "-DONLINE_JUDGE", "-std=c++11", NULL);
 }
 RunCompilerResult compile_python2_7(const string &name, const string &path = work_path) {
 	return run_compiler(path.c_str(),
@@ -1157,7 +1157,7 @@ RunCompilerResult compile_python2_7(const string &name, const string &path = wor
 }
 RunCompilerResult compile_python3(const string &name, const string &path = work_path) {
 	return run_compiler(path.c_str(),
-			"/usr/bin/python3.4", "-I", "-B", "-O", "-c", ("import py_compile\nimport sys\ntry:\n    py_compile.compile('" + name + ".code'" + ", '" + name + "', doraise=True)\n    sys.exit(0)\nexcept Exception as e:\n    print(e)\n    sys.exit(1)").c_str(), NULL);
+			"/usr/bin/python3", "-I", "-B", "-O", "-c", ("import py_compile\nimport sys\ntry:\n    py_compile.compile('" + name + ".code'" + ", '" + name + "', doraise=True)\n    sys.exit(0)\nexcept Exception as e:\n    print(e)\n    sys.exit(1)").c_str(), NULL);
 }
 RunCompilerResult compile_java7(const string &name, const string &path = work_path) {
 	RunCompilerResult ret = prepare_java_source(name, path);
@@ -1170,7 +1170,7 @@ RunCompilerResult compile_java7(const string &name, const string &path = work_pa
 	executef("echo package %s\\; | cat - %s/%s.code >%s/%s/%s.java", name.c_str(), path.c_str(), name.c_str(), path.c_str(), name.c_str(), main_class.c_str());
 
 	return run_compiler((path + "/" + name).c_str(),
-			(main_path + "/run/runtime/jdk1.7.0_latest/bin/javac").c_str(), (main_class + ".java").c_str(), NULL);
+			(main_path + "/run/runtime/jdk1.7.0/bin/javac").c_str(), (main_class + ".java").c_str(), NULL);
 }
 RunCompilerResult compile_java8(const string &name, const string &path = work_path) {
 	RunCompilerResult ret = prepare_java_source(name, path);
@@ -1183,7 +1183,7 @@ RunCompilerResult compile_java8(const string &name, const string &path = work_pa
 	executef("echo package %s\\; | cat - %s/%s.code >%s/%s/%s.java", name.c_str(), path.c_str(), name.c_str(), path.c_str(), name.c_str(), main_class.c_str());
 
 	return run_compiler((path + "/" + name).c_str(),
-			(main_path + "/run/runtime/jdk1.8.0_latest/bin/javac").c_str(), (main_class + ".java").c_str(), NULL);
+			(main_path + "/run/runtime/jdk1.8.0/bin/javac").c_str(), (main_class + ".java").c_str(), NULL);
 }
 
 RunCompilerResult compile(const char *name)  {
@@ -1232,20 +1232,20 @@ RunCompilerResult compile(const char *name)  {
 
 RunCompilerResult compile_c_with_implementer(const string &name, const string &path = work_path) {
 	return run_compiler(path.c_str(), 
-			"/usr/bin/gcc-4.8", "-o", name.c_str(), "implementer.c", "-x", "c", (name + ".code").c_str(), "-lm", "-O2", "-DONLINE_JUDGE", NULL);
+			"/usr/bin/gcc", "-o", name.c_str(), "implementer.c", "-x", "c", (name + ".code").c_str(), "-lm", "-O2", "-DONLINE_JUDGE", NULL);
 }
 RunCompilerResult compile_pas_with_implementer(const string &name, const string &path = work_path) {
 	executef("cp %s %s", (path + "/" + name + ".code").c_str(), (path + "/" + conf_str(name + "_unit_name") + ".pas").c_str());
 	return run_compiler(path.c_str(),
-			"/usr/bin/fpc-2.6.2", "implementer.pas", ("-o" + name).c_str(), "-O2", NULL);
+			"/usr/bin/fpc", "implementer.pas", ("-o" + name).c_str(), "-O2", NULL);
 }
 RunCompilerResult compile_cpp_with_implementer(const string &name, const string &path = work_path) {
 	return run_compiler(path.c_str(),
-			"/usr/bin/g++-4.8", "-o", name.c_str(), "implementer.cpp", "-x", "c++", (name + ".code").c_str(), "-lm", "-O2", "-DONLINE_JUDGE", NULL);
+			"/usr/bin/g++", "-o", name.c_str(), "implementer.cpp", "-x", "c++", (name + ".code").c_str(), "-lm", "-O2", "-DONLINE_JUDGE", NULL);
 }
 RunCompilerResult compile_cpp11_with_implementer(const string &name, const string &path = work_path) {
 	return run_compiler(path.c_str(),
-			"/usr/bin/g++-4.8", "-o", name.c_str(), "implementer.cpp", "-x", "c++", (name + ".code").c_str(), "-lm", "-O2", "-DONLINE_JUDGE", "-std=c++11", NULL);
+			"/usr/bin/g++", "-o", name.c_str(), "implementer.cpp", "-x", "c++", (name + ".code").c_str(), "-lm", "-O2", "-DONLINE_JUDGE", "-std=c++11", NULL);
 }
 /*
 RunCompilerResult compile_python2_7(const string &name, const string &path = work_path) {
@@ -1255,7 +1255,7 @@ RunCompilerResult compile_python2_7(const string &name, const string &path = wor
 }
 RunCompilerResult compile_python3(const string &name, const string &path = work_path) {
 	return run_compiler(path.c_str(),
-			"/usr/bin/python3.4", "-I", "-B", "-O", "-c", ("import py_compile\nimport sys\ntry:\n    py_compile.compile('" + name + ".code'" + ", '" + name + "', doraise=True)\n    sys.exit(0)\nexcept Exception as e:\n    print(e)\n    sys.exit(1)").c_str(), NULL);
+			"/usr/bin/python3", "-I", "-B", "-O", "-c", ("import py_compile\nimport sys\ntry:\n    py_compile.compile('" + name + ".code'" + ", '" + name + "', doraise=True)\n    sys.exit(0)\nexcept Exception as e:\n    print(e)\n    sys.exit(1)").c_str(), NULL);
 }
 */
 RunCompilerResult compile_with_implementer(const char *name)  {

@@ -202,7 +202,7 @@ make
 mkdir ~/judge_client/uoj_judger/run/runtime && cd ~/judge_client/uoj_judger/run/runtime
 mv ~/jdkdist.list ~/jdk-*-linux-x64.tar.gz .
 tar -xzf jdk-7*-linux-x64.tar.gz && tar -xzf jdk-8*-linux-x64.tar.gz
-mv jdk1.7* jdk1.7.0_latest && mv jdk1.8* jdk1.8.0_latest
+mv jdk1.7* jdk1.7.0 && mv jdk1.8* jdk1.8.0
 EOD
     #Set judge_client config file
     cat >/home/local_main_judger/judge_client/.conf.json <<UOJEOF
