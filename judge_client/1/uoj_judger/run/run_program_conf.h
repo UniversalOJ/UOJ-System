@@ -333,6 +333,12 @@ void init_conf(const RunProgramConfig &config) {
 		syscall_max_cnt[__NR_getdents       ] = -1;
 		syscall_max_cnt[__NR_getdents64     ] = -1;
 
+		# ifdef UOJ_JUDGER_BASESYSTEM_UBUNTU1804
+		syscall_max_cnt[__NR_prlimit64      ] = -1;
+		syscall_max_cnt[__NR_getpid         ] = -1;
+		syscall_max_cnt[__NR_sysinfo        ] = -1;
+		# endif
+
 		readable_file_name_set.insert("/usr/bin/python2.7");
 		readable_file_name_set.insert("/usr/lib/python2.7/");
 		readable_file_name_set.insert("/usr/bin/lib/python2.7/");
@@ -340,6 +346,10 @@ void init_conf(const RunProgramConfig &config) {
 		readable_file_name_set.insert("/usr/lib/pymodules/python2.7/");
 		readable_file_name_set.insert("/usr/bin/Modules/");
 		readable_file_name_set.insert("/usr/bin/pybuilddir.txt");
+		# ifdef UOJ_JUDGER_BASESYSTEM_UBUNTU1804
+		readable_file_name_set.insert("/usr/lib/locale/");
+		readable_file_name_set.insert(config.work_path + "/answer.code");
+		# endif
 
 		statable_file_name_set.insert("/usr");
 		statable_file_name_set.insert("/usr/bin");
@@ -350,6 +360,13 @@ void init_conf(const RunProgramConfig &config) {
 
 		syscall_max_cnt[__NR_getdents       ] = -1;
 		syscall_max_cnt[__NR_getdents64     ] = -1;
+
+		# ifdef UOJ_JUDGER_BASESYSTEM_UBUNTU1804
+		syscall_max_cnt[__NR_prlimit64      ] = -1;
+		syscall_max_cnt[__NR_getrandom      ] = -1;
+		syscall_max_cnt[__NR_sysinfo        ] = -1;
+		syscall_max_cnt[__NR_getpid         ] = -1;
+		# endif
 
 		readable_file_name_set.insert("/usr/bin/python3");
 		readable_file_name_set.insert("/usr/lib/python3/");
@@ -370,14 +387,23 @@ void init_conf(const RunProgramConfig &config) {
 		readable_file_name_set.insert("/usr/bin/Modules/");
 		readable_file_name_set.insert("/usr/bin/pybuilddir.txt");
 		readable_file_name_set.insert("/usr/lib/dist-python");
+		# ifdef UOJ_JUDGER_BASESYSTEM_UBUNTU1804
+		readable_file_name_set.insert("/usr/lib/locale/");
+		readable_file_name_set.insert(config.work_path + "/answer.code");
+		# endif
 
 		statable_file_name_set.insert("/usr");
 		statable_file_name_set.insert("/usr/bin");
 		statable_file_name_set.insert("/usr/lib");
+		# ifdef UOJ_JUDGER_BASESYSTEM_UBUNTU1804
+		statable_file_name_set.insert("/usr/lib/python36.zip");
+		# endif
 	} else if (config.type == "java7") {
 		syscall_max_cnt[__NR_gettid         ] = -1;
 		syscall_max_cnt[__NR_set_tid_address] = 1;
+		# ifndef UOJ_JUDGER_BASESYSTEM_UBUNTU1804
 		syscall_max_cnt[__NR_set_robust_list] = 14;
+		# endif
 		syscall_max_cnt[__NR_futex          ] = -1;
 
 		syscall_max_cnt[__NR_uname          ] = 1;
@@ -393,6 +419,14 @@ void init_conf(const RunProgramConfig &config) {
 		syscall_max_cnt[__NR_sched_getaffinity] = -1;
 		syscall_max_cnt[__NR_sched_yield    ] = -1;
 
+		# ifdef UOJ_JUDGER_BASESYSTEM_UBUNTU1804
+		syscall_max_cnt[__NR_prlimit64      ] = -1;
+		syscall_max_cnt[__NR_getpid         ] = -1;
+		syscall_max_cnt[__NR_sysinfo        ] = -1;
+		syscall_max_cnt[__NR_clone          ] = -1;
+		syscall_max_cnt[__NR_set_robust_list] = -1;
+		# endif
+
 		syscall_should_soft_ban[__NR_socket   ] = true;
 		syscall_should_soft_ban[__NR_connect  ] = true;
 		syscall_should_soft_ban[__NR_geteuid  ] = true;
@@ -404,12 +438,17 @@ void init_conf(const RunProgramConfig &config) {
 		add_file_permission(abspath(0, string(self_path) + "/../runtime/jdk1.7.0") + "/", 'r');
 		readable_file_name_set.insert("/sys/devices/system/cpu/");
 		readable_file_name_set.insert("/proc/");
+		# ifdef UOJ_JUDGER_BASESYSTEM_UBUNTU1804
+		readable_file_name_set.insert("/usr/lib/locale/");
+		# endif
 		statable_file_name_set.insert("/usr/java/");
 		statable_file_name_set.insert("/tmp/");
 	} else if (config.type == "java8") {
 		syscall_max_cnt[__NR_gettid         ] = -1;
 		syscall_max_cnt[__NR_set_tid_address] = 1;
+		# ifndef UOJ_JUDGER_BASESYSTEM_UBUNTU1804
 		syscall_max_cnt[__NR_set_robust_list] = 15;
+		# endif
 		syscall_max_cnt[__NR_futex          ] = -1;
 
 		syscall_max_cnt[__NR_uname          ] = 1;
@@ -425,6 +464,14 @@ void init_conf(const RunProgramConfig &config) {
 		syscall_max_cnt[__NR_sched_getaffinity] = -1;
 		syscall_max_cnt[__NR_sched_yield    ] = -1;
 
+		# ifdef UOJ_JUDGER_BASESYSTEM_UBUNTU1804
+		syscall_max_cnt[__NR_prlimit64      ] = -1;
+		syscall_max_cnt[__NR_getpid         ] = -1;
+		syscall_max_cnt[__NR_sysinfo        ] = -1;
+		syscall_max_cnt[__NR_clone          ] = -1;
+		syscall_max_cnt[__NR_set_robust_list] = -1;
+		# endif
+
 		syscall_should_soft_ban[__NR_socket   ] = true;
 		syscall_should_soft_ban[__NR_connect  ] = true;
 		syscall_should_soft_ban[__NR_geteuid  ] = true;
@@ -436,6 +483,10 @@ void init_conf(const RunProgramConfig &config) {
 		add_file_permission(abspath(0, string(self_path) + "/../runtime/jdk1.8.0") + "/", 'r');
 		readable_file_name_set.insert("/sys/devices/system/cpu/");
 		readable_file_name_set.insert("/proc/");
+		# ifdef UOJ_JUDGER_BASESYSTEM_UBUNTU1804
+		readable_file_name_set.insert("/usr/lib/locale/");
+		readable_file_name_set.insert("/etc/oracle/java/usagetracker.properties");
+		# endif
 		statable_file_name_set.insert("/usr/java/");
 		statable_file_name_set.insert("/tmp/");
 	} else if (config.type == "compiler") {
@@ -476,6 +527,11 @@ void init_conf(const RunProgramConfig &config) {
 		syscall_max_cnt[__NR_uname          ] = -1; // for javac = =
 		syscall_max_cnt[__NR_sysinfo        ] = -1; // for javac = =
 
+		# ifdef UOJ_JUDGER_BASESYSTEM_UBUNTU1804
+		syscall_max_cnt[__NR_prlimit64      ] = -1;
+		syscall_max_cnt[__NR_getrandom      ] = -1;
+		# endif
+
 		syscall_should_soft_ban[__NR_socket   ] = true; // for javac
 		syscall_should_soft_ban[__NR_connect  ] = true; // for javac
 		syscall_should_soft_ban[__NR_geteuid  ] = true; // for javac
@@ -487,6 +543,9 @@ void init_conf(const RunProgramConfig &config) {
 		writable_file_name_set.insert(config.work_path + "/");
 
 		readable_file_name_set.insert(abspath(0, string(self_path) + "/../runtime") + "/");
+		# ifdef UOJ_JUDGER_BASESYSTEM_UBUNTU1804
+		readable_file_name_set.insert("/etc/oracle/java/usagetracker.properties");
+		# endif
 
 		readable_file_name_set.insert("system_root");
 		readable_file_name_set.insert("/usr/");
