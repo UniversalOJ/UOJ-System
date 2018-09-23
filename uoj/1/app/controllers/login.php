@@ -89,7 +89,7 @@ function submitLoginPost() {
 	}, function(msg) {
 		if (msg == 'ok') {
 			var prevUrl = document.referrer;
-			if (prevUrl == '' || /.*\/login.*/.test(prevUrl) || /.*\/register.*/.test(prevUrl) || /.*\/reset-password.*/.test(prevUrl)) {
+			if (prevUrl == '' || /.*\/login.*/.test(prevUrl) || /.*\/logout.*/.test(prevUrl) || /.*\/register.*/.test(prevUrl) || /.*\/reset-password.*/.test(prevUrl)) {
 				prevUrl = '/';
 			};
 			window.location.href = prevUrl;
