@@ -8,7 +8,8 @@ RUN cd ~ && git clone https://github.com/UniversalOJ/UOJ-System.git --depth 1 -b
 #Install environment and set startup script
 RUN cd ~/UOJ-System/install/bundle && bash install.sh -e && echo "\
 #!/bin/bash\n\
-if [ ! -f "/var/svn/.UOJSetupDone" ]; then\n\
+chown -R mysql:mysql /var/lib/mysql /var/run/mysqld\n\
+if [ ! -f \"/var/svn/.UOJSetupDone\" ]; then\n\
   cd ~/UOJ-System/install/bundle && bash install.sh -c\n\
 fi\n\
 service ntp start\n\
