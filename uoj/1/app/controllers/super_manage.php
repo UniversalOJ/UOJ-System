@@ -295,7 +295,7 @@ EOD;
 			</div>
 			<div>
 				<h4>测评失败的提交记录</h4>
-				<?php echoSubmissionsList("result_error = 'Judgment Failed'", 'order by id desc', $myUser); ?>
+				<?php echoSubmissionsList("result_error = 'Judgement Failed'", 'order by id desc', array('result_hidden' => ''), $myUser); ?>
 			</div>
 		<?php elseif ($cur_tab === 'custom-test'): ?>
 		<?php $custom_test_deleter->printHTML() ?>
