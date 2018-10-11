@@ -65,7 +65,7 @@ EOD;
 		if (strStartWith($mimetype, 'text/')) {
 			echo htmlspecialchars(uojFilePreview($file_full_name, $output_limit));
 		} else {
-			echo htmlspecialchars(strOmit(shell_exec('xxd -g 4 -l 5000 ' . escapeshellarg($file_full_name) . ' | head -c ' . ($output_limit + 4)), $output_limit));
+			echo htmlspecialchars(uojFilePreview($file_full_name, $output_limit, 'binary'));
 		}
 		echo "\n</pre>";
 	}

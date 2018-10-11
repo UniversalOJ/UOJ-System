@@ -24,8 +24,13 @@ function uojHandleAtSign($str, $uri) {
 	return array($res, $referrers_list);
 }
 
-function uojFilePreview($file_name, $output_limit) {
-	return strOmit(file_get_contents($file_name, false, null, -1, $output_limit + 4), $output_limit);
+function uojFilePreview($file_name, $output_limit, $file_type = 'text') {
+	switch ($file_type) {
+		case 'text':
+			return strOmit(file_get_contents($file_name, false, null, 0, $output_limit + 4), $output_limit);
+		default:
+			return strOmit(shell_exec('xxd -g 4 -l 5000 ' . escapeshellarg($file_name) . ' | head -c ' . ($output_limit + 4)), $output_limit);
+	}
 }
 
 function uojIncludeView($name, $view_params = array()) {
