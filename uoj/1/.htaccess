@@ -10,6 +10,8 @@ php_value upload_max_filesize 1000M
 php_value session.gc_probability 1
 php_value session.gc_divisor 1000
 
+php_value date.timezone 'Asia/Shanghai'
+
 DirectorySlash Off
 
 DirectoryIndex
