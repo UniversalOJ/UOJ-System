@@ -4,7 +4,7 @@ MAINTAINER MascoSkray <MascoSkray@gmail.com>
 #Update apt and install git
 RUN apt-get update -y && apt-get install -y git
 #Clone the latest UOJ Community verison to local
-RUN cd ~ && git clone https://github.com/UniversalOJ/UOJ-System.git
+RUN cd ~ && git clone https://github.com/UniversalOJ/UOJ-System.git --depth 1 -b legacy
 #Install environment and set startup script
 RUN cd ~/UOJ-System/install/bundle && bash install.sh -e && echo "\
 #!/bin/bash\n\
