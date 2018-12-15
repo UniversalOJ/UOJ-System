@@ -236,7 +236,7 @@ struct RunCheckerResult {
 		res.ust = -1;
 		res.usm = -1;
 		res.scr = 0;
-		res.info = "Checker Judgment Failed";
+		res.info = "Checker Judgement Failed";
 		return res;
 	}
 };
@@ -252,7 +252,7 @@ struct RunValidatorResult {
 		res.ust = -1;
 		res.usm = -1;
 		res.succeeded = 0;
-		res.info = "Validator Judgment Failed";
+		res.info = "Validator Judgement Failed";
 		return res;
 	}
 };
@@ -420,7 +420,7 @@ inline string info_str(int id)  {
 	case RS_OLE: return "Output Limit Exceeded";
 	case RS_RE : return "Runtime Error";
 	case RS_DGS: return "Dangerous Syscalls";
-	case RS_JGF: return "Judgment Failed";
+	case RS_JGF: return "Judgement Failed";
 	default    : return "Unknown Result";
 	}
 }
@@ -498,7 +498,7 @@ void end_judge_ok() {
 }
 void end_judge_judgement_failed(const string &info) {
 	FILE *fres = fopen((result_path + "/result.txt").c_str(), "w");
-	fprintf(fres, "error Judgment Failed\n");
+	fprintf(fres, "error Judgement Failed\n");
 	fprintf(fres, "details\n");
 	fprintf(fres, "<error>%s</error>\n", htmlspecialchars(info).c_str());
 	fclose(fres);
@@ -894,7 +894,7 @@ RunSimpleInteractionResult run_simple_interation(
 	}
 
 	if (ires.type == RS_JGF) {
-		ires.info = "Interactor Judgment Failed";
+		ires.info = "Interactor Judgement Failed";
 	}
 	if (ires.type == RS_TLE) {
 		ires.type = RS_AC;
