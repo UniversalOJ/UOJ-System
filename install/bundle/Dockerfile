@@ -6,11 +6,11 @@ RUN apt-get update && apt-get install -y git gnupg
 #Clone the latest UOJ Community verison to local
 RUN cd ~ && git clone https://github.com/UniversalOJ/UOJ-System.git --depth 1
 #Install environment and set startup script
-RUN cd ~/UOJ-System/install/bundle && bash install.sh -e && echo "\
-#!/bin/bash\n\
+RUN cd ~/UOJ-System/install/bundle && sh install.sh -e && echo "\
+#!/bin/sh\n\
 chown -R mysql:mysql /var/lib/mysql /var/run/mysqld\n\
 if [ ! -f \"/var/svn/.UOJSetupDone\" ]; then\n\
-  cd ~/UOJ-System/install/bundle && bash install.sh -c\n\
+  cd ~/UOJ-System/install/bundle && sh install.sh -c\n\
 fi\n\
 service ntp start\n\
 service mysql start\n\

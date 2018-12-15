@@ -11,19 +11,19 @@ _svn_ourroot_password_=$(genRandStr 32)
 _svn_certroot_password_=$(genRandStr 32)
 
 getAptPackage(){
-    echo -e "\n\n==> Getting environment packages"
+    printf "\n\n==> Getting environment packages\n"
     #Set MySQL root password
-	export DEBIAN_FRONTEND=noninteractive
-    debconf-set-selections <<< "mysql-server mysql-server/root_password password $_database_password_" && debconf-set-selections <<< "mysql-server mysql-server/root_password_again password $_database_password_"
+    export DEBIAN_FRONTEND=noninteractive
+    (echo "mysql-server mysql-server/root_password password $_database_password_";echo "mysql-server mysql-server/root_password_again password $_database_password_") | debconf-set-selections
     #Update apt sources and install
-    echo "deb http://ppa.launchpad.net/pinepain/libv8/ubuntu artful main" | tee -a /etc/apt/sources.list.d/pinepain-libv8.list && apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 60C60AA4
+    echo "deb http://ppa.launchpad.net/pinepain/libv8/ubuntu artful main" | tee /etc/apt/sources.list.d/pinepain-libv8.list && apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 60C60AA4
     apt-get update && apt-get install -y vim ntp zip unzip curl wget subversion apache2 libapache2-mod-xsendfile libapache2-mod-php php php-dev php-pear php-zip php-mysql php-mbstring mysql-server cmake fp-compiler re2c libv8-6.6-dev libyaml-dev python python3 python-requests
     #Install PHP extensions
-    cp -a /opt/libv8*/* /usr && echo -e "\n\n" | pecl install v8js yaml
+    cp -a /opt/libv8*/* /usr && printf "\n\n" | pecl install v8js yaml
 }
 
 getOracleJDK(){
-    echo -e "\n\n==> Getting JDK runtime files"
+    printf "\n\n==> Getting JDK runtime files\n"
     #Add judger user
     useradd -m local_main_judger && usermod -a -G www-data local_main_judger
     #Set Oracle JDK do not track usage
@@ -43,7 +43,7 @@ getOracleJDK(){
 }
 
 setLAMPConf(){
-    echo -e "\n\n==> Setting LAMP configs"
+    printf "\n\n==> Setting LAMP configs\n"
     #Set Apache UOJ site conf
     cat >/etc/apache2/sites-available/000-uoj.conf <<UOJEOF
 <VirtualHost *:80>
@@ -81,10 +81,10 @@ UOJEOF
 }
 
 setSVNServe(){
-    echo -e "\n\n==> Setting SVN server"
+    printf "\n\n==> Setting SVN server\n"
     #Make SVN work dir
     mkdir /var/svn && svnserve -d -r /var/svn
-    mkdir /var/svn/problem && chown www-data /var/svn/problem -R
+    mkdir /var/svn/problem && chown -R www-data /var/svn/problem
     svnadmin create /var/svn/uoj && svnadmin create /var/svn/judge_client
     #Set SVN server config file and password db
     sed -i -e 's/# store-plaintext-passwords = no/store-plaintext-passwords = yes/g' /etc/subversion/servers
@@ -149,26 +149,26 @@ svnusr="our-root"
 svnpwd="$_svn_ourroot_password_"
 cd /var/svn/problem/\$1/cur/\$1
 svn update --username \$svnusr --password \$svnpwd
-chown www-data /var/svn/problem/\$1 -R
+chown -R www-data /var/svn/problem/\$1
 UOJEOF
     chmod +x /var/svn/problem/post-commit.sh
     #Precheckout to cur folder
     mkdir /var/svn/uoj/cur /var/svn/judge_client/cur
     svn co svn://127.0.0.1/uoj --username root --password $_svn_certroot_password_ /var/svn/uoj/cur/uoj
     svn co svn://127.0.0.1/judge_client --username root --password $_svn_certroot_password_ /var/svn/judge_client/cur/judge_client
-    chown local_main_judger /var/svn/judge_client/cur/judge_client -R
+    chown -R local_main_judger /var/svn/judge_client/cur/judge_client
 }
 
 setWebConf(){
-    echo -e "\n\n==> Setting web files"
+    printf "\n\n==> Setting web files\n"
     #Commit web source file
     svn co svn://127.0.0.1/uoj --username root --password $_svn_certroot_password_
     mv ../../uoj/1 uoj/1 && cd uoj
     svn add 1 && svn ci -m "Installtion commit" --username root --password $_svn_certroot_password_
-    cd .. && rm uoj /var/www/uoj -r
+    cd .. && rm -r uoj /var/www/uoj
     #Set webroot path
     ln -s /var/svn/uoj/cur/uoj/1 /var/www/uoj
-    chown www-data /var/www/uoj/app/storage -R
+    chown -R www-data /var/www/uoj/app/storage
     #Set web config file
     php -a <<UOJEOF
 \$config = include '/var/www/uoj/app/.default-config.php';
@@ -186,15 +186,15 @@ UOJEOF
 }
 
 setJudgeConf(){
-    echo -e "\n\n==> Setting judge_client files"
+    printf "\n\n==> Setting judge_client files\n"
     #Commit judge_client source file
     svn co svn://127.0.0.1/judge_client --username root --password $_svn_certroot_password_
     mv ../../judge_client/1 judge_client/1 && cd judge_client
     svn add 1 && svn ci -m "Installation commit" --username root --password $_svn_certroot_password_
-    cd .. && rm judge_client -r
+    cd .. && rm -r judge_client
     #Set uoj_data path
     mkdir /var/uoj_data
-    chown www-data /var/uoj_data -R && chgrp www-data /var/uoj_data -R
+    chown -R www-data /var/uoj_data && chgrp -R www-data /var/uoj_data
     #Compile judge_client and set runtime
     su local_main_judger <<EOD
 svn update /var/svn/judge_client/cur/judge_client --username root --password $_svn_certroot_password_
@@ -233,7 +233,7 @@ UOJEOF
 }
 
 endUpProgress(){
-    echo -e "\n\n==> Ending progress and start service"
+    printf "\n\n==> Ending progress and start service\n"
     #Using cli upgrade to latest
     php /var/www/uoj/app/cli.php upgrade:latest
     #Start services
@@ -243,7 +243,7 @@ endUpProgress(){
     su local_main_judger -c '~/judge_client/judge_client start'
     #Set SetupDone flag file
     echo 'Congratulations!' > /var/svn/.UOJSetupDone
-    echo -e "\n\n***Installation complete. Enjoy!***"
+    printf "\n\n***Installation complete. Enjoy!***\n"
 }
 
 if [ $# -le 0 ] ;then
@@ -258,26 +258,20 @@ if [ $# -le 0 ] ;then
 fi
 while [ $# -gt 0 ]; do
     case "$1" in
-        -e)
-        ;&
-        --environment)
+        -e | --environment)
             echo 'Setting UOJ System bundle environment...'
             getAptPackage
             getOracleJDK
             setLAMPConf
         ;;
-        -c)
-        ;&
-        --config)
+        -c | --config)
             echo 'Configuring UOJ System bundle...'
             setSVNServe
             setWebConf
             setJudgeConf
             endUpProgress
         ;;
-        -?)
-        ;&
-        --*)
+        -? | --*)
             echo "Illegal option $1"
         ;;
     esac
