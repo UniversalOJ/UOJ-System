@@ -4,7 +4,7 @@ MAINTAINER MascoSkray <MascoSkray@gmail.com>
 #Update apt and install git
 RUN apt-get update && apt-get install -y git gnupg
 #Clone the latest UOJ Community verison to local
-RUN cd ~ && git clone https://github.com/UniversalOJ/UOJ-System.git --depth 1 -b php7
+RUN cd ~ && git clone https://github.com/UniversalOJ/UOJ-System.git --depth 1
 #Install environment and set startup script
 RUN cd ~/UOJ-System/install/bundle && bash install.sh -e && echo "\
 #!/bin/bash\n\
