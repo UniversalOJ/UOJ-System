@@ -18,7 +18,7 @@
 					<?php endif ?>
 				</ul>
 				
-				<p>Server time: <?= UOJTime::$time_now_str ?> | <a href="http://github.com/UniversalOJ/UOJ-System">开源项目</a></p>
+				<p>Server time: <?= UOJTime::$time_now_str ?> | <a href="https://github.com/UniversalOJ/UOJ-System">开源项目</a></p>
 			</div>
 			<?php endif ?>
 		</div>
