@@ -260,7 +260,9 @@ CREATE TABLE IF NOT EXISTS `problems` (
   `extra_config` varchar(500) NOT NULL DEFAULT '{"view_content_type":"ALL","view_details_type":"ALL"}',
   `zan` int(11) NOT NULL,
   `ac_num` int(11) NOT NULL DEFAULT '0',
-  `submit_num` int(11) NOT NULL DEFAULT '0'
+  `submit_num` int(11) NOT NULL DEFAULT '0',
+  `time_limit` int(11) DEFAULT NULL,
+  `memory_limit` int(11) DEFAULT NULL
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
