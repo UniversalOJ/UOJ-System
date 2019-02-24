@@ -317,6 +317,11 @@
 				
 				$zip_file->close();
 
+				$time_limit = $this->final_problem_conf['time_limit'];
+                $memory_limit = $this->final_problem_conf['memory_limit'];
+                DB::update("update problems set time_limit = {$time_limit} where id = {$id}");
+                DB::update("update problems set memory_limit = {$memory_limit} where id = {$id}");
+				
 				$orig_requirement = json_decode($this->problem['submission_requirement'], true);
 				if (!$orig_requirement) {
 					$esc_requirement = DB::escape(json_encode($this->requirement));
