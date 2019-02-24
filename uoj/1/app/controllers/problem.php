@@ -229,6 +229,20 @@ $('#contest-countdown').countdown(<?= $contest['end_time']->getTimestamp() - UOJ
 <a role="button" class="btn btn-info pull-right" href="/problem/<?= $problem['id'] ?>/statistics"><span class="glyphicon glyphicon-stats"></span> <?= UOJLocale::get('problems::statistics') ?></a>
 <?php endif ?>
 
+<div class="row text-center">
+    <?php $limit = DB::selectFirst("select time_limit, memory_limit from problems where id = {$problem['id']}"); ?>
+    <?php if($limit['time_limit'] != null ): ?>
+	    <span class="label label-info" style="font-size:15px">Time Limit:&nbsp;<?=$limit['time_limit']?> s</span>
+	<?php else: ?>
+	    <span class="label label-info" style="font-size:15px">Time Limit:&nbsp;N/A</span>
+	<?php endif ?>
+    <?php if($limit['memory_limit'] != null ): ?>
+	    <span class="label label-info" style="font-size:15px">Memory Limit:&nbsp;<?=$limit['memory_limit']?> MB</span>
+	<?php else: ?>
+	    <span class="label label-info" style="font-size:15px">Memory Limit:&nbsp;N/A</span>
+	<?php endif ?>
+</div>
+
 <ul class="nav nav-tabs" role="tablist">
 	<li class="active"><a href="#tab-statement" role="tab" data-toggle="tab"><span class="glyphicon glyphicon-book"></span> <?= UOJLocale::get('problems::statement') ?></a></li>
 	<li><a href="#tab-submit-answer" role="tab" data-toggle="tab"><span class="glyphicon glyphicon-upload"></span> <?= UOJLocale::get('problems::submit') ?></a></li>
