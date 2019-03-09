@@ -71,6 +71,7 @@ UOJEOF
     usermod -d /var/lib/mysql/ mysql
     cat >/etc/mysql/mysql.conf.d/uoj_mysqld.cnf <<UOJEOF
 [mysqld]
+default-time-zone = '+8:00'
 character-set-server=utf8
 collation-server=utf8_unicode_ci
 init_connect='SET NAMES utf8'
