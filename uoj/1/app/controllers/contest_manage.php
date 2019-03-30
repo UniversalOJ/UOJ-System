@@ -171,6 +171,25 @@
 			DB::update("update contests set extra_config = '$esc_extra_config' where id = {$contest['id']}");
 		};
 		$version_form->runAtServer();
+
+		$contest_type_form = new UOJForm('contest_type');
+		$contest_type_form->addInput('contest_type', 'text', '赛制', $contest['extra_config']['contest_type'],
+			function ($x) {
+				if ($x != 'OI' && $x != 'ACM' && $x != 'IOI') {
+					return '不是合法的赛制名';
+				}
+				return '';
+			},
+			null
+		);
+		$contest_type_form->handle = function() {
+			global $contest;
+			$contest['extra_config']['contest_type'] = $_POST['contest_type'];
+			$esc_extra_config = json_encode($contest['extra_config']);
+			$esc_extra_config = DB::escape($esc_extra_config);
+			DB::update("update contests set extra_config = '$esc_extra_config' where id = {$contest['id']}");
+		};
+		$contest_type_form->runAtServer();
 	}
 	
 	$time_form->runAtServer();
@@ -254,6 +273,10 @@
 			<div class="col-sm-12 top-buffer-sm">
 				<h3>版本控制</h3>
 				<?php $version_form->printHTML(); ?>
+			</div>
+			<div class="col-sm-12 top-buffer-sm">
+				<h3>赛制</h3>
+				<?php $contest_type_form->printHTML(); ?>
 			</div>
 		</div>
 	</div>
