@@ -94,7 +94,7 @@ EOD;
 				}
 				unlink($up_filename);
 			}else{
-				$errmsg = "请上传zip文件！";
+				$errmsg = "请上传zip格式！";
 				becomeMsgPage('<div>' . $errmsg . '</div><a href="/problem/'.$problem['id'].'/manage/data">返回</a>');
 			}
   		}
@@ -780,9 +780,9 @@ EOD
       				<div class="modal-body">
         				<form action="" method="post" enctype="multipart/form-data" role="form">
 							<div class="form-group">
-									<label for="exampleInputFile">文件</label>
+									<label for="exampleInputFile">上传zip文件</label>
 									<input type="file" name="problem_data_file" id="problem_data_file">
-									<p class="help-block">请上传.zip文件</p>
+									<p class="help-block">说明：请将所有数据放置于压缩包根目录内。若压缩包内存在子文件夹，则会将这些一级子文件夹下的内容移动到根目录下，然后这些一级子文件夹删除；若这些子文件夹内存在同名文件，则会发生随机替换，仅保留一个副本。</p>
 							</div>
 							<input type="hidden" name="problem_data_file_submit" value="submit">
       				</div>
