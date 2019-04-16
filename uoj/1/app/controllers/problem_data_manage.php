@@ -78,7 +78,8 @@ EOD;
 			becomeMsgPage('<div>' . $errmsg . '</div><a href="/problem/'.$problem['id'].'/manage/data">返回</a>');
   		}
 		else{
-			//if($_FILES["problem_data_file"]["type"]=='application/zip'){
+			$zip_mime_types = array('application/zip', 'application/x-zip', 'application/x-zip-compressed');
+			if(in_array($_FILES["problem_data_file"]["type"], $zip_mime_types)){
 				$up_filename="/tmp/".rand(0,100000000)."data.zip";
 				move_uploaded_file($_FILES["problem_data_file"]["tmp_name"], $up_filename);
 				$zip = new ZipArchive;
@@ -92,10 +93,10 @@ EOD;
 					becomeMsgPage('<div>' . $errmsg . '</div><a href="/problem/'.$problem['id'].'/manage/data">返回</a>');
 				}
 				unlink($up_filename);
-			//}else{
-				//$errmsg = "请上传zip文件！";
-				//becomeMsgPage('<div>' . $errmsg . '</div><a href="/problem/'.$problem['id'].'/manage/data">返回</a>');
-			//}
+			}else{
+				$errmsg = "请上传zip文件！";
+				becomeMsgPage('<div>' . $errmsg . '</div><a href="/problem/'.$problem['id'].'/manage/data">返回</a>');
+			}
   		}
 	}
 
