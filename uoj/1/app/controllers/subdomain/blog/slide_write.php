@@ -56,19 +56,15 @@
 					deleteBlog($blog['id']);
 					insertSlide(array_merge($data, array('is_draft' => 0)));
 					$blog = array('id' => DB::insert_id(), 'tags' => array());
-					$ret['blog_write_url'] = "/slide/{$blog['id']}/write";
-					$ret['blog_url'] = "/blog/{$blog['id']}";
+					$ret['blog_write_url'] = HTML::blog_url(UOJContext::user()['username'], "/slide/{$blog['id']}/write");
+					$ret['blog_url'] = HTML::blog_url(UOJContext::user()['username'], "/blog/{$blog['id']}");
 				}
 			} else {
 				updateBlog($blog['id'], $data);
 			}
 		} else {
+			insertSlide(array_merge($data, array('is_draft' => $data['is_hidden'] ? 1 : 0)));
 			$blog = array('id' => DB::insert_id(), 'tags' => array());
-			if ($data['is_hidden']) {
-				insertSlide(array_merge($data, array('is_draft' => 1)));
-			} else {
-				insertSlide(array_merge($data, array('is_draft' => 0)));
-			}
 		}
 		if ($data['tags'] !== $blog['tags']) {
 			DB::delete("delete from blogs_tags where blog_id = {$blog['id']}");
