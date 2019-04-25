@@ -55,20 +55,18 @@
 					deleteBlog($blog['id']);
 					insertBlog(array_merge($data, array('is_draft' => 0)));
 					$blog = array('id' => DB::insert_id(), 'tags' => array());
-					$ret['blog_write_url'] = "/blog/{$blog['id']}/write";
-					$ret['blog_url'] = "/blog/{$blog['id']}";
+					$ret['blog_write_url'] = HTML::blog_url(UOJContext::user()['username'], "/blog/{$blog['id']}/write");
+					$ret['blog_url'] = HTML::blog_url(UOJContext::user()['username'], "/blog/{$blog['id']}");
 				}
 			} else {
 				updateBlog($blog['id'], $data);
 			}
 		} else {
+			insertBlog(array_merge($data, array('is_draft' => $data['is_hidden'] ? 1 : 0)));
 			$blog = array('id' => DB::insert_id(), 'tags' => array());
-			if ($data['is_hidden']) {
-				insertBlog(array_merge($data, array('is_draft' => 1)));
-			} else {
-				insertBlog(array_merge($data, array('is_draft' => 0)));
-				$ret['blog_write_url'] = "/blog/{$blog['id']}/write";
-				$ret['blog_url'] = "/blog/{$blog['id']}";
+			if (!$data['is_hidden']) {
+				$ret['blog_write_url'] = HTML::blog_url(UOJContext::user()['username'], "/blog/{$blog['id']}/write");
+				$ret['blog_url'] = HTML::blog_url(UOJContext::user()['username'], "/blog/{$blog['id']}");
 			}
 		}
 		if ($data['tags'] !== $blog['tags']) {
