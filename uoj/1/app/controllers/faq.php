@@ -104,7 +104,7 @@
 			<!-- readmore -->
 			<p><code>**强调**</code> = <strong>强调</strong></p>
 			<hr /><p><code>*强调*</code> = <em>强调</em></p>
-			<hr /><p><code>[<?= UOJConfig::$data['profile']['oj-name-short'] ?>](<?=HTML::url('/')  ?>)</code> = <a href="<?= HTML::url('/') ?>"><?= UOJConfig::$data['profile']['oj-name-short'] ?></a></p>
+			<hr /><p><code>[<?= UOJConfig::$data['profile']['oj-name-short'] ?>](<?= HTML::url('/') ?>)</code> = <a href="<?= HTML::url('/') ?>"><?= UOJConfig::$data['profile']['oj-name-short'] ?></a></p>
 			<hr /><p><code><?= HTML::url('/') ?></code> = <a href="http://<?= UOJConfig::$data['web']['main']['host'] ?>"><?= HTML::url('/') ?></a></p>
 			<hr /><p><code>![这个文字在图挂了的时候会显示](<?= HTML::url('/pictures/UOJ.ico') ?>)</code> =
 			<img src="<?= HTML::url('/pictures/UOJ.ico') ?>" alt="这个文字在图挂了的时候会显示" /></p>
