@@ -394,6 +394,10 @@ EOD
 		else if($type=='data'){
 			exec(
 <<<EOD
+cd $cur_dir/1
+for sub_dir in `find -maxdepth 1 -type d ! -name .`; do
+	mv -f \$sub_dir/* . && rm -rf \$sub_dir
+done
 cd $cur_dir
 svn add * --username $svnusr --password $svnpwd
 svn commit -m "add testdata from zip file online." --username $svnusr --password $svnpwd

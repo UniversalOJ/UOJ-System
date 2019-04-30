@@ -1,0 +1,6 @@
+#!/bin/sh
+CLONE_ADDFLAG="-b $DOCKER_TAG"
+if [ "$DOCKER_TAG" = "latest" ]; then
+    CLONE_ADDFLAG="-b master"
+fi
+docker build -t $IMAGE_NAME --build-arg CLONE_ADDFLAG="$CLONE_ADDFLAG" .

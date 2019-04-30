@@ -14,11 +14,11 @@
 				<ul class="list-inline">
 					<li><?= UOJConfig::$data['profile']['oj-name'] ?></li>
 					<?php if (UOJConfig::$data['profile']['ICP-license'] != ''): ?> | 
-					<li><a href="http://www.miitbeian.gov.cn"><?= UOJConfig::$data['profile']['ICP-license'] ?></a></li>
+					<li><a href="http://www.miitbeian.gov.cn" target="_blank"><?= UOJConfig::$data['profile']['ICP-license'] ?></a></li>
 					<?php endif ?>
 				</ul>
 				
-				<p>Server time: <?= UOJTime::$time_now_str ?> | <a href="https://github.com/UniversalOJ/UOJ-System">开源项目</a></p>
+				<p><?= UOJLocale::get('server time') ?>: <?= UOJTime::$time_now_str ?> | <a href="https://github.com/UniversalOJ/UOJ-System" target="_blank"><?= UOJLocale::get('opensource project') ?></a></p>
 			</div>
 			<?php endif ?>
 		</div>

@@ -62,5 +62,7 @@ return [
 	'enter your QQ' => 'Enter your QQ',
 	'refuse to answer' => 'Refuse to answer',
 	'male' => 'Male',
-	'female' => 'Female'
+	'female' => 'Female',
+	'server time' => 'Server Time',
+	'opensource project' => 'OpenSource Project'
 ];

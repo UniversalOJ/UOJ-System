@@ -2,7 +2,7 @@
 	if ($is_preview) {
 		$readmore_pos = strpos($blog['content'], '<!-- readmore -->');
 		if ($readmore_pos !== false) {
-			$content = substr($blog['content'], 0, $readmore_pos).'<p><a href="'.HTML::blog_url(UOJContext::userid(), '/blog/').$blog['id'].'">阅读更多……</a></p>';
+			$content = substr($blog['content'], 0, $readmore_pos).'<p><a href="'.HTML::blog_url(UOJContext::userid(), '/blog/'.$blog['id']).'">阅读更多……</a></p>';
 		} else {
 			$content = $blog['content'];
 		}
