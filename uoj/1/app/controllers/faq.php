@@ -13,7 +13,7 @@
 		</header>
 		<div id="collapseOne" class="collapse">
 			<p>来了？坐，欢迎来到 <?= UOJConfig::$data['profile']['oj-name'] ?>。</p>
-			<p><img src="http://tb2.bdstatic.com/tb/editor/images/qpx_n/b37.gif?t=20140803" alt="小熊像超人一样飞" /></p>
+			<p><img src="https://tb2.bdstatic.com/tb/editor/images/qpx_n/b37.gif?t=20140803" alt="小熊像超人一样飞" /></p>
 			<p>众所周知，信息学的题目一般形式为：给出XXXXX，要你提交一份源代码，输出XXXXX，然后时限若干秒，内存若干兆，数据若干组，每组数据与答案进行比较，不对就不给分。</p>
 			<p>看起来挺合理的，但是总是有意外。比如要求输出一个浮点数，与答案接近就满分。于是只好引入Special Judge来判断选手输出的正确性。</p>
 			<p>但是还是有意外，比如提交两个程序，一个压缩另一个解压；比如提交答案题只用提交文件；比如给出音乐要求识别乐器，达到90%的正确率就算满分……</p>
@@ -24,7 +24,7 @@
 			<p><?= UOJConfig::$data['profile']['oj-name-short'] ?>还有比赛功能可以承办比赛，赛制暂时只支持OI赛制。（不过你可以利用现有方案变相实现ACM赛制！）未来将支持更多种多样的赛制甚至自定义赛制。</p>
 			<p>目前<?= UOJConfig::$data['profile']['oj-name-short'] ?>刚刚起步，还有很多地方有待完善。想出题、想出比赛、发现BUG、发现槽点都可以联系我们，联系方式见下。</p>
 			<p>祝各位在<?= UOJConfig::$data['profile']['oj-name-short'] ?>玩得愉快！（求不虐萌萌哒服务器～求不虐萌萌哒测评机～！）</p>
-			<p><img src="http://tb2.bdstatic.com/tb/editor/images/qpx_n/b54.gif?t=20140803" alt="小熊抱抱" /></p>
+			<p><img src="https://tb2.bdstatic.com/tb/editor/images/qpx_n/b54.gif?t=20140803" alt="小熊抱抱" /></p>
 		</div>
 	</section>
 	<section>
@@ -104,10 +104,10 @@
 			<!-- readmore -->
 			<p><code>**强调**</code> = <strong>强调</strong></p>
 			<hr /><p><code>*强调*</code> = <em>强调</em></p>
-			<hr /><p><code>[<?= UOJConfig::$data['profile']['oj-name-short'] ?>](http://<?= UOJConfig::$data['web']['main']['host'] ?>)</code> = <a href="http://<?= UOJConfig::$data['web']['main']['host'] ?>"><?= UOJConfig::$data['profile']['oj-name-short'] ?></a></p>
-			<hr /><p><code>http://<?= UOJConfig::$data['web']['main']['host'] ?></code> = <a href="http://<?= UOJConfig::$data['web']['main']['host'] ?>">http://<?= UOJConfig::$data['web']['main']['host'] ?></a></p>
-			<hr /><p><code>![这个文字在图挂了的时候会显示](http://<?= UOJConfig::$data['web']['main']['host'] ?>/pictures/UOJ.ico)</code> =
-			<img src="http://<?= UOJConfig::$data['web']['main']['host'] ?>/pictures/UOJ.ico" alt="这个文字在图挂了的时候会显示" /></p>
+			<hr /><p><code>[<?= UOJConfig::$data['profile']['oj-name-short'] ?>](<?= HTML::url('/') ?>)</code> = <a href="<?= HTML::url('/') ?>"><?= UOJConfig::$data['profile']['oj-name-short'] ?></a></p>
+			<hr /><p><code><?= HTML::url('/') ?></code> = <a href="http://<?= UOJConfig::$data['web']['main']['host'] ?>"><?= HTML::url('/') ?></a></p>
+			<hr /><p><code>![这个文字在图挂了的时候会显示](<?= HTML::url('/pictures/UOJ.ico') ?>)</code> =
+			<img src="<?= HTML::url('/pictures/UOJ.ico') ?>" alt="这个文字在图挂了的时候会显示" /></p>
 			<hr /><p><code>`rm orz`</code> = <code>rm orz</code></p>
 			<hr /><p><code>数学公式萌萌哒$(a + b)^2$萌萌哒</code> = 数学公式萌萌哒$(a + b)^2$萌萌哒</p>
 			<hr /><p><code>&lt;!-- readmore --&gt;</code> = 在外面看这篇博客时会到此为止然后显示一个“阅读更多”字样</p>

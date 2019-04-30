@@ -68,7 +68,8 @@ class HTML {
 		}
 		
 		$url = UOJConfig::$data['web'][$config['location']]['protocol'].'://'.UOJConfig::$data['web'][$config['location']]['host'];
-		if (UOJConfig::$data['web'][$config['location']]['port'] != 80) {
+		if ((UOJConfig::$data['web'][$config['location']]['protocol'] === "http" && UOJConfig::$data['web'][$config['location']]['port'] == 80) || (UOJConfig::$data['web'][$config['location']]['protocol'] === "https" && UOJConfig::$data['web'][$config['location']]['port'] == 443)) {
+		} else {
 			$url .= ':'.UOJConfig::$data['web'][$config['location']]['port'];
 		}
 		if ($param) {
