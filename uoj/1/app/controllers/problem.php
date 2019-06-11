@@ -228,7 +228,23 @@ $('#contest-countdown').countdown(<?= $contest['end_time']->getTimestamp() - UOJ
 <h1 class="page-header text-center">#<?= $problem['id']?>. <?= $problem['title'] ?></h1>
 <a role="button" class="btn btn-info pull-right" href="/problem/<?= $problem['id'] ?>/statistics"><span class="glyphicon glyphicon-stats"></span> <?= UOJLocale::get('problems::statistics') ?></a>
 <?php endif ?>
-
+<?php
+    $limit = getUOJConf("/var/uoj_data/{$problem['id']}/problem.conf");
+    $time_limit = $limit['time_limit'];
+    $memory_limit = $limit['memory_limit'];
+?>
+<div class="row text-center">
+    <?php if($time_limit != null ): ?>
+	    <span class="label label-info" style="font-size:15px">Time Limit:&nbsp;<?=$time_limit?> s</span>
+	<?php else: ?>
+	    <span class="label label-info" style="font-size:15px">Time Limit:&nbsp;N/A</span>
+	<?php endif ?>
+    <?php if($memory_limit != null ): ?>
+	    <span class="label label-info" style="font-size:15px">Memory Limit:&nbsp;<?=$memory_limit?> MB</span>
+	<?php else: ?>
+	    <span class="label label-info" style="font-size:15px">Memory Limit:&nbsp;N/A</span>
+	<?php endif ?>
+</div>
 <ul class="nav nav-tabs" role="tablist">
 	<li class="active"><a href="#tab-statement" role="tab" data-toggle="tab"><span class="glyphicon glyphicon-book"></span> <?= UOJLocale::get('problems::statement') ?></a></li>
 	<li><a href="#tab-submit-answer" role="tab" data-toggle="tab"><span class="glyphicon glyphicon-upload"></span> <?= UOJLocale::get('problems::submit') ?></a></li>
