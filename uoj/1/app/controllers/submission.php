@@ -116,9 +116,12 @@
 	
 	if ($should_show_all_details) {
 		$styler = new SubmissionDetailsStyler();
-		if (!$should_show_details) {
+		if ((!$should_show_details || ($contest['extra_config']['contest_type']=='IOI' && $contest['cur_progress'] == CONTEST_IN_PROGRESS)) && !hasContestPermission($myUser, $contest)) {
 			$styler->fade_all_details = true;
 			$styler->show_small_tip = false;
+			if ($contest['extra_config']['contest_type']=='IOI' && $contest['cur_progress'] == CONTEST_IN_PROGRESS) {
+				$styler->ioi_contest_is_running = true;
+			}
 		}
 	}
 ?>
