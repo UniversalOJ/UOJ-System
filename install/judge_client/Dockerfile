@@ -9,7 +9,7 @@ RUN apt-get install -y vim \
 	build-essential \
 	python \
 	python-requests \
-	subversion \
+	git \
 	unzip
 
 COPY docker/jdk-7u76-linux-x64.tar.gz \

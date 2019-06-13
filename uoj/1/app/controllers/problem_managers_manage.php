@@ -1,6 +1,5 @@
 <?php
 	requirePHPLib('form');
-	requirePHPLib('svn');
 	
 	if (!validateUInt($_GET['id']) || !($problem = queryProblemBrief($_GET['id']))) {
 		become404Page();
@@ -23,10 +22,6 @@
 			} else if ($type == '-') {
 				DB::query("delete from problems_permissions where problem_id = ${problem['id']} and username = '$username'");
 			}
-		},
-		function() {
-			global $problem;
-			svnRefreshPasswordOfProblem($problem['id']);
 		}
 	);
 	

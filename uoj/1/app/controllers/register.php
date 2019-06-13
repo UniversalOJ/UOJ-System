@@ -33,11 +33,10 @@
 		
 		$esc_email = DB::escape($email);
 		
-		$svn_pw = uojRandString(10);
 		if (!DB::selectCount("SELECT COUNT(*) FROM user_info"))
-			DB::query("insert into user_info (username, email, password, svn_password, register_time, usergroup) values ('$username', '$esc_email', '$password', '$svn_pw', now(), 'S')");
+			DB::query("insert into user_info (username, email, password, register_time, usergroup) values ('$username', '$esc_email', '$password', now(), 'S')");
 		else
-			DB::query("insert into user_info (username, email, password, svn_password, register_time) values ('$username', '$esc_email', '$password', '$svn_pw', now())");
+			DB::query("insert into user_info (username, email, password, register_time) values ('$username', '$esc_email', '$password', now())");
 		
 		return "欢迎你！" . $username . "，你已成功注册。";
 	}
