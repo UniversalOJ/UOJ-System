@@ -73,7 +73,7 @@
 	//添加配置文件
 	if($_POST['problem_settings_file_submit']=='submit'){
 		if($_POST['use_builtin_checker'] and $_POST['n_tests'] and $_POST['input_pre'] and $_POST['input_suf'] and $_POST['output_pre'] and $_POST['output_suf'] and $_POST['time_limit'] and $_POST['memory_limit']){
-				$set_filename="/var/uoj_date/prepare/{$problem['id']}/problem.conf";
+				$set_filename="/var/uoj_data/prepare/{$problem['id']}/problem.conf";
 				$has_legacy=false;
 				if(file_exists($set_filename)){
 					$has_legacy=true;
