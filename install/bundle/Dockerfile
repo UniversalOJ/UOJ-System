@@ -9,13 +9,9 @@ RUN cd ~ && git clone https://github.com/UniversalOJ/UOJ-System.git --depth 1
 RUN cd ~/UOJ-System/install/bundle && sh install.sh -p && echo "\
 #!/bin/sh\n\
 chown -R mysql:mysql /var/lib/mysql /var/run/mysqld\n\
-if [ ! -f \"/var/svn/.UOJSetupDone\" ]; then\n\
-  cd ~/UOJ-System/install/bundle && sh install.sh -i\n\
-fi\n\
 service ntp start\n\
 service mysql start\n\
 service apache2 start\n\
-svnserve -d -r /var/svn\n\
 su local_main_judger -c \"~/judge_client/judge_client start\"\n\
 exec bash\n" >/root/up && chmod +x /root/up
 

@@ -352,7 +352,6 @@ CREATE TABLE IF NOT EXISTS `user_info` (
   `username` varchar(20) NOT NULL,
   `email` varchar(50) NOT NULL,
   `password` char(32) NOT NULL,
-  `svn_password` char(10) NOT NULL,
   `rating` int(11) NOT NULL DEFAULT '1500',
   `qq` bigint(20) NOT NULL,
   `sex` char(1) NOT NULL DEFAULT 'U',

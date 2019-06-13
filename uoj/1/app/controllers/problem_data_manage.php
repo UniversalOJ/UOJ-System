@@ -1,7 +1,7 @@
 <?php
 	requirePHPLib('form');
 	requirePHPLib('judger');
-	requirePHPLib('svn');
+	requirePHPLib('data');
 	
 	if (!validateUInt($_GET['id']) || !($problem = queryProblemBrief($_GET['id']))) {
 		become404Page();
@@ -13,34 +13,6 @@
 	$oj_name = UOJConfig::$data['profile']['oj-name'];
 	$problem_extra_config = getProblemExtraConfig($problem);
 
-	if (isset($_POST['getsvn'])) {
-		if (Auth::check()) {
-			$html = <<<EOD
-<base target="_blank" />
-
-<p>{$myUser['username']}您好，</p>
-<p>您的SVN密码是：{$myUser['svn_password']}</p>
-<p>{$oj_name}</p>
-
-<style type="text/css">
-body{font-size:14px;font-family:arial,verdana,sans-serif;line-height:1.666;padding:0;margin:0;overflow:auto;white-space:normal;word-wrap:break-word;min-height:100px}
-pre {white-space:pre-wrap;white-space:-moz-pre-wrap;white-space:-pre-wrap;white-space:-o-pre-wrap;word-wrap:break-word}
-</style>
-EOD;
-			
-			$mailer = UOJMail::noreply();
-			$mailer->addAddress($myUser['email'], $myUser['username']);
-			$mailer->Subject = "SVN密码";
-			$mailer->msgHTML($html);
-			if ($mailer->send()) {  
-				echo 'good';
-			} else {
-			    error_log('PHPMailer: '.$mailer->ErrorInfo);
-			}
-			die();
-		}
-	}
-	
 	$data_dir = "/var/uoj_data/${problem['id']}";
 
 	function echoFileNotFound($file_name) {
@@ -83,9 +55,8 @@ EOD;
 				move_uploaded_file($_FILES["problem_data_file"]["tmp_name"], $up_filename);
 				$zip = new ZipArchive;
 				if ($zip->open($up_filename) === TRUE){
-					$zip->extractTo("/var/svn/problem/{$problem['id']}/cur/{$problem['id']}/1");
+					$zip->extractTo("/var/uoj_data/prepare/{$problem['id']}");
 					$zip->close();
-					svnCommitZipData($problem['id'], 'data');
 					echo "<script>alert('上传成功！')</script>";
 				}else{
 					$errmsg = "解压失败！";
@@ -102,10 +73,7 @@ EOD;
 	//添加配置文件
 	if($_POST['problem_settings_file_submit']=='submit'){
 		if($_POST['use_builtin_checker'] and $_POST['n_tests'] and $_POST['input_pre'] and $_POST['input_suf'] and $_POST['output_pre'] and $_POST['output_suf'] and $_POST['time_limit'] and $_POST['memory_limit']){
-				if(!is_dir("/var/svn/problem/{$problem['id']}/cur/{$problem['id']}/1/")){
-					mkdir("/var/svn/problem/{$problem['id']}/cur/{$problem['id']}/1/");
-				}
-				$set_filename="/var/svn/problem/{$problem['id']}/cur/{$problem['id']}/1/problem.conf";
+				$set_filename="/var/uoj_date/prepare/{$problem['id']}/problem.conf";
 				$has_legacy=false;
 				if(file_exists($set_filename)){
 					$has_legacy=true;
@@ -134,7 +102,6 @@ EOD;
 				fwrite($setfile, "time_limit ".$_POST['time_limit']."\n");
 				fwrite($setfile, "memory_limit ".$_POST['memory_limit']."\n");
 				fclose($setfile);
-				svnCommitZipData($problem['id'], 'conf');
 				if(!$has_legacy){
 					echo "<script>alert('添加成功！')</script>";
 				}else{
@@ -152,61 +119,16 @@ EOD;
 	$download_url = HTML::url("/download.php?type=problem&id={$problem['id']}");
 	$info_form->appendHTML(<<<EOD
 <div class="form-group">
-	<label class="col-sm-3 control-label">SVN地址</label>
-	<div class="col-sm-9">
-		<div class="form-control-static">
-			<button id="button-getsvn" type="button" class="btn btn-info btn-xs pull-right">查看/发送SVN密码</button>
-			<a>svn://{$http_host}/problem/{$problem['id']}</a>
-		</div>
-	</div>
 	<!--<label class="col-sm-3 control-label">zip上传数据</label>
 	<div class="col-sm-9">
 		<div class="form-control-static">
 			<row>
 			<button type="button" style="width:30%" class="btn btn-primary" data-toggle="modal" data-target="#UploadDataModal">上传数据</button>
-			<button type="submit" style="width:30%" id="button-submit-data" name="submit-data" value="data" class="btn btn-danger">与SVN仓库同步</button>
+			<button type="submit" style="width:30%" id="button-submit-data" name="submit-data" value="data" class="btn btn-danger">检验配置并同步数据</button>
 			</row>
 		</div>
 	</div>-->
 </div>
-
-
-<script type="text/javascript">
-$('#button-getsvn').click(function(){
-	if (!confirm("您的SVN密码是：{$myUser['svn_password']}。是否要发送SVN密码到${myUser['email']}？")) {
-		return;
-	}
-	$.post('${_SERVER['REQUEST_URI']}', {
-		getsvn : ''
-	}, function(res) {
-		if (res == "good") {
-			BootstrapDialog.show({
-				title   : "操作成功",
-				message : "SVN密码已经发送至您的邮箱，请查收。",
-				type    : BootstrapDialog.TYPE_SUCCESS,
-				buttons: [{
-					label: '好的',
-					action: function(dialog) {
-						dialog.close();
-					}
-				}],
-			});
-		} else {
-			BootstrapDialog.show({
-				title   : "操作失败",
-				message : "邮件未发送成功",
-				type    : BootstrapDialog.TYPE_DANGER,
-				buttons: [{
-					label: '好吧',
-					action: function(dialog) {
-						dialog.close();
-					}
-				}],
-			});
-		}
-	});
-});
-</script>
 EOD
 	);
 	$info_form->appendHTML(<<<EOD
@@ -526,7 +448,7 @@ EOD
 		global $problem;
 		$problem['hackable'] = !$problem['hackable'];
 		//$problem['hackable'] = 0;
-		$ret = svnSyncProblemData($problem);
+		$ret = dataSyncProblemData($problem);
 		if ($ret) {
 			becomeMsgPage('<div>' . $ret . '</div><a href="/problem/'.$problem['id'].'/manage/data">返回</a>');
 		}
@@ -542,19 +464,19 @@ EOD
 	$data_form->handle = function() {
 		global $problem, $myUser;
 		set_time_limit(60 * 5);
-		$ret = svnSyncProblemData($problem, $myUser);
+		$ret = dataSyncProblemData($problem, $myUser);
 		if ($ret) {
 			becomeMsgPage('<div>' . $ret . '</div><a href="/problem/'.$problem['id'].'/manage/data">返回</a>');
 		}
 	};
 	$data_form->submit_button_config['class_str'] = 'btn btn-danger btn-block';
-	$data_form->submit_button_config['text'] = '与SVN仓库同步';
+	$data_form->submit_button_config['text'] = '检验配置并同步数据';
 	$data_form->submit_button_config['smart_confirm'] = '';
 	
 	$clear_data_form = new UOJForm('clear_data');
 	$clear_data_form->handle = function() {
 		global $problem;
-		svnClearProblemData($problem);
+		dataClearProblemData($problem);
 	};
 	$clear_data_form->submit_button_config['class_str'] = 'btn btn-danger btn-block';
 	$clear_data_form->submit_button_config['text'] = '清空题目数据';
