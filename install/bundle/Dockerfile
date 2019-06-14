@@ -16,7 +16,6 @@ fi\n\
 service ntp start\n\
 service mysql start\n\
 service apache2 start\n\
-svnserve -d -r /var/svn\n\
 su local_main_judger -c \"~/judge_client/judge_client start\"\n\
 exec bash\n" >/root/up && chmod +x /root/up
 

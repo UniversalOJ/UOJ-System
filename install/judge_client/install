@@ -11,11 +11,8 @@ chown judger /var/uoj_data_copy
 
 su judger <<EOD
 cd ~
-mkdir judge_client_svn
-cd judge_client_svn
-svn co svn://__uoj_host__/judge_client __svn_cert__
-cd ~
-ln -s judge_client_svn/judge_client/1 judge_client
+git clone https://github.com/Universal/UOJ-System.git
+ln -s UOJ-System/judge_client/1 judge_client
 cd judge_client
 echo '#define UOJ_WORK_PATH "/home/judger/judge_client/uoj_judger"' >uoj_judger/include/uoj_work_path.h
 make

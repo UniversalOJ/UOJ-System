@@ -50,12 +50,6 @@ return [
 			'password' => '_judger_socket_password_'
 		]
 	],
-	'svn' => [
-		'our-root' => [
-			'username' => 'our-root',
-			'password' => '_svn_ourroot_password_'
-		]
-	],
 	'switch' => [
 		'web-analytics' => false,
 		'blog-use-subdomain' => false

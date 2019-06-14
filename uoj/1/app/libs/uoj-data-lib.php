@@ -2,20 +2,11 @@
 	// Actually, these things should be done by main_judger so that the code would be much simpler.
 	// However, this lib exists due to some history issues.
 	
-	function svnNewProblem($id) {
-		exec("/var/svn/problem/new_problem.sh $id");
-		svnRefreshPasswordOfProblem($id);
+	function dataNewProblem($id) {
+		mkdir("/var/uoj_data/upload/$id");
+		mkdir("/var/uoj_data/$id");
 		
 		exec("cd /var/uoj_data; rm $id.zip; zip $id.zip $id -r -q");
-	}
-	function svnRefreshPasswordOfProblem($id) {
-		$result = DB::query("select user_info.username, svn_password from problems_permissions, user_info where problem_id = $id and user_info.username = problems_permissions.username");
-		$content = "[users]\n";
-		$content .= UOJConfig::$data['svn']['our-root']['username']." = ".UOJConfig::$data['svn']['our-root']['password']."\n";
-		while ($row = DB::fetch($result, MYSQLI_NUM)) {
-			$content .= "${row[0]} = ${row[1]}\n";
-		}
-		file_put_contents("/var/svn/problem/$id/conf/passwd", $content);
 	}
 
 	class UOJProblemConfException extends Exception {
@@ -29,21 +20,21 @@
 		}
 	}
 	
-	function svnClearProblemData($problem) {
+	function dataClearProblemData($problem) {
 		$id = $problem['id'];
 		if (!validateUInt($id)) {
-			error_log("svnClearProblemData: hacker detected");
+			error_log("dataClearProblemData: hacker detected");
 			return "invalid problem id";
 		}
 		
-		exec("rm /var/svn/problem/$id -r");
+		exec("rm /var/uoj_data/upload/$id -r");
 		exec("rm /var/uoj_data/$id -r");
-		svnNewProblem($id);
+		dataNewProblem($id);
 	}
 	
-	class SvnSyncProblemDataHandler {
+	class SyncProblemDataHandler {
 		private $problem, $user;
-		private $svn_data_dir, $data_dir, $prepare_dir;
+		private $upload_dir, $data_dir, $prepare_dir;
 		private $requirement, $problem_extra_config;
 		private $problem_conf, $final_problem_conf;
 		private $allow_files;
@@ -62,9 +53,9 @@
 			if (!isset($this->allow_files[$file_name])) {
 				throw new UOJFileNotFoundException($file_name);
 			}
-			$src = escapeshellarg("{$this->svn_data_dir}/$file_name");
+			$src = escapeshellarg("{$this->upload_dir}/$file_name");
 			$dest = escapeshellarg("{$this->prepare_dir}/$file_name");
-			if (isset($this->problem_extra_config['dont_use_formatter']) || !is_file("{$this->svn_data_dir}/$file_name")) {
+			if (isset($this->problem_extra_config['dont_use_formatter']) || !is_file("{$this->upload_dir}/$file_name")) {
 				exec("cp $src $dest -r", $output, $ret);
 			} else {
 				exec("$uojMainJudgerWorkPath/run/formatter <$src >$dest", $output, $ret);
@@ -75,7 +66,7 @@
 		}
 		private function copy_file_to_prepare($file_name) {
 			global $uojMainJudgerWorkPath;
-			if (!isset($this->allow_files[$file_name]) || !is_file("{$this->svn_data_dir}/$file_name")) {
+			if (!isset($this->allow_files[$file_name]) || !is_file("{$this->upload_dir}/$file_name")) {
 				throw new UOJFileNotFoundException($file_name);
 			}
 			$this->copy_to_prepare($file_name);
@@ -158,11 +149,11 @@
 		public function handle() {
 			$id = $this->problem['id'];
 			if (!validateUInt($id)) {
-				error_log("svnSyncProblemData: hacker detected");
+				error_log("dataSyncProblemData: hacker detected");
 				return "invalid problem id";
 			}
 
-			$this->svn_data_dir = "/var/svn/problem/$id/cur/$id/1";
+			$this->upload_dir = "/var/uoj_data/upload/$id";
 			$this->data_dir = "/var/uoj_data/$id";
 			$this->prepare_dir = "/var/uoj_data/prepare_$id";
 
@@ -175,11 +166,11 @@
 				$this->problem_extra_config = json_decode($this->problem['extra_config'], true);
 
 				mkdir($this->prepare_dir, 0755);
-				if (!is_file("{$this->svn_data_dir}/problem.conf")) {
+				if (!is_file("{$this->upload_dir}/problem.conf")) {
 					throw new UOJFileNotFoundException("problem.conf");
 				}
 
-				$this->problem_conf = getUOJConf("{$this->svn_data_dir}/problem.conf");
+				$this->problem_conf = getUOJConf("{$this->upload_dir}/problem.conf");
 				$this->final_problem_conf = $this->problem_conf;
 				if ($this->problem_conf === -1) {
 					throw new UOJFileNotFoundException("problem.conf");
@@ -187,14 +178,14 @@
 					throw new UOJProblemConfException("syntax error");
 				}
 
-				$this->allow_files = array_flip(array_filter(scandir($this->svn_data_dir), function($x){return $x !== '.' && $x !== '..';}));
+				$this->allow_files = array_flip(array_filter(scandir($this->upload_dir), function($x){return $x !== '.' && $x !== '..';}));
 
 				$zip_file = new ZipArchive();
 				if ($zip_file->open("{$this->prepare_dir}/download.zip", ZipArchive::CREATE) !== true) {
 					throw new Exception("<strong>download.zip</strong> : failed to create the zip file");
 				}
 				
-				if (isset($this->allow_files['require']) && is_dir("{$this->svn_data_dir}/require")) {
+				if (isset($this->allow_files['require']) && is_dir("{$this->upload_dir}/require")) {
 					$this->copy_to_prepare('require');
 				}
 
@@ -307,10 +298,10 @@
 				}
 				putUOJConf("{$this->prepare_dir}/problem.conf", $this->final_problem_conf);
 
-				if (isset($this->allow_files['download']) && is_dir("{$this->svn_data_dir}/download")) {
-					foreach (scandir("{$this->svn_data_dir}/download") as $file_name) {
-						if (is_file("{$this->svn_data_dir}/download/{$file_name}")) {
-							$zip_file->addFile("{$this->svn_data_dir}/download/{$file_name}", $file_name);
+				if (isset($this->allow_files['download']) && is_dir("{$this->upload_dir}/download")) {
+					foreach (scandir("{$this->upload_dir}/download") as $file_name) {
+						if (is_file("{$this->upload_dir}/download/{$file_name}")) {
+							$zip_file->addFile("{$this->upload_dir}/download/{$file_name}", $file_name);
 						}
 					}
 				}
@@ -336,18 +327,15 @@
 		}
 	}
 	
-	function svnSyncProblemData($problem, $user = null) {
-		return (new SvnSyncProblemDataHandler($problem, $user))->handle();
+	function dataSyncProblemData($problem, $user = null) {
+		return (new SyncProblemDataHandler($problem, $user))->handle();
 	}
-	function svnAddExtraTest($problem, $input_file_name, $output_file_name) {
+	function dataAddExtraTest($problem, $input_file_name, $output_file_name) {
 		$id = $problem['id'];
 
-		$svnusr = UOJConfig::$data['svn']['our-root']['username'];
-		$svnpwd = UOJConfig::$data['svn']['our-root']['password'];
+		$cur_dir = "/var/uoj_data/upload/$id";
 		
-		$cur_dir = "/var/svn/problem/$id/cur/$id";
-		
-		$problem_conf = getUOJConf("{$cur_dir}/1/problem.conf");
+		$problem_conf = getUOJConf("{$cur_dir}/problem.conf");
 		if ($problem_conf == -1 || $problem_conf == -2) {
 			return $problem_conf;
 		}
@@ -356,57 +344,14 @@
 		$new_input_name = getUOJProblemExtraInputFileName($problem_conf, $problem_conf['n_ex_tests']);
 		$new_output_name = getUOJProblemExtraOutputFileName($problem_conf, $problem_conf['n_ex_tests']);
 		
-		putUOJConf("$cur_dir/1/problem.conf", $problem_conf);
-		move_uploaded_file($input_file_name, "$cur_dir/1/$new_input_name");
-		move_uploaded_file($output_file_name, "$cur_dir/1/$new_output_name");
+		putUOJConf("$cur_dir/problem.conf", $problem_conf);
+		move_uploaded_file($input_file_name, "$cur_dir/$new_input_name");
+		move_uploaded_file($output_file_name, "$cur_dir/$new_output_name");
 		
-		exec(
-<<<EOD
-cd $cur_dir
-svn add 1/$new_input_name --username $svnusr --password $svnpwd
-svn add 1/$new_output_name --username $svnusr --password $svnpwd
-svn commit -m "add new extra test." --username $svnusr --password $svnpwd
-EOD
-		);
-
-		if (svnSyncProblemData($problem) === '') {
+		if (dataSyncProblemData($problem) === '') {
 			rejudgeProblemAC($problem);
 		} else {
 			error_log('hack successfully but sync failed.');
-		}
-	}
-	
-	function svnCommitZipData($problem, $type) {
-		$id = $problem['id'];
-		$cur_dir = "/var/svn/problem/$id/cur/$id";
-		$svnusr = UOJConfig::$data['svn']['our-root']['username'];
-		$svnpwd = UOJConfig::$data['svn']['our-root']['password'];
-		
-		if($type=='conf'){
-			exec(
-<<<EOD
-cd $cur_dir
-svn add 1/problem.conf --username $svnusr --password $svnpwd
-svn commit -m "update problem.conf by online conf editor." --username $svnusr --password $svnpwd
-EOD
-			);
-		}
-		else if($type=='data'){
-			exec(
-<<<EOD
-cd $cur_dir/1
-for sub_dir in `find -maxdepth 1 -type d ! -name .`; do
-	mv -f \$sub_dir/* . && rm -rf \$sub_dir
-done
-cd $cur_dir
-svn add * --username $svnusr --password $svnpwd
-svn commit -m "add testdata from zip file online." --username $svnusr --password $svnpwd
-EOD
-			);
-		}
-		else{
-			error_log("svnCommitZipData: invalid argument");
-			return "invalid argument";
 		}
 	}
 ?>

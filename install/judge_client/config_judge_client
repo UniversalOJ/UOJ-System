@@ -28,7 +28,6 @@ with open('conf.json', 'w') as f:
 	print >>f
 
 translate_table = {
-	'svn_cert': '--username %s --password %s' % (conf['svn_username'], conf['svn_password']),
 	'uoj_host': ip
 }
 
