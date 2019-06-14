@@ -256,7 +256,7 @@ CREATE TABLE IF NOT EXISTS `problems` (
   `title` text NOT NULL,
   `is_hidden` tinyint(1) NOT NULL DEFAULT '0',
   `submission_requirement` text,
-  `hackable` tinyint(1) NOT NULL DEFAULT '1',
+  `hackable` tinyint(1) NOT NULL DEFAULT '0',
   `extra_config` varchar(500) NOT NULL DEFAULT '{"view_content_type":"ALL","view_details_type":"ALL"}',
   `zan` int(11) NOT NULL,
   `ac_num` int(11) NOT NULL DEFAULT '0',
