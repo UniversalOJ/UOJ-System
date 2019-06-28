@@ -592,12 +592,12 @@ struct RunProgramConfig {
 			type = "python2.7";
 		} else if (lang == "Python3") {
 			type = "python3";
-		} else if (lang == "Java7") {
-			program_name += "." + conf_str(name + "_main_class");
-			type = "java7";
 		} else if (lang == "Java8") {
 			program_name += "." + conf_str(name + "_main_class");
 			type = "java8";
+		} else if (lang == "Java11") {
+			program_name += "." + conf_str(name + "_main_class");
+			type = "java11";
 		}
 
 		set_argv(program_name.c_str(), NULL);
@@ -1159,19 +1159,6 @@ RunCompilerResult compile_python3(const string &name, const string &path = work_
 	return run_compiler(path.c_str(),
 			"/usr/bin/python3", "-I", "-B", "-O", "-c", ("import py_compile\nimport sys\ntry:\n    py_compile.compile('" + name + ".code'" + ", '" + name + "', doraise=True)\n    sys.exit(0)\nexcept Exception as e:\n    print(e)\n    sys.exit(1)").c_str(), NULL);
 }
-RunCompilerResult compile_java7(const string &name, const string &path = work_path) {
-	RunCompilerResult ret = prepare_java_source(name, path);
-	if (!ret.succeeded)
-		return ret;
-
-	string main_class = conf_str(name + "_main_class");
-
-	executef("rm %s/%s -rf 2>/dev/null; mkdir %s/%s", path.c_str(), name.c_str(), path.c_str(), name.c_str());
-	executef("echo package %s\\; | cat - %s/%s.code >%s/%s/%s.java", name.c_str(), path.c_str(), name.c_str(), path.c_str(), name.c_str(), main_class.c_str());
-
-	return run_compiler((path + "/" + name).c_str(),
-			(main_path + "/run/runtime/jdk1.7.0/bin/javac").c_str(), (main_class + ".java").c_str(), NULL);
-}
 RunCompilerResult compile_java8(const string &name, const string &path = work_path) {
 	RunCompilerResult ret = prepare_java_source(name, path);
 	if (!ret.succeeded)
@@ -1183,7 +1170,20 @@ RunCompilerResult compile_java8(const string &name, const string &path = work_pa
 	executef("echo package %s\\; | cat - %s/%s.code >%s/%s/%s.java", name.c_str(), path.c_str(), name.c_str(), path.c_str(), name.c_str(), main_class.c_str());
 
 	return run_compiler((path + "/" + name).c_str(),
-			(main_path + "/run/runtime/jdk1.8.0/bin/javac").c_str(), (main_class + ".java").c_str(), NULL);
+			"/usr/lib/jvm/java-8-openjdk-amd64/bin/javac", (main_class + ".java").c_str(), NULL);
+}
+RunCompilerResult compile_java11(const string &name, const string &path = work_path) {
+	RunCompilerResult ret = prepare_java_source(name, path);
+	if (!ret.succeeded)
+		return ret;
+
+	string main_class = conf_str(name + "_main_class");
+
+	executef("rm %s/%s -rf 2>/dev/null; mkdir %s/%s", path.c_str(), name.c_str(), path.c_str(), name.c_str());
+	executef("echo package %s\\; | cat - %s/%s.code >%s/%s/%s.java", name.c_str(), path.c_str(), name.c_str(), path.c_str(), name.c_str(), main_class.c_str());
+
+	return run_compiler((path + "/" + name).c_str(),
+			"/usr/lib/jvm/java-11-openjdk-amd64/bin/javac", (main_class + ".java").c_str(), NULL);
 }
 
 RunCompilerResult compile(const char *name)  {
@@ -1212,11 +1212,11 @@ RunCompilerResult compile(const char *name)  {
 	if (lang == "Python3") {
 		return compile_python3(name);
 	}
-	if (lang == "Java7") {
-		return compile_java7(name);
-	}
 	if (lang == "Java8") {
 		return compile_java8(name);
+	}
+	if (lang == "Java11") {
+		return compile_java11(name);
 	}
 	if (lang == "C") {
 		return compile_c(name);

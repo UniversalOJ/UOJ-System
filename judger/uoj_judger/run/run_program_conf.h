@@ -296,7 +296,7 @@ void init_conf(const RunProgramConfig &config) {
 	}
 	statable_file_name_set.insert(config.work_path + "/");
 
-	if (config.type != "java7" && config.type != "java8") {
+	if (config.type != "java8" && config.type != "java11") {
 		add_file_permission(config.program_name, 'r');
 	} else {
 		int p = config.program_name.find('.');
@@ -398,12 +398,10 @@ void init_conf(const RunProgramConfig &config) {
 		# ifdef UOJ_JUDGER_BASESYSTEM_UBUNTU1804
 		statable_file_name_set.insert("/usr/lib/python36.zip");
 		# endif
-	} else if (config.type == "java7") {
+	} else if (config.type == "java8") {
 		syscall_max_cnt[__NR_gettid         ] = -1;
 		syscall_max_cnt[__NR_set_tid_address] = 1;
-		# ifndef UOJ_JUDGER_BASESYSTEM_UBUNTU1804
 		syscall_max_cnt[__NR_set_robust_list] = 14;
-		# endif
 		syscall_max_cnt[__NR_futex          ] = -1;
 
 		syscall_max_cnt[__NR_uname          ] = 1;
@@ -435,20 +433,20 @@ void init_conf(const RunProgramConfig &config) {
 		soft_ban_file_name_set.insert("/etc/nsswitch.conf");
 		soft_ban_file_name_set.insert("/etc/passwd");
 
-		add_file_permission(abspath(0, string(self_path) + "/../runtime/jdk1.7.0") + "/", 'r');
+		add_file_permission("/usr/lib/jvm/java-8-openjdk-amd64/", 'r');
 		readable_file_name_set.insert("/sys/devices/system/cpu/");
 		readable_file_name_set.insert("/proc/");
 		# ifdef UOJ_JUDGER_BASESYSTEM_UBUNTU1804
+		readable_file_name_set.insert("/sys/fs/cgroup/cpu/");
+		readable_file_name_set.insert("/sys/fs/cgroup/memory/");
 		readable_file_name_set.insert("/usr/lib/locale/");
 		# endif
 		statable_file_name_set.insert("/usr/java/");
 		statable_file_name_set.insert("/tmp/");
-	} else if (config.type == "java8") {
+	} else if (config.type == "java11") {
 		syscall_max_cnt[__NR_gettid         ] = -1;
 		syscall_max_cnt[__NR_set_tid_address] = 1;
-		# ifndef UOJ_JUDGER_BASESYSTEM_UBUNTU1804
 		syscall_max_cnt[__NR_set_robust_list] = 15;
-		# endif
 		syscall_max_cnt[__NR_futex          ] = -1;
 
 		syscall_max_cnt[__NR_uname          ] = 1;
@@ -470,6 +468,11 @@ void init_conf(const RunProgramConfig &config) {
 		syscall_max_cnt[__NR_sysinfo        ] = -1;
 		syscall_max_cnt[__NR_clone          ] = -1;
 		syscall_max_cnt[__NR_set_robust_list] = -1;
+		syscall_max_cnt[__NR_uname          ] = -1;
+		syscall_max_cnt[__NR_clock_getres   ] = -1;
+		syscall_max_cnt[__NR_pread64        ] = -1;
+		syscall_max_cnt[__NR_prctl          ] = -1;
+		syscall_max_cnt[__NR_nanosleep      ] = -1;
 		# endif
 
 		syscall_should_soft_ban[__NR_socket   ] = true;
@@ -480,15 +483,21 @@ void init_conf(const RunProgramConfig &config) {
 		soft_ban_file_name_set.insert("/etc/nsswitch.conf");
 		soft_ban_file_name_set.insert("/etc/passwd");
 
-		add_file_permission(abspath(0, string(self_path) + "/../runtime/jdk1.8.0") + "/", 'r');
+		add_file_permission("/usr/lib/jvm/java-11-openjdk-amd64/", 'r');
 		readable_file_name_set.insert("/sys/devices/system/cpu/");
 		readable_file_name_set.insert("/proc/");
 		# ifdef UOJ_JUDGER_BASESYSTEM_UBUNTU1804
+		readable_file_name_set.insert("/sys/fs/cgroup/cpu/");
+		readable_file_name_set.insert("/sys/fs/cgroup/memory/");
+		readable_file_name_set.insert("/usr/share/java/");
 		readable_file_name_set.insert("/usr/lib/locale/");
 		readable_file_name_set.insert("/etc/oracle/java/usagetracker.properties");
 		# endif
 		statable_file_name_set.insert("/usr/java/");
 		statable_file_name_set.insert("/tmp/");
+		# ifdef UOJ_JUDGER_BASESYSTEM_UBUNTU1804
+		statable_file_name_set.insert("/usr/share/");
+		# endif
 	} else if (config.type == "compiler") {
 		syscall_max_cnt[__NR_gettid         ] = -1;
 		syscall_max_cnt[__NR_set_tid_address] = -1;
@@ -530,6 +539,10 @@ void init_conf(const RunProgramConfig &config) {
 		# ifdef UOJ_JUDGER_BASESYSTEM_UBUNTU1804
 		syscall_max_cnt[__NR_prlimit64      ] = -1;
 		syscall_max_cnt[__NR_getrandom      ] = -1;
+		syscall_max_cnt[__NR_pread64        ] = -1;
+		syscall_max_cnt[__NR_prctl          ] = -1;
+		syscall_max_cnt[__NR_nanosleep      ] = -1;
+		syscall_max_cnt[__NR_socketpair     ] = -1;
 		# endif
 
 		syscall_should_soft_ban[__NR_socket   ] = true; // for javac
@@ -544,6 +557,8 @@ void init_conf(const RunProgramConfig &config) {
 
 		readable_file_name_set.insert(abspath(0, string(self_path) + "/../runtime") + "/");
 		# ifdef UOJ_JUDGER_BASESYSTEM_UBUNTU1804
+		readable_file_name_set.insert("/sys/fs/cgroup/cpu/");
+		readable_file_name_set.insert("/sys/fs/cgroup/memory/");
 		readable_file_name_set.insert("/etc/oracle/java/usagetracker.properties");
 		# endif
 

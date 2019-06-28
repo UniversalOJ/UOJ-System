@@ -607,8 +607,8 @@ function get_codemirror_mode(lang) {
 		case 'Python2.7':
 		case 'Python3':
 			return 'text/x-python';
-		case 'Java7':
 		case 'Java8':
+		case 'Java11':
 			return 'text/x-java';
 		case 'Pascal':
 			return 'text/x-pascal';
@@ -714,7 +714,7 @@ $.fn.source_code_form_group = function(name, text, langs_options_html) {
 		var div_help_language = $('<div id="' + div_help_language_id + '" class="col-sm-12 text-warning top-buffer-sm">');
 
 		var show_help_lang = function() {
-			if ($(this).val() == 'Java7' || $(this).val() == 'Java8') {
+			if ($(this).val() == 'Java8' || $(this).val() == 'Java11') {
 				div_help_language.text('注意：Java 程序源代码中不应指定所在的 package。我们会在源代码中找到第一个被定义的类并以它的 main 函数为程序入口点。');
 			} else {
 				div_help_language.text('');

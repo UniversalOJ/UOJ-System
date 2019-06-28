@@ -406,8 +406,8 @@ function echoSubmissionContent($submission, $requirement) {
 				case 'Python3':
 					$sh_class = 'sh_python';
 					break;
-				case 'Java7':
 				case 'Java8':
+				case 'Java11':
 					$sh_class = 'sh_java';
 					break;
 				case 'C':
