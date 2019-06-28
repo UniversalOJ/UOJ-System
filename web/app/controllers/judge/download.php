@@ -22,6 +22,10 @@
 			$file_name = "/var/uoj_data/$id.zip";
 			$download_name = "$id.zip";
 			break;
+		case 'judger':
+			$file_name = UOJContext::storagePath()."/judge_client.zip";
+			$download_name = "judge_client.zip";
+			break;
 		default:
 			become404Page();
 	}

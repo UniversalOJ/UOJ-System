@@ -1,4 +1,4 @@
-#!/usr/bin/python2
+#!/usr/bin/python3
 
 import json
 import sys
@@ -15,8 +15,8 @@ from contextlib import closing
 
 import requests
 
-import Queue as queue
-from Queue import Queue, Empty
+import queue as queue
+from queue import Queue, Empty
 
 taskQ = Queue()
 submission = None
@@ -70,7 +70,7 @@ def socket_server_loop():
 			try:
 				conn, addr = s.accept()
 				with closing(conn) as conn:
-					data = conn.recv(1024)
+					data = conn.recv(1024).decode()
 					assert data != None
 					task = json.loads(data)
 					assert task['password'] == jconf['socket_password']
@@ -79,21 +79,21 @@ def socket_server_loop():
 					taskQ.put(task)
 					
 					if task['cmd'] == 'stop':
-						print 'the judge client is closing...'
+						print('the judge client is closing...')
 						taskQ.join()
-						conn.sendall('ok')
+						conn.sendall(b'ok')
 						return 'stop'
 			except Exception:
-				print >>sys.stderr, '['+time.asctime()+']', 'connection rejected'
+				print('['+time.asctime()+']', 'connection rejected', file=sys.stderr)
 				traceback.print_exc()
 			else:
-				print >>sys.stderr, '['+time.asctime()+']', 'a new task accomplished'
+				print('['+time.asctime()+']', 'a new task accomplished', file=sys.stderr)
 
 def start_judger_server():
 	global socket_server_thread
 	
 	print_judge_client_status()
-	print >>sys.stderr, 'hello!'
+	print('hello!', file=sys.stderr)
 	
 	socket_server_thread = Thread(target = socket_server_loop)
 	socket_server_thread.setDaemon(True)
@@ -107,7 +107,7 @@ def report_loop():
 		return
 	while not submission_judged:
 		try:
-			with open(uoj_judger_path('/result/cur_status.txt'), 'rb') as f:
+			with open(uoj_judger_path('/result/cur_status.txt'), 'r') as f:
 				fcntl.flock(f, fcntl.LOCK_SH)
 				try:
 					status = f.read(100)
@@ -136,6 +136,11 @@ def handle_task():
 			task = taskQ.get_nowait()
 			
 			if task['cmd'] == 'update':
+				try:
+					uoj_download('/judger', 'judger_update.zip')
+					execute('unzip -o judger_update.zip && cd %s && make clean && make' % uoj_judger_path())
+				except:
+					print(sys.stderr, "error when update")
 				if jconf['judger_name'] == 'main_judger':
 					uoj_sync_judge_client()
 				need_restart = True
@@ -144,7 +149,7 @@ def handle_task():
 				socket_server_thread.join()
 				
 				print_judge_client_status()
-				print sys.stderr, "goodbye!"
+				print(sys.stderr, "goodbye!")
 				
 				sys.exit(0)
 			
@@ -156,15 +161,15 @@ def handle_task():
 		os.execl('./judge_client', './judge_client')
 
 def print_judge_client_status():
-	print >>sys.stderr, '[' + time.asctime() + ']',
+	print('[' + time.asctime() + ']', end=' ', file=sys.stderr)
 	if submission != None:
-		print >>sys.stderr, submission,
-	print >>sys.stderr
+		print(submission, end=' ', file=sys.stderr)
+	print(file=sys.stderr)
 
 # interact with uoj_judger
 def get_judger_result():
 	res = {}
-	with open(uoj_judger_path('/result/result.txt'), 'rb') as fres:
+	with open(uoj_judger_path('/result/result.txt'), 'r') as fres:
 		res['score'] = 0
 		res['time'] = 0
 		res['memory'] = 0
@@ -216,7 +221,7 @@ def update_problem_data(problem_id, problem_mtime):
 		raise Exception('failed to update problem data of #%d' % problem_id)
 	else:
 		print_judge_client_status()
-		print >>sys.stderr, 'updated problem data of #%d successfully' % problem_id
+		print('updated problem data of #%d successfully' % problem_id, file=sys.stderr)
 
 def judge():
 	global report_thread
@@ -226,11 +231,11 @@ def judge():
 	clean_up_folder(uoj_judger_path('/result'))
 	update_problem_data(submission['problem_id'], submission['problem_mtime'])
 	
-	with open(uoj_judger_path('/work/submission.conf'), 'wb') as fconf:
+	with open(uoj_judger_path('/work/submission.conf'), 'w') as fconf:
 		uoj_download(submission['content']['file_name'], uoj_judger_path('/work/all.zip'))
 		execute("cd %s && unzip -q all.zip && rm all.zip" % pipes.quote(uoj_judger_path('/work')))
 		for k, v in submission['content']['config']:
-			print >>fconf, k, v
+			print(k, v, file=fconf)
 		
 		if 'is_hack' in submission:
 			if submission['hack']['input_type'] == 'USE_FORMATTER':
@@ -241,9 +246,9 @@ def judge():
 					pipes.quote(uoj_judger_path('/work/hack_input.txt'))))
 			else:
 				uoj_download(submission['hack']['input'], uoj_judger_path('/work/hack_input.txt'))
-			print >>fconf, 'test_new_hack_only on'
+			print('test_new_hack_only on', file=fconf)
 		elif 'is_custom_test' in submission:
-			print >>fconf, 'custom_test on'
+			print('custom_test on', file=fconf)
 	
 	report_thread = Thread(target = report_loop)
 	report_thread.setDaemon(True)
@@ -301,10 +306,10 @@ def send_and_fetch(result = None, fetch_new = True):
 			data['id'] = submission['hack']['id']
 			if result != False and result['score']:
 				try:
-					print >>sys.stderr, "succ hack!"
+					print("succ hack!", file=sys.stderr)
 					files = {
-						('hack_input', open('uoj_judger/work/hack_input.txt', 'rb')),
-						('std_output', open('uoj_judger/work/std_output.txt', 'rb'))
+						('hack_input', open('uoj_judger/work/hack_input.txt', 'r')),
+						('std_output', open('uoj_judger/work/std_output.txt', 'r'))
 					}
 				except Exception:
 					print_judge_client_status()
@@ -328,7 +333,7 @@ def send_and_fetch(result = None, fetch_new = True):
 	while True:
 		try:
 			ret = uoj_interact(data, files)
-			print ret
+			print(ret)
 		except Exception:
 			print_judge_client_status()
 			traceback.print_exc()
@@ -363,12 +368,12 @@ def judger_loop():
 				if send_and_fetch():
 					break
 				
-				print '['+time.asctime()+']', 'Nothing to judge...'
+				print('['+time.asctime()+']', 'Nothing to judge...')
 				time.sleep(2)
 			
 			ok = True
 			print_judge_client_status()
-			print >>sys.stderr, 'judging'
+			print('judging', file=sys.stderr)
 		
 		try:
 			res = judge()
@@ -403,7 +408,7 @@ def main():
 					s.sendall(json.dumps({
 						'password': jconf['socket_password'],
 						'cmd': 'update'
-					}))
+					}).encode())
 				return
 			except Exception:
 				traceback.print_exc()
@@ -415,8 +420,8 @@ def main():
 					s.sendall(json.dumps({
 						'password': jconf['socket_password'],
 						'cmd': 'stop'
-					}))
-					if s.recv(10) != 'ok':
+					}).encode())
+					if s.recv(10).decode() != 'ok':
 						raise Exception('stop failed')
 				return
 			except Exception:
