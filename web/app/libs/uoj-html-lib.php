@@ -402,7 +402,7 @@ function echoSubmissionContent($submission, $requirement) {
 				case 'C++11':
 					$sh_class = 'sh_cpp';
 					break;
-				case 'Python2.7':
+				case 'Python2':
 				case 'Python3':
 					$sh_class = 'sh_python';
 					break;

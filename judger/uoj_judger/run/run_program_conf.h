@@ -325,7 +325,7 @@ void init_conf(const RunProgramConfig &config) {
 		syscall_max_cnt[__NR_execve         ] = -1;
 	}
 
-	if (config.type == "python2.7") {
+	if (config.type == "python2") {
 		syscall_max_cnt[__NR_set_tid_address] = 1;
 		syscall_max_cnt[__NR_set_robust_list] = 1;
 		syscall_max_cnt[__NR_futex          ] = -1;

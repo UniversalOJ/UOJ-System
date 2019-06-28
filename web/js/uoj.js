@@ -604,7 +604,7 @@ function get_codemirror_mode(lang) {
 			return 'text/x-c++src';
 		case 'C':
 			return 'text/x-csrc';
-		case 'Python2.7':
+		case 'Python2':
 		case 'Python3':
 			return 'text/x-python';
 		case 'Java8':

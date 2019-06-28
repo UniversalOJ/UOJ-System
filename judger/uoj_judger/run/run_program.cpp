@@ -236,8 +236,8 @@ void parse_args(int argc, char **argv) {
 		}
 	}
 
-	if (run_program_config.type == "python2.7") {
-		string pre[4] = {"/usr/bin/python2.7", "-E", "-s", "-B"};
+	if (run_program_config.type == "python2") {
+		string pre[4] = {"/usr/bin/python2", "-E", "-s", "-B"};
 		run_program_config.argv.insert(run_program_config.argv.begin(), pre, pre + 4);
 	} else if (run_program_config.type == "python3") {
 		string pre[3] = {"/usr/bin/python3", "-I", "-B"};
