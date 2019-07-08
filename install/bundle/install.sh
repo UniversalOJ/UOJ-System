@@ -49,9 +49,11 @@ setLAMPConf(){
     ServerAdmin opensource@uoj.ac
     DocumentRoot /var/www/uoj
 
+    SetEnvIf Request_URI "^/judge/.*$" judgelog
     #LogLevel info ssl:warn
     ErrorLog \${APACHE_LOG_DIR}/uoj_error.log
-    CustomLog \${APACHE_LOG_DIR}/uoj_access.log combined
+    CustomLog \${APACHE_LOG_DIR}/uoj_judge.log common env=judgelog
+    CustomLog \${APACHE_LOG_DIR}/uoj_access.log combined env=!judgelog
 
     XSendFile On
     XSendFilePath /var/uoj_data
