@@ -7,7 +7,7 @@
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
 /*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!40101 SET NAMES utf8 */;
+/*!40101 SET NAMES utf8mb4 */;
 /*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
 /*!40103 SET TIME_ZONE='+08:00' */;
 /*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
@@ -19,7 +19,7 @@
 -- Current Database: `app_uoj233`
 --
 
-CREATE DATABASE /*!32312 IF NOT EXISTS*/ `app_uoj233` /*!40100 DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci */;
+CREATE DATABASE /*!32312 IF NOT EXISTS*/ `app_uoj233` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci */;
 
 USE `app_uoj233`;
 
@@ -28,10 +28,10 @@ USE `app_uoj233`;
 --
 
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `best_ac_submissions` (
   `problem_id` int(11) NOT NULL,
-  `submitter` varchar(20) COLLATE utf8_unicode_ci NOT NULL,
+  `submitter` varchar(20) COLLATE utf8mb4_unicode_ci NOT NULL,
   `submission_id` int(11) NOT NULL,
   `used_time` int(11) NOT NULL,
   `used_memory` int(11) NOT NULL,
@@ -41,7 +41,7 @@ CREATE TABLE `best_ac_submissions` (
   `shortest_used_memory` int(11) NOT NULL,
   `shortest_tot_size` int(11) NOT NULL,
   PRIMARY KEY (`problem_id`,`submitter`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -58,20 +58,20 @@ UNLOCK TABLES;
 --
 
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `blogs` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `title` text COLLATE utf8_unicode_ci NOT NULL,
-  `content` mediumtext COLLATE utf8_unicode_ci NOT NULL,
+  `title` text COLLATE utf8mb4_unicode_ci NOT NULL,
+  `content` mediumtext COLLATE utf8mb4_unicode_ci NOT NULL,
   `post_time` datetime NOT NULL,
-  `poster` varchar(20) COLLATE utf8_unicode_ci NOT NULL,
-  `content_md` mediumtext COLLATE utf8_unicode_ci NOT NULL,
+  `poster` varchar(20) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `content_md` mediumtext COLLATE utf8mb4_unicode_ci NOT NULL,
   `zan` int(11) NOT NULL,
   `is_hidden` tinyint(1) NOT NULL,
-  `type` char(1) COLLATE utf8_unicode_ci NOT NULL DEFAULT 'B',
+  `type` char(1) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'B',
   `is_draft` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -88,17 +88,17 @@ UNLOCK TABLES;
 --
 
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `blogs_comments` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `blog_id` int(11) NOT NULL,
-  `content` text COLLATE utf8_unicode_ci NOT NULL,
+  `content` text COLLATE utf8mb4_unicode_ci NOT NULL,
   `post_time` datetime NOT NULL,
-  `poster` varchar(20) COLLATE utf8_unicode_ci NOT NULL,
+  `poster` varchar(20) COLLATE utf8mb4_unicode_ci NOT NULL,
   `zan` int(11) NOT NULL,
   `reply_id` int(11) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -115,7 +115,7 @@ UNLOCK TABLES;
 --
 
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `blogs_tags` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `blog_id` int(11) NOT NULL,
@@ -123,7 +123,7 @@ CREATE TABLE `blogs_tags` (
   PRIMARY KEY (`id`),
   KEY `blog_id` (`blog_id`),
   KEY `tag` (`tag`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -140,14 +140,14 @@ UNLOCK TABLES;
 --
 
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `click_zans` (
-  `type` char(2) COLLATE utf8_unicode_ci NOT NULL,
-  `username` varchar(20) COLLATE utf8_unicode_ci NOT NULL,
+  `type` char(2) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `username` varchar(20) COLLATE utf8mb4_unicode_ci NOT NULL,
   `target_id` int(11) NOT NULL,
   `val` tinyint(4) NOT NULL DEFAULT '1',
   PRIMARY KEY (`type`,`target_id`,`username`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -164,7 +164,7 @@ UNLOCK TABLES;
 --
 
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `contests` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(50) NOT NULL,
@@ -175,7 +175,7 @@ CREATE TABLE `contests` (
   `extra_config` varchar(200) NOT NULL,
   `zan` int(11) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -192,7 +192,7 @@ UNLOCK TABLES;
 --
 
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `contests_asks` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `contest_id` int(11) NOT NULL,
@@ -203,7 +203,7 @@ CREATE TABLE `contests_asks` (
   `reply_time` datetime NOT NULL,
   `is_hidden` tinyint(1) DEFAULT '0',
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -220,14 +220,14 @@ UNLOCK TABLES;
 --
 
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `contests_notice` (
   `contest_id` int(11) NOT NULL,
   `title` varchar(30) NOT NULL,
   `content` varchar(500) NOT NULL,
   `time` datetime NOT NULL,
   KEY `contest_id` (`contest_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -244,12 +244,12 @@ UNLOCK TABLES;
 --
 
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `contests_permissions` (
   `username` varchar(20) NOT NULL,
   `contest_id` int(11) NOT NULL,
   PRIMARY KEY (`username`,`contest_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -266,12 +266,12 @@ UNLOCK TABLES;
 --
 
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `contests_problems` (
   `problem_id` int(11) NOT NULL,
   `contest_id` int(11) NOT NULL,
   PRIMARY KEY (`problem_id`,`contest_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -288,7 +288,7 @@ UNLOCK TABLES;
 --
 
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `contests_registrants` (
   `username` varchar(20) NOT NULL,
   `user_rating` int(11) NOT NULL,
@@ -296,7 +296,7 @@ CREATE TABLE `contests_registrants` (
   `has_participated` tinyint(1) NOT NULL,
   `rank` int(11) NOT NULL,
   PRIMARY KEY (`contest_id`,`username`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -313,7 +313,7 @@ UNLOCK TABLES;
 --
 
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `contests_submissions` (
   `contest_id` int(11) NOT NULL,
   `submitter` varchar(20) NOT NULL,
@@ -322,7 +322,7 @@ CREATE TABLE `contests_submissions` (
   `score` int(11) NOT NULL,
   `penalty` int(11) NOT NULL,
   PRIMARY KEY (`contest_id`,`submitter`,`problem_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -339,7 +339,7 @@ UNLOCK TABLES;
 --
 
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `custom_test_submissions` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `problem_id` int(10) unsigned NOT NULL,
@@ -351,7 +351,7 @@ CREATE TABLE `custom_test_submissions` (
   `status` varchar(20) NOT NULL,
   `status_details` varchar(100) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -368,7 +368,7 @@ UNLOCK TABLES;
 --
 
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `hacks` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `problem_id` int(10) unsigned NOT NULL,
@@ -386,7 +386,7 @@ CREATE TABLE `hacks` (
   PRIMARY KEY (`id`),
   KEY `submission_id` (`submission_id`),
   KEY `is_hidden` (`is_hidden`,`problem_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -403,12 +403,12 @@ UNLOCK TABLES;
 --
 
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `important_blogs` (
   `blog_id` int(11) NOT NULL,
   `level` int(11) NOT NULL,
   PRIMARY KEY (`blog_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -425,13 +425,13 @@ UNLOCK TABLES;
 --
 
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `judger_info` (
   `judger_name` varchar(50) NOT NULL,
-  `password` varchar(50) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
+  `password` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL,
   `ip` char(20) NOT NULL,
   PRIMARY KEY (`judger_name`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -448,7 +448,7 @@ UNLOCK TABLES;
 --
 
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `problems` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `title` text NOT NULL,
@@ -460,7 +460,7 @@ CREATE TABLE `problems` (
   `ac_num` int(11) NOT NULL DEFAULT '0',
   `submit_num` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -477,13 +477,13 @@ UNLOCK TABLES;
 --
 
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `problems_contents` (
   `id` int(11) NOT NULL,
   `statement` mediumtext NOT NULL,
   `statement_md` mediumtext NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -500,12 +500,12 @@ UNLOCK TABLES;
 --
 
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `problems_permissions` (
   `username` varchar(20) NOT NULL,
   `problem_id` int(11) NOT NULL,
   PRIMARY KEY (`username`,`problem_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -522,7 +522,7 @@ UNLOCK TABLES;
 --
 
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `problems_tags` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `problem_id` int(11) NOT NULL,
@@ -530,7 +530,7 @@ CREATE TABLE `problems_tags` (
   PRIMARY KEY (`id`),
   KEY `problem_id` (`problem_id`),
   KEY `tag` (`tag`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -547,7 +547,7 @@ UNLOCK TABLES;
 --
 
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `search_requests` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `created_at` datetime NOT NULL,
@@ -560,7 +560,7 @@ CREATE TABLE `search_requests` (
   PRIMARY KEY (`id`),
   KEY `remote_addr` (`remote_addr`,`created_at`),
   KEY `created_at` (`created_at`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -577,7 +577,7 @@ UNLOCK TABLES;
 --
 
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `submissions` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `problem_id` int(10) unsigned NOT NULL,
@@ -598,7 +598,7 @@ CREATE TABLE `submissions` (
   `status_details` varchar(100) NOT NULL,
   PRIMARY KEY (`id`),
   KEY `is_hidden` (`is_hidden`,`problem_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -615,7 +615,7 @@ UNLOCK TABLES;
 --
 
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `user_info` (
   `usergroup` char(1) NOT NULL DEFAULT 'U',
   `username` varchar(20) NOT NULL,
@@ -634,7 +634,7 @@ CREATE TABLE `user_info` (
   PRIMARY KEY (`username`),
   KEY `rating` (`rating`,`username`),
   KEY `ac_num` (`ac_num`,`username`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -651,7 +651,7 @@ UNLOCK TABLES;
 --
 
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `user_msg` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `sender` varchar(20) NOT NULL,
@@ -660,7 +660,7 @@ CREATE TABLE `user_msg` (
   `send_time` datetime NOT NULL,
   `read_time` datetime DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -677,16 +677,16 @@ UNLOCK TABLES;
 --
 
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `user_system_msg` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `title` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
-  `content` varchar(300) COLLATE utf8_unicode_ci NOT NULL,
-  `receiver` varchar(20) COLLATE utf8_unicode_ci NOT NULL,
+  `title` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `content` varchar(300) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `receiver` varchar(20) COLLATE utf8mb4_unicode_ci NOT NULL,
   `send_time` datetime NOT NULL,
   `read_time` datetime DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --

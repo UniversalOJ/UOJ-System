@@ -72,10 +72,10 @@ UOJEOF
     cat >/etc/mysql/mysql.conf.d/uoj_mysqld.cnf <<UOJEOF
 [mysqld]
 default-time-zone='+8:00'
-character-set-server=utf8
-collation-server=utf8_unicode_ci
-init_connect='SET NAMES utf8'
-init_connect='SET collation_connection = utf8_unicode_ci'
+character-set-server=utf8mb4
+collation-server=utf8mb4_unicode_ci
+init_connect='SET NAMES utf8mb4'
+init_connect='SET collation_connection = utf8mb4_unicode_ci'
 skip-character-set-client-handshake
 sql-mode=ONLY_FULL_GROUP_BY,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION
 UOJEOF
