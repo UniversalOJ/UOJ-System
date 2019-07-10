@@ -58,14 +58,7 @@
 				if ($zip->open($up_filename) === TRUE){
 					$zip->extractTo("/var/uoj_data/upload/{$problem['id']}");
 					$zip->close();
-					exec(
-<<<EOD
-cd /var/uoj_data/upload/$problem['id']
-for sub_dir in `find -maxdepth 1 -type d ! -name .`; do
-	mv -f \$sub_dir/* . && rm -rf \$sub_dir
-done
-EOD
-					);
+					exec("cd /var/uoj_data/upload/{$problem['id']}; for sub_dir in `find -maxdepth 1 -type d ! -name .`; do mv -f \$sub_dir/* . && rm -rf \$sub_dir; done");
 					echo "<script>alert('上传成功！')</script>";
 				}else{
 					$errmsg = "解压失败！";
