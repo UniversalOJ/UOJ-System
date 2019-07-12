@@ -543,7 +543,7 @@ EOD;
 			</div>
 			<div class="list-group">
 			<?php foreach ($contest['extra_config']['links'] as $link) { ?>
-				<a href="/blog/<?=$link[1]?>" class="list-group-item"><?=$link[0]?></a>
+				<a href="/blogs/<?=$link[1]?>" class="list-group-item"><?=$link[0]?></a>
 			<?php } ?>
 			</div>
 		</div>

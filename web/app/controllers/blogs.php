@@ -23,7 +23,7 @@ EOD;
 <div class="pull-right">
 	<div class="btn-group">
 		<a href="<?= HTML::blog_url(Auth::id(), '/') ?>" class="btn btn-default btn-sm">我的博客首页</a>
-		<a href="<?= HTML::blog_url(Auth::id(), '/blog/new/write')?>" class="btn btn-primary btn-sm"><span class="glyphicon glyphicon-edit"></span> 写新博客</a>
+		<a href="<?= HTML::blog_url(Auth::id(), '/post/new/write')?>" class="btn btn-primary btn-sm"><span class="glyphicon glyphicon-edit"></span> 写新博客</a>
 	</div>
 </div>
 <?php endif ?>

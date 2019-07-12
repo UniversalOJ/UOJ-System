@@ -33,7 +33,7 @@
 		);
 	}
 	if ($blog && !$blog['is_draft']) {
-		$blog_editor->blog_url = "/blog/{$blog['id']}";
+		$blog_editor->blog_url = HTML::blog_url(UOJContext::user()['username'], "/post/{$blog['id']}");
 	} else {
 		$blog_editor->blog_url = null;
 	}
@@ -57,7 +57,7 @@
 					insertSlide(array_merge($data, array('is_draft' => 0)));
 					$blog = array('id' => DB::insert_id(), 'tags' => array());
 					$ret['blog_write_url'] = HTML::blog_url(UOJContext::user()['username'], "/slide/{$blog['id']}/write");
-					$ret['blog_url'] = HTML::blog_url(UOJContext::user()['username'], "/blog/{$blog['id']}");
+					$ret['blog_url'] = HTML::blog_url(UOJContext::user()['username'], "/post/{$blog['id']}");
 				}
 			} else {
 				updateBlog($blog['id'], $data);

@@ -104,7 +104,7 @@ function getContestProblemLink($problem, $contest_id, $problem_title = '!title_o
 }
 function getBlogLink($id) {
 	if (validateUInt($id) && $blog = queryBlog($id)) {
-		return '<a href="/blog/'.$id.'">'.$blog['title'].'</a>';
+		return '<a href="/blogs/'.$id.'">'.$blog['title'].'</a>';
 	}
 }
 function getClickZanBlock($type, $id, $cnt, $val = null) {

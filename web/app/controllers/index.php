@@ -25,7 +25,7 @@
 							}
 						?>
 						<tr>
-							<td><a href="/blog/<?= $blog['id'] ?>"><?= $blog['title'] ?></a><?= $new_tag ?></td>
+							<td><a href="/blogs/<?= $blog['id'] ?>"><?= $blog['title'] ?></a><?= $new_tag ?></td>
 							<td>by <?= getUserLink($blog['poster']) ?></td>
 							<td><small><?= $blog['post_time'] ?></small></td>
 						</tr>

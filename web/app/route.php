@@ -39,7 +39,11 @@ Route::group([
 		Route::any('/hack/{id}', '/hack.php');
 		
 		Route::any('/blogs', '/blogs.php');
-		Route::any('/blog/{id}', '/blog_show.php');
+		if (UOJConfig::$data['switch']['blog-use-subdomain']) {
+			Route::any('/blog/{id}', '/blog_show.php');
+		}
+		Route::any('/blogs/{id}', '/blog_show.php');
+		Route::any('/post/{id}', '/blog_show.php');
 		
 		Route::any('/announcements', '/announcements.php');
 		

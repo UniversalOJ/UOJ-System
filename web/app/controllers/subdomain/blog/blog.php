@@ -29,7 +29,7 @@
 		global $myUser, $blog, $comment_form;
 		$comment = HTML::escape($_POST['comment']);
 		
-		list($comment, $referrers) = uojHandleAtSign($comment, "/blog/{$blog['id']}");
+		list($comment, $referrers) = uojHandleAtSign($comment, "/post/{$blog['id']}");
 		
 		$esc_comment = DB::escape($comment);
 		DB::insert("insert into blogs_comments (poster, blog_id, content, reply_id, post_time, zan) values ('{$myUser['username']}', '{$blog['id']}', '$esc_comment', 0, now(), 0)");
@@ -92,7 +92,7 @@
 		global $myUser, $blog, $reply_form;
 		$comment = HTML::escape($_POST['reply_comment']);
 		
-		list($comment, $referrers) = uojHandleAtSign($comment, "/blog/{$blog['id']}");
+		list($comment, $referrers) = uojHandleAtSign($comment, "/post/{$blog['id']}");
 		
 		$reply_id = $_POST['reply_id'];
 		

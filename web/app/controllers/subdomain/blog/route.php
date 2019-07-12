@@ -9,7 +9,7 @@ call_user_func(function() { // to prevent variable scope leak
 		$prefix = '';
 	} else {
 		$domain = UOJConfig::$data['web']['blog']['host'];
-		$prefix = '/blogof/{blog_username}';
+		$prefix = '/blog/{blog_username}';
 	}
 
 	Route::group([
@@ -22,11 +22,11 @@ call_user_func(function() { // to prevent variable scope leak
 			Route::any("$prefix/archive", '/subdomain/blog/archive.php');
 			Route::any("$prefix/aboutme", '/subdomain/blog/aboutme.php');
 			Route::any("$prefix/click-zan", '/click_zan.php');
-			Route::any("$prefix/blog/{id}", '/subdomain/blog/blog.php');
+			Route::any("$prefix/post/{id}", '/subdomain/blog/blog.php');
 			Route::any("$prefix/slide/{id}", '/subdomain/blog/slide.php');
-			Route::any("$prefix/blog/(?:{id}|new)/write", '/subdomain/blog/blog_write.php');
+			Route::any("$prefix/post/(?:{id}|new)/write", '/subdomain/blog/blog_write.php');
 			Route::any("$prefix/slide/(?:{id}|new)/write", '/subdomain/blog/slide_write.php');
-			Route::any("$prefix/blog/{id}/delete", '/subdomain/blog/blog_delete.php');
+			Route::any("$prefix/post/{id}/delete", '/subdomain/blog/blog_delete.php');
 		}
 	);
 

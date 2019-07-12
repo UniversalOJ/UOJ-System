@@ -47,7 +47,7 @@ class HTML {
 		if (UOJConfig::$data['switch']['blog-use-subdomain'])
 			$url = UOJConfig::$data['web']['blog']['protocol'].'://'.blog_name_encode($username).'.'.UOJConfig::$data['web']['blog']['host'].$port;
 		else
-			$url = UOJConfig::$data['web']['blog']['protocol'].'://'.UOJConfig::$data['web']['blog']['host'].$port.'/blogof/'.blog_name_encode($username);
+			$url = UOJConfig::$data['web']['blog']['protocol'].'://'.UOJConfig::$data['web']['blog']['host'].$port.'/blog/'.blog_name_encode($username);
 		$url .= $uri;
 		$url = rtrim($url, '/');
 		return HTML::escape($url);
