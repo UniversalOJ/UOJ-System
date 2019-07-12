@@ -52,6 +52,6 @@ return [
 	],
 	'switch' => [
 		'web-analytics' => false,
-		'blog-use-subdomain' => false
+		'blog-domain-mode' => 3
 	]
 ];

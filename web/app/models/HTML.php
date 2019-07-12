@@ -43,14 +43,37 @@ class HTML {
 	}
 	
 	public static function blog_url($username, $uri) {
-		$port = UOJConfig::$data['web']['blog']['port'] == 80 ? '' : (':'.UOJConfig::$data['web']['blog']['port']);
-		if (UOJConfig::$data['switch']['blog-use-subdomain'])
-			$url = UOJConfig::$data['web']['blog']['protocol'].'://'.blog_name_encode($username).'.'.UOJConfig::$data['web']['blog']['host'].$port;
-		else
-			$url = UOJConfig::$data['web']['blog']['protocol'].'://'.UOJConfig::$data['web']['blog']['host'].$port.'/blog/'.blog_name_encode($username);
+		switch (UOJConfig::$data['switch']['blog-domain-mode']) {
+			case 1:
+				$port = ((UOJConfig::$data['web']['blog']['protocol'] === "http" && UOJConfig::$data['web']['blog']['port'] == 80) || (UOJConfig::$data['web']['blog']['protocol'] === "https" && UOJConfig::$data['web']['blog']['port'] == 443)) ? '' : (':'.UOJConfig::$data['web']['blog']['port']);
+				$url = UOJConfig::$data['web']['blog']['protocol'].'://'.blog_name_encode($username).'.'.UOJConfig::$data['web']['blog']['host'].$port;
+				break;
+			case 2:
+				$port = ((UOJConfig::$data['web']['blog']['protocol'] === "http" && UOJConfig::$data['web']['blog']['port'] == 80) || (UOJConfig::$data['web']['blog']['protocol'] === "https" && UOJConfig::$data['web']['blog']['port'] == 443)) ? '' : (':'.UOJConfig::$data['web']['blog']['port']);
+				$url = UOJConfig::$data['web']['blog']['protocol'].'://'.UOJConfig::$data['web']['blog']['host'].$port.'/'.blog_name_encode($username);
+				break;
+			case 3:
+				$port = ((UOJConfig::$data['web']['main']['protocol'] === "http" && UOJConfig::$data['web']['main']['port'] == 80) || (UOJConfig::$data['web']['main']['protocol'] === "https" && UOJConfig::$data['web']['main']['port'] == 443)) ? '' : (':'.UOJConfig::$data['web']['main']['port']);
+				$url = UOJConfig::$data['web']['main']['protocol'].'://'.UOJConfig::$data['web']['main']['host'].$port.'/blog/'.blog_name_encode($username);
+				break;
+		}
 		$url .= $uri;
 		$url = rtrim($url, '/');
 		return HTML::escape($url);
+	}
+	public static function blog_list_url() {
+		switch (UOJConfig::$data['switch']['blog-domain-mode']) {
+			case 1:
+			case 2:
+				$port = ((UOJConfig::$data['web']['blog']['protocol'] === "http" && UOJConfig::$data['web']['blog']['port'] == 80) || (UOJConfig::$data['web']['blog']['protocol'] === "https" && UOJConfig::$data['web']['blog']['port'] == 443)) ? '' : (':'.UOJConfig::$data['web']['blog']['port']);
+				$url = UOJConfig::$data['web']['blog']['protocol'].'://'.UOJConfig::$data['web']['blog']['host'].$port;
+				break;
+			case 3:
+				$port = ((UOJConfig::$data['web']['main']['protocol'] === "http" && UOJConfig::$data['web']['main']['port'] == 80) || (UOJConfig::$data['web']['main']['protocol'] === "https" && UOJConfig::$data['web']['main']['port'] == 443)) ? '' : (':'.UOJConfig::$data['web']['main']['port']);
+				$url = UOJConfig::$data['web']['main']['protocol'].'://'.UOJConfig::$data['web']['main']['host'].$port.'/blogs';
+				break;
+		}
+		return HTML::escape(rtrim($url, '/'));
 	}
 	
 	public static function url($uri, $config = array()) {

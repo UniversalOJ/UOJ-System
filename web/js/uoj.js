@@ -295,7 +295,7 @@ $.fn.uoj_blog_tag = function() {
 function click_zan(zan_id, zan_type, zan_delta, node) {
 	var loading_node = $('<div class="text-muted">loading...</div>');
 	$(node).replaceWith(loading_node);
-	$.post('/click-zan', {
+	$.post(zan_link + '/click-zan', {
 		id : zan_id,
 		delta : zan_delta,
 		type : zan_type
