@@ -16,28 +16,9 @@ getAptPackage(){
     #Update apt sources and install
     dpkg -s gnupg 2>/dev/null || (apt-get update && apt-get install -y gnupg)
     echo "deb http://ppa.launchpad.net/stesie/libv8/ubuntu bionic main" | tee /etc/apt/sources.list.d/stesie-libv8.list && apt-key adv --keyserver keyserver.ubuntu.com --recv-keys D858A0DF
-    apt-get update && apt-get install -y vim ntp zip unzip curl wget apache2 libapache2-mod-xsendfile libapache2-mod-php php php-dev php-pear php-zip php-mysql php-mbstring mysql-server cmake fp-compiler re2c libv8-7.5-dev libyaml-dev python python3 python3-requests
+    apt-get update && apt-get install -y vim ntp zip unzip curl wget apache2 libapache2-mod-xsendfile libapache2-mod-php php php-dev php-pear php-zip php-mysql php-mbstring mysql-server cmake fp-compiler re2c libv8-7.5-dev libyaml-dev python python3 python3-requests openjdk-8-jdk openjdk-11-jdk
     #Install PHP extensions
     printf "/opt/libv8-7.5\n\n" | pecl install v8js yaml
-}
-
-getOracleJDK(){
-    printf "\n\n==> Getting JDK runtime files\n"
-    #Add judger user
-    useradd -m local_main_judger && usermod -a -G www-data local_main_judger
-    #Set Oracle JDK do not track usage
-    mkdir -p /etc/oracle/java/ && echo 'com.oracle.usagetracker.track.last.usage=false' >/etc/oracle/java/usagetracker.properties
-    #Get newest jdk dist file
-    JDK_MIRROR_LINK=https://build.funtoo.org/distfiles/oracle-java/
-    curl -s ${JDK_MIRROR_LINK} | grep -oP '>jdk-[7,8].*-linux-x64.tar' | sed -e 's/[\",>]//g' -e 's/-linux-x64.tar//g' >jdkdist.list
-    wget --progress=dot:giga ${JDK_MIRROR_LINK}$(sed -n '1p' jdkdist.list)-linux-x64.tar.gz ${JDK_MIRROR_LINK}$(sed -n '$p' jdkdist.list)-linux-x64.tar.gz
-    #Change compiler version to faq.php
-    sed -i -e 's/Ubuntu Linux 14.04 LTS x64/Ubuntu Linux 18.04 LTS x64/' \
-           -e 's/g++ 4.8.4/g++ 7.3.0/' -e 's/gcc 4.8.4/gcc 7.3.0/' -e 's/fpc 2.6.2/fpc 3.0.4/' -e 's/Python 2.7和3.4/Python 2.7和3.6/' \
-           -e "s/jdk-7u76/$(sed -n '1p' jdkdist.list)/g" -e "s/jdk-8u31/$(sed -n '$p' jdkdist.list)/g" ../../uoj/1/app/controllers/faq.php
-    #Move jdk file to judger user root
-    chown local_main_judger jdkdist.list jdk-*-linux-x64.tar.gz
-    mv jdkdist.list jdk-*-linux-x64.tar.gz /home/local_main_judger/
 }
 
 setLAMPConf(){
@@ -84,7 +65,7 @@ UOJEOF
 setWebConf(){
     printf "\n\n==> Setting web files\n"
     #Set webroot path
-    cp -r ../../uoj/1 /var/www/uoj
+    ln -sf /opt/UOJ-System/web /var/www/uoj
     chown -R www-data /var/www/uoj/app/storage
     #Set web config file
     php -a <<UOJEOF
@@ -99,14 +80,15 @@ UOJEOF
 }
 
 setJudgeConf(){
-    printf "\n\n==> Setting judge_client files\n"
+    printf "\n\n==> Setting judger files\n"
+    #Add local_main_judger user
+    useradd -m local_main_judger && usermod -a -G www-data local_main_judger
     #Set uoj_data path
-    mkdir /var/uoj_data
-    mkdir /var/uoj_data/prepare
+    mkdir /var/uoj_data && mkdir /var/uoj_data/upload
     chown -R www-data /var/uoj_data && chgrp -R www-data /var/uoj_data
-    #Compile judge_client and set runtime
+    #Compile uoj_judger and set runtime
+    chown -R local_main_judger /opt/UOJ-System/judger && chgrp -R local_main_judger /opt/UOJ-System/judger
     su local_main_judger <<EOD
-cp -r ../../judge_client/1 /opt/UOJ-System/judger
 ln -s /var/uoj_data /opt/UOJ-System/judger/uoj_judger/data
 cd /opt/UOJ-System/judger && chmod +x judge_client
 cat >uoj_judger/include/uoj_work_path.h <<UOJEOF
@@ -115,14 +97,10 @@ cat >uoj_judger/include/uoj_work_path.h <<UOJEOF
 #define UOJ_JUDGER_PYTHON3_VERSION "3.6"
 #define UOJ_JUDGER_FPC_VERSION "3.0.4"
 UOJEOF
-cd uoj_judger && make -j$(($(grep -c ^processor /proc/cpuinfo) + 1))
-mkdir /opt/UOJ-System/judger/uoj_judger/run/runtime && cd /opt/UOJ-System/judger/uoj_judger/run/runtime
-mv ~/jdkdist.list ~/jdk-*-linux-x64.tar.gz .
-tar -xzf jdk-7*-linux-x64.tar.gz && tar -xzf jdk-8*-linux-x64.tar.gz
-mv jdk1.7* jdk1.7.0 && mv jdk1.8* jdk1.8.0
+cd uoj_judger && make -j$(($(nproc) + 1))
 EOD
     #Set judge_client config file
-    cat >/opt/UOJ-System/judger/.conf.json <<UOJEOF
+    cat >../../judger/.conf.json <<UOJEOF
 {
     "uoj_protocol": "http",
     "uoj_host": "127.0.0.1",
@@ -132,8 +110,7 @@ EOD
     "socket_password": "_judger_socket_password_"
 }
 UOJEOF
-    chmod 600 /opt/UOJ-System/judger/.conf.json
-    chown local_main_judger /opt/UOJ-System/judger/.conf.json
+    chmod 600 ../../judger/.conf.json && chown local_main_judger ../../judger/.conf.json
 }
 
 initProgress(){
@@ -152,11 +129,12 @@ initProgress(){
     service apache2 restart
     su local_main_judger -c '/opt/UOJ-System/judger/judge_client start'
     #Touch SetupDone flag file
+    touch /var/uoj_data/.UOJSetupDone
     printf "\n\n***Installation complete. Enjoy!***\n"
 }
 
 prepProgress(){
-    getAptPackage;getOracleJDK;setLAMPConf;setWebConf;setJudgeConf
+    getAptPackage;setLAMPConf;setWebConf;setJudgeConf
 }
 
 if [ $# -le 0 ] ;then
