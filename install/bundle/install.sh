@@ -58,7 +58,7 @@ setLAMPConf(){
     XSendFile On
     XSendFilePath /var/uoj_data
     XSendFilePath /var/www/uoj/app/storage
-    XSendFilePath /home/local_main_judger/judge_client/uoj_judger/include
+    XSendFilePath /opt/UOJ-System/judger/uoj_judger/include
 </VirtualHost>
 UOJEOF
     #Enable modules and make UOJ site conf enabled
@@ -106,23 +106,23 @@ setJudgeConf(){
     chown -R www-data /var/uoj_data && chgrp -R www-data /var/uoj_data
     #Compile judge_client and set runtime
     su local_main_judger <<EOD
-cp -r ../../judge_client/1 ~/judge_client
-ln -s /var/uoj_data ~/judge_client/uoj_judger/data
-cd ~/judge_client && chmod +x judge_client
+cp -r ../../judge_client/1 /opt/UOJ-System/judger
+ln -s /var/uoj_data /opt/UOJ-System/judger/uoj_judger/data
+cd /opt/UOJ-System/judger && chmod +x judge_client
 cat >uoj_judger/include/uoj_work_path.h <<UOJEOF
-#define UOJ_WORK_PATH "/home/local_main_judger/judge_client/uoj_judger"
+#define UOJ_WORK_PATH "/opt/UOJ-System/judger/uoj_judger"
 #define UOJ_JUDGER_BASESYSTEM_UBUNTU1804
 #define UOJ_JUDGER_PYTHON3_VERSION "3.6"
 #define UOJ_JUDGER_FPC_VERSION "3.0.4"
 UOJEOF
 cd uoj_judger && make -j$(($(grep -c ^processor /proc/cpuinfo) + 1))
-mkdir ~/judge_client/uoj_judger/run/runtime && cd ~/judge_client/uoj_judger/run/runtime
+mkdir /opt/UOJ-System/judger/uoj_judger/run/runtime && cd /opt/UOJ-System/judger/uoj_judger/run/runtime
 mv ~/jdkdist.list ~/jdk-*-linux-x64.tar.gz .
 tar -xzf jdk-7*-linux-x64.tar.gz && tar -xzf jdk-8*-linux-x64.tar.gz
 mv jdk1.7* jdk1.7.0 && mv jdk1.8* jdk1.8.0
 EOD
     #Set judge_client config file
-    cat >/home/local_main_judger/judge_client/.conf.json <<UOJEOF
+    cat >/opt/UOJ-System/judger/.conf.json <<UOJEOF
 {
     "uoj_protocol": "http",
     "uoj_host": "127.0.0.1",
@@ -132,14 +132,14 @@ EOD
     "socket_password": "_judger_socket_password_"
 }
 UOJEOF
-    chmod 600 /home/local_main_judger/judge_client/.conf.json
-    chown local_main_judger /home/local_main_judger/judge_client/.conf.json
+    chmod 600 /opt/UOJ-System/judger/.conf.json
+    chown local_main_judger /opt/UOJ-System/judger/.conf.json
 }
 
 initProgress(){
     printf "\n\n==> Doing initial config and start service\n"
     #Replace password placeholders
-    sed -i -e "s/_main_judger_password_/$_main_judger_password_/g" -e "s/_judger_socket_password_/$_judger_socket_password_/g" /home/local_main_judger/judge_client/.conf.json
+    sed -i -e "s/_main_judger_password_/$_main_judger_password_/g" -e "s/_judger_socket_password_/$_judger_socket_password_/g" /opt/UOJ-System/judger/.conf.json
     sed -i -e "s/salt0/$(genRandStr 32)/g" -e "s/salt1/$(genRandStr 16)/g" -e "s/salt2/$(genRandStr 16)/g" -e "s/salt3/$(genRandStr 16)/g" -e "s/_judger_socket_password_/$_judger_socket_password_/g" /var/www/uoj/app/.config.php
     #Import judge_client to MySQL database
     service mysql start
@@ -150,7 +150,7 @@ initProgress(){
     service ntp restart
     service mysql restart
     service apache2 restart
-    su local_main_judger -c '~/judge_client/judge_client start'
+    su local_main_judger -c '/opt/UOJ-System/judger/judge_client start'
     #Touch SetupDone flag file
     printf "\n\n***Installation complete. Enjoy!***\n"
 }
