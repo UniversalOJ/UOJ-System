@@ -1,0 +1,47 @@
+version: "3"
+services:
+
+  uoj-db:
+    image: universaloj/uoj-system:db
+    container_name: uoj-db
+    restart: always
+    volumes:
+      - ./uoj_data/db/mysql:/var/lib/mysql
+    environment:
+      - MYSQL_DATABASE=app_uoj233
+      - MYSQL_ROOT_PASSWORD=root
+  
+  uoj-judger:
+    image: universaloj/uoj-system:judger
+    container_name: uoj-judger
+    restart: always
+    stdin_open: true
+    tty: true
+    cap_add:
+      - SYS_PTRACE
+    volumes:
+      - ./uoj_data/judger/log:/opt/uoj/judger/log
+    environment:
+      - UOJ_PROTOCOL=http
+      - UOJ_HOST=uoj-web
+      - JUDGER_NAME=compose_judger
+      - JUDGER_PASSWORD=_judger_password_
+      - SOCKET_PORT=2333
+      - SOCKET_PASSWORD=_judger_socket_password_
+  
+  uoj-web:
+    image: universaloj/uoj-system:web
+    container_name: uoj-web
+    restart: always
+    stdin_open: true
+    tty: true
+    cap_add:
+      - SYS_PTRACE
+    depends_on:
+      - uoj-db
+      - uoj-judger
+    volumes:
+      - ./uoj_data/web/data:/var/uoj_data
+    ports:
+      - "80:80"
+      - "3690:3690"
