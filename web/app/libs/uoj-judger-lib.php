@@ -1,7 +1,7 @@
 <?php
 	global $uojSupportedLanguages, $uojMainJudgerWorkPath;
 	$uojSupportedLanguages = array('C', 'C++', 'C++11', 'Java8', 'Java11', 'Pascal', 'Python2', 'Python3');
-	$uojMainJudgerWorkPath = "/opt/UOJ-System/judger/uoj_judger";
+	$uojMainJudgerWorkPath = "/opt/uoj/judger/uoj_judger";
 	
 	function authenticateJudger() {
 		if (!is_string($_POST['judger_name']) || !is_string($_POST['password'])) {

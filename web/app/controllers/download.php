@@ -27,7 +27,7 @@
 			$download_name = "problem_$id.zip";
 			break;
 		case 'testlib.h':
-			$file_name = "/opt/UOJ-System/judger/uoj_judger/include/testlib.h";
+			$file_name = "/opt/uoj/judger/uoj_judger/include/testlib.h";
 			$download_name = "testlib.h";
 			break;
 		default:

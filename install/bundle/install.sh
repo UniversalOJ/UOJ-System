@@ -39,7 +39,7 @@ setLAMPConf(){
     XSendFile On
     XSendFilePath /var/uoj_data
     XSendFilePath /var/www/uoj/app/storage
-    XSendFilePath /opt/UOJ-System/judger/uoj_judger/include
+    XSendFilePath /opt/uoj/judger/uoj_judger/include
 </VirtualHost>
 UOJEOF
     #Enable modules and make UOJ site conf enabled
@@ -65,7 +65,7 @@ UOJEOF
 setWebConf(){
     printf "\n\n==> Setting web files\n"
     #Set webroot path
-    ln -sf /opt/UOJ-System/web /var/www/uoj
+    ln -sf /opt/uoj/web /var/www/uoj
     chown -R www-data /var/www/uoj/app/storage
     #Set web config file
     php -a <<UOJEOF
@@ -87,12 +87,12 @@ setJudgeConf(){
     mkdir /var/uoj_data && mkdir /var/uoj_data/upload
     chown -R www-data /var/uoj_data && chgrp -R www-data /var/uoj_data
     #Compile uoj_judger and set runtime
-    chown -R local_main_judger /opt/UOJ-System/judger && chgrp -R local_main_judger /opt/UOJ-System/judger
+    chown -R local_main_judger /opt/uoj/judger && chgrp -R local_main_judger /opt/uoj/judger
     su local_main_judger <<EOD
-ln -s /var/uoj_data /opt/UOJ-System/judger/uoj_judger/data
-cd /opt/UOJ-System/judger && chmod +x judge_client
+ln -s /var/uoj_data /opt/uoj/judger/uoj_judger/data
+cd /opt/uoj/judger && chmod +x judge_client
 cat >uoj_judger/include/uoj_work_path.h <<UOJEOF
-#define UOJ_WORK_PATH "/opt/UOJ-System/judger/uoj_judger"
+#define UOJ_WORK_PATH "/opt/uoj/judger/uoj_judger"
 #define UOJ_JUDGER_BASESYSTEM_UBUNTU1804
 #define UOJ_JUDGER_PYTHON3_VERSION "3.6"
 #define UOJ_JUDGER_FPC_VERSION "3.0.4"
@@ -116,7 +116,7 @@ UOJEOF
 initProgress(){
     printf "\n\n==> Doing initial config and start service\n"
     #Replace password placeholders
-    sed -i -e "s/_main_judger_password_/$_main_judger_password_/g" -e "s/_judger_socket_password_/$_judger_socket_password_/g" /opt/UOJ-System/judger/.conf.json
+    sed -i -e "s/_main_judger_password_/$_main_judger_password_/g" -e "s/_judger_socket_password_/$_judger_socket_password_/g" /opt/uoj/judger/.conf.json
     sed -i -e "s/salt0/$(genRandStr 32)/g" -e "s/salt1/$(genRandStr 16)/g" -e "s/salt2/$(genRandStr 16)/g" -e "s/salt3/$(genRandStr 16)/g" -e "s/_judger_socket_password_/$_judger_socket_password_/g" /var/www/uoj/app/.config.php
     #Import judge_client to MySQL database
     service mysql start
@@ -127,7 +127,7 @@ initProgress(){
     service ntp restart
     service mysql restart
     service apache2 restart
-    su local_main_judger -c '/opt/UOJ-System/judger/judge_client start'
+    su local_main_judger -c '/opt/uoj/judger/judge_client start'
     #Touch SetupDone flag file
     touch /var/uoj_data/.UOJSetupDone
     printf "\n\n***Installation complete. Enjoy!***\n"
