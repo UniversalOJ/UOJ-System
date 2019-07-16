@@ -26,10 +26,11 @@ EXE = main_judger \
 	run/formatter \
 	run/run_program \
 	run/run_interaction \
-	builtin/judger/judger \
-	$(EXE_CHECKER)
+	builtin/judger/judger
 
-all: $(EXE)
+all: $(EXE) $(EXE_CHECKER)
+runner: $(EXE)
+checker: $(EXE_CHECKER)
 
 % : %.cpp
 	$(CXX) $(CXXFLAGS) $(EXTRA_CXXFLAGS) $< -o $@
@@ -45,4 +46,4 @@ main_judger: include
 $(EXE_CHECKER): include/testlib.h
 
 clean:
-	rm -f $(EXE)
+	rm -f $(EXE) $(EXE_CHECKER)

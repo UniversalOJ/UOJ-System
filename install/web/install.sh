@@ -69,7 +69,7 @@ UOJEOF
 #define UOJ_JUDGER_PYTHON3_VERSION "3.6"
 #define UOJ_JUDGER_FPC_VERSION "3.0.4"
 UOJEOF
-    make -j$(($(nproc) + 1)) && cd ../../install/web
+    make runner -j$(($(nproc) + 1)) && cd ../../install/web
 }
 
 initProgress(){
