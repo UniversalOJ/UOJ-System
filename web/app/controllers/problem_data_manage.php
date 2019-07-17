@@ -118,6 +118,7 @@
 
 	$info_form = new UOJForm('info');
 	$http_host = HTML::escape(UOJContext::httpHost());
+	$data_url = HTML::url("/download.php?type=data&id={$problem['id']}");
 	$download_url = HTML::url("/download.php?type=problem&id={$problem['id']}");
 	$info_form->appendHTML(<<<EOD
 <div class="form-group">
@@ -133,9 +134,82 @@
 </div>
 EOD
 	);
+
+	function getDataRequirement($problem,$myUser) {
+	    
+		$visible = hasProblemPermission($myUser, $problem);
+		
+		if (!$visible) {
+			return false;
+		}
+		
+		$id = $problem['id'];
+		$file_name = "/var/uoj_data/$id.zip";
+		
+		$finfo = finfo_open(FILEINFO_MIME);
+    	$mimetype = finfo_file($finfo, $file_name);
+    	if ($mimetype === false) {
+    		return false;
+    	}
+    	finfo_close($finfo);
+    	
+		return true;
+	}
+	
+	$data_requirement = getDataRequirement($problem,$myUser);
+	function getDownloadRequirement($problem,$myUser) {
+	    
+		$visible = isProblemVisibleToUser($problem, $myUser);
+		if (!$visible && $myUser != null) {
+			$result = DB::selectALL("select contest_id from contests_problems where problem_id = {$problem['id']}");
+			while (list($contest_id) = DB::fetch($result, MYSQLI_NUM)) {
+				$contest = queryContest($contest_id);
+				genMoreContestInfo($contest);
+				if ($contest['cur_progress'] != CONTEST_NOT_STARTED && hasRegistered($myUser, $contest) && queryContestProblemRank($contest, $problem)) {
+					$visible = true;
+				}
+			}
+		}
+		if (!$visible) {
+			return false;
+		}
+		
+		$id = $problem['id'];
+		$file_name = "/var/uoj_data/$id/download.zip";
+		
+		$finfo = finfo_open(FILEINFO_MIME);
+    	$mimetype = finfo_file($finfo, $file_name);
+    	if ($mimetype === false) {
+    		return false;
+    	}
+    	finfo_close($finfo);
+    	
+		return true;
+	}
+	
+	$download_requirement = getDownloadRequirement($problem,$myUser);
+
+	$data_url = HTML::url("/download.php?type=data&id={$problem['id']}");
+	$download_url = HTML::url("/download.php?type=problem&id={$problem['id']}");
+
+	if($data_requirement):
 	$info_form->appendHTML(<<<EOD
 <div class="form-group">
-	<label class="col-sm-3 control-label">problem_{$problem['id']}.zip</label>
+	<label class="col-sm-3 control-label">题目数据</label>
+	<div class="col-sm-9">
+		<div class="form-control-static">
+			<a href="$data_url">$data_url</a>
+		</div>
+	</div>
+</div>
+EOD
+	);
+	endif;
+
+	if($download_requirement):
+	$info_form->appendHTML(<<<EOD
+<div class="form-group">
+	<label class="col-sm-3 control-label">附加文件</label>
 	<div class="col-sm-9">
 		<div class="form-control-static">
 			<a href="$download_url">$download_url</a>
@@ -144,6 +218,8 @@ EOD
 </div>
 EOD
 	);
+	endif;
+
 	$info_form->appendHTML(<<<EOD
 <div class="form-group">
 	<label class="col-sm-3 control-label">testlib.h</label>

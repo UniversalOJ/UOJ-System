@@ -12,6 +12,8 @@ return [
 	'show statistics' => 'Show statistics',
 	'statement' => 'Statement',
 	'custom test' => 'Custom Test',
+	'download' => 'Download',
+	'data' => 'Data',
 	'manage' => 'Manage',
 	'statistics' => 'Statistics',
 	'run' => 'Run',

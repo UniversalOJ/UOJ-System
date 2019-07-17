@@ -46,6 +46,61 @@
 	$problem_extra_config = getProblemExtraConfig($problem);
 	$custom_test_requirement = getProblemCustomTestRequirement($problem);
 
+	function getDownloadRequirement($problem,$myUser) {
+	    
+		$visible = isProblemVisibleToUser($problem, $myUser);
+		if (!$visible && $myUser != null) {
+			$result = DB::selectALL("select contest_id from contests_problems where problem_id = {$problem['id']}");
+			while (list($contest_id) = DB::fetch($result, MYSQLI_NUM)) {
+				$contest = queryContest($contest_id);
+				genMoreContestInfo($contest);
+				if ($contest['cur_progress'] != CONTEST_NOT_STARTED && hasRegistered($myUser, $contest) && queryContestProblemRank($contest, $problem)) {
+					$visible = true;
+				}
+			}
+		}
+		if (!$visible) {
+			return false;
+		}
+		
+		$id = $problem['id'];
+		$file_name = "/var/uoj_data/$id/download.zip";
+		
+		$finfo = finfo_open(FILEINFO_MIME);
+    	$mimetype = finfo_file($finfo, $file_name);
+    	if ($mimetype === false) {
+    		return false;
+    	}
+    	finfo_close($finfo);
+    	
+		return true;
+	}
+	
+	$download_requirement = getDownloadRequirement($problem,$myUser);
+	
+	function getDataRequirement($problem,$myUser) {
+	    
+		$visible = hasProblemPermission($myUser, $problem);
+		
+		if (!$visible) {
+			return false;
+		}
+		
+		$id = $problem['id'];
+		$file_name = "/var/uoj_data/$id.zip";
+		
+		$finfo = finfo_open(FILEINFO_MIME);
+    	$mimetype = finfo_file($finfo, $file_name);
+    	if ($mimetype === false) {
+    		return false;
+    	}
+    	finfo_close($finfo);
+    	
+		return true;
+	}
+	
+	$data_requirement = getDataRequirement($problem,$myUser);
+	
 	if ($custom_test_requirement && Auth::check()) {
 		$custom_test_submission = DB::selectFirst("select * from custom_test_submissions where submitter = '".Auth::id()."' and problem_id = {$problem['id']} order by id desc limit 1");
 		$custom_test_submission_result = json_decode($custom_test_submission['result'], true);
@@ -250,6 +305,12 @@ $('#contest-countdown').countdown(<?= $contest['end_time']->getTimestamp() - UOJ
 	<li><a href="#tab-submit-answer" role="tab" data-toggle="tab"><span class="glyphicon glyphicon-upload"></span> <?= UOJLocale::get('problems::submit') ?></a></li>
 	<?php if ($custom_test_requirement): ?>
 	<li><a href="#tab-custom-test" role="tab" data-toggle="tab"><span class="glyphicon glyphicon-console"></span> <?= UOJLocale::get('problems::custom test') ?></a></li>
+	<?php endif ?>
+	<?php if($download_requirement): ?>
+	<li><a href="/download.php?type=problem&id=<?= $problem['id'] ?>" role="tab"><span class="glyphicon glyphicon-floppy-download"></span> <?= UOJLocale::get('problems::download') ?> </a></li>
+	<?php endif ?>
+	<?php if($data_requirement): ?>
+	<li><a href="/download.php?type=data&id=<?= $problem['id'] ?>" role="tab"><span class="glyphicon glyphicon-cloud-save"></span> <?= UOJLocale::get('problems::data') ?> </a></li>
 	<?php endif ?>
 	<?php if (hasProblemPermission($myUser, $problem)): ?>
 	<li><a href="/problem/<?= $problem['id'] ?>/manage/statement" role="tab"><?= UOJLocale::get('problems::manage') ?></a></li>
