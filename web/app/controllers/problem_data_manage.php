@@ -58,7 +58,7 @@
 				if ($zip->open($up_filename) === TRUE){
 					$zip->extractTo("/var/uoj_data/upload/{$problem['id']}");
 					$zip->close();
-					exec("cd /var/uoj_data/upload/{$problem['id']}; for sub_dir in `find -maxdepth 1 -type d ! -name .`; do mv -f \$sub_dir/* . && rm -rf \$sub_dir; done");
+					exec("cd /var/uoj_data/upload/{$problem['id']}; if [ `find . -maxdepth 1 -type f`File = File ]; then for sub_dir in `find -maxdepth 1 -type d ! -name .`; do mv -f \$sub_dir/* . && rm -rf \$sub_dir; done; fi");
 					echo "<script>alert('上传成功！')</script>";
 				}else{
 					$errmsg = "解压失败！";
@@ -705,7 +705,7 @@ EOD
 							<div class="form-group">
 									<label for="exampleInputFile">上传zip文件</label>
 									<input type="file" name="problem_data_file" id="problem_data_file">
-									<p class="help-block">说明：请将所有数据放置于压缩包根目录内。若压缩包内存在子文件夹，则会将这些一级子文件夹下的内容移动到根目录下，然后这些一级子文件夹删除；若这些子文件夹内存在同名文件，则会发生随机替换，仅保留一个副本。</p>
+									<p class="help-block">说明：请将所有数据放置于压缩包根目录内。若压缩包内仅存在文件夹而不存在文件，则会将这些一级子文件夹下的内容移动到根目录下，然后这些一级子文件夹删除；若这些子文件夹内存在同名文件，则会发生随机替换，仅保留一个副本。</p>
 							</div>
 							<input type="hidden" name="problem_data_file_submit" value="submit">
       				</div>
