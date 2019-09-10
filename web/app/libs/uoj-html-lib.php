@@ -180,8 +180,8 @@ function getSubmissionStatusDetails($submission) {
 	
 	$out_status = explode(', ', $submission['status'])[0];
 	
-	$fly = '<img src="http://img.uoj.ac/utility/bear-flying.gif" alt="小熊像超人一样飞" class="img-rounded" />';
-	$think = '<img src="http://img.uoj.ac/utility/bear-thinking.gif" alt="小熊像在思考" class="img-rounded" />';
+	$fly = '<img src="/images/utility/qpx_n/b37.gif" alt="小熊像超人一样飞" class="img-rounded" />';
+	$think = '<img src="/images/utility/qpx_n/b29.gif" alt="小熊像在思考" class="img-rounded" />';
 	
 	if ($out_status == 'Judged') {
 		$status_text = '<strong>Judged!</strong>';

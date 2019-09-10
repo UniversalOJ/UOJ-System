@@ -15,7 +15,7 @@
 			<div id="collapseOne" class="collapse">
 				<div class="card-body">
 					<p>来了？坐，欢迎来到 <?= UOJConfig::$data['profile']['oj-name'] ?>。</p>
-					<p><img src="https://tb2.bdstatic.com/tb/editor/images/qpx_n/b37.gif?t=20140803" alt="小熊像超人一样飞" /></p>
+					<p><img src="/images/utility/qpx_n/b37.gif" alt="小熊像超人一样飞" /></p>
 					<p>众所周知，信息学的题目一般形式为：给出XXXXX，要你提交一份源代码，输出XXXXX，然后时限若干秒，内存若干兆，数据若干组，每组数据与答案进行比较，不对就不给分。</p>
 					<p>看起来挺合理的，但是总是有意外。比如要求输出一个浮点数，与答案接近就满分。于是只好引入Special Judge来判断选手输出的正确性。</p>
 					<p>但是还是有意外，比如提交两个程序，一个压缩另一个解压；比如提交答案题只用提交文件；比如给出音乐要求识别乐器，达到90%的正确率就算满分……</p>
@@ -26,7 +26,7 @@
 					<p><?= UOJConfig::$data['profile']['oj-name-short'] ?>还有比赛功能可以承办比赛，赛制暂时只支持OI赛制。（不过你可以利用现有方案变相实现ACM赛制！）未来将支持更多种多样的赛制甚至自定义赛制。</p>
 					<p>目前<?= UOJConfig::$data['profile']['oj-name-short'] ?>刚刚起步，还有很多地方有待完善。想出题、想出比赛、发现BUG、发现槽点都可以联系我们，联系方式见下。</p>
 					<p>祝各位在<?= UOJConfig::$data['profile']['oj-name-short'] ?>玩得愉快！（求不虐萌萌哒服务器～求不虐萌萌哒测评机～！）</p>
-					<p><img src="https://tb2.bdstatic.com/tb/editor/images/qpx_n/b54.gif?t=20140803" alt="小熊抱抱" /></p>
+					<p><img src="/images/utility/qpx_n/b54.gif" alt="小熊抱抱" /></p>
 				</div>
 			</div>
 		</div>
@@ -114,7 +114,7 @@
 					<p>（喂喂喂我们是OJ好吗……要那么完善的博客功能干啥呢……？）</p>
 					<p>其实我觉得Markdown不用教！一学就会！</p>
 					<p>（完蛋了……<?= UOJConfig::$data['profile']['oj-name-short'] ?>好像没有Markdown的语法高亮……= =……）</p>
-					<p>我就只介绍最基本的功能好了。其它的自己探索吧～比如<a href="http://wowubuntu.com/markdown/">这里</a>。</p>
+					<p>我就只介绍最基本的功能好了。其它的自己探索吧～比如<a href="http://wow.kuapp.com/markdown/">这里</a>。</p>
 					<!-- readmore -->
 					<p><code>**强调**</code> = <strong>强调</strong></p>
 					<hr /><p><code>*强调*</code> = <em>强调</em></p>
