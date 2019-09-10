@@ -200,7 +200,7 @@ EOD;
 			$default_value = htmlspecialchars($default_value);
 			$this->is_big = true;
 			$html = <<<EOD
-<div id="div-$name">
+<div id="div-$name" class="form-group">
 	<label for="input-$name" class="control-label">$label_text</label>
 	<textarea class="form-control" name="$name" id="input-$name">$default_value</textarea>
 	<span class="help-block" id="help-$name"></span>
@@ -403,7 +403,7 @@ EOD
 					$this->submit_button_config['text'] = UOJLocale::get('submit');
 				}
 				if (!isset($this->submit_button_config['class_str'])) {
-					$this->submit_button_config['class_str'] = 'btn btn-default';
+					$this->submit_button_config['class_str'] = 'btn btn-secondary';
 				}
 				if ($this->submit_button_config['align'] == 'offset') {
 					echo '<div class="form-group">';
@@ -411,7 +411,7 @@ EOD
 				} else {
 					echo '<div class="text-', $this->submit_button_config['align'], '">';
 				}
-				echo '<button type="submit" id="button-submit-', $this->form_name, '" name="submit-', $this->form_name, '" value="', $this->form_name, '" class="', $this->submit_button_config['class_str'], '">', $this->submit_button_config['text'], '</button>';
+				echo '<button type="submit" id="button-submit-', $this->form_name, '" name="submit-', $this->form_name, '" value="', $this->form_name, '" class="mt-2 ', $this->submit_button_config['class_str'], '">', $this->submit_button_config['text'], '</button>';
 				if ($this->submit_button_config['align'] == 'offset') {
 					echo '</div>';
 				}
@@ -732,7 +732,7 @@ EOD;
 	<input type="file" id="input-{$name}" name="{$name}" style="display:none;" onchange="$('#input-{$name}_path').val($('#input-{$name}').val());" />
 	<div class="input-group bot-buffer-md">
 		<input id="input-{$name}_path" class="form-control" type="text" readonly="readonly" />
-		<span class="input-group-btn">
+		<span class="input-group-append">
 			<button type="button" class="btn btn-primary" style="width:100px; !important" onclick="$('#input-{$name}').click();"><span class="glyphicon glyphicon-folder-open"></span> $browse_text</button>
 		</span>
 	</div>

@@ -265,7 +265,7 @@ EOD;
 <?php echoUOJPageHeader('系统管理') ?>
 <div class="row">
 	<div class="col-sm-3">
-		<?= HTML::tablist($tabs_info, $cur_tab, 'nav-pills nav-stacked') ?>
+		<?= HTML::tablist($tabs_info, $cur_tab, 'nav-pills flex-column') ?>
 	</div>
 	
 	<div class="col-sm-9">

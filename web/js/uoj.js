@@ -546,15 +546,15 @@ $.fn.long_table = function(data, cur_page, header_row, get_row_str, config) {
 		
 		var get_page_li = function(p, h) {
 			if (p == -1) {
-				return $('<li></li>').addClass('disabled').append($('<a></a>').append(h));
+				return $('<li class="page-item"></li>').addClass('disabled').append($('<a class="page-link"></a>').append(h));
 			}
 			
-			var li = $('<li></li>');
+			var li = $('<li class="page-item"></li>');
 			if (p == cur_page) {
 				li.addClass('active');
 			}
 			li.append(
-				$('<a></a>').attr('href', '#' + table_div.id).append(h).click(function(e) {
+				$('<a class="page-link"></a>').attr('href', '#' + table_div.id).append(h).click(function(e) {
 					if (config.prevent_focus_on_click) {
 						e.preventDefault();
 					}
@@ -565,7 +565,7 @@ $.fn.long_table = function(data, cur_page, header_row, get_row_str, config) {
 		};
 		
 		if (n_pages > 1) {
-			var pagination = $('<ul class="pagination top-buffer-no bot-buffer-sm"></ul>');
+			var pagination = $('<ul class="pagination top-buffer-no bot-buffer-sm justify-content-center"></ul>');
 			if (cur_page > 1) {
 				pagination.append(get_page_li(cur_page - 1, '<span class="glyphicon glyphicon glyphicon-backward"></span>'));
 			} else {
@@ -701,7 +701,7 @@ $.fn.source_code_form_group = function(name, text, langs_options_html) {
 				.append(input_file)
 				.append($('<div class="input-group"/>')
 					.append(input_file_path)
-					.append($('<span class="input-group-btn"/>')
+					.append($('<span class="input-group-append"/>')
 						.append($('<button type="button" class="btn btn-primary">'+'<span class="glyphicon glyphicon-folder-open"></span> '+uojLocale('editor::browse')+'</button>')
 							.css('width', '100px')
 							.click(function() {
@@ -811,12 +811,13 @@ $.fn.source_code_form_group = function(name, text, langs_options_html) {
 		});
 
 		$(this)
+			.append($('<div class="row col-sm-12"/>')
 			.append($('<label class="col-sm-2 control-label"><div class="text-left">' + text + '</div></label>'))
 			.append($('<label class="col-sm-1 control-label" for="' + input_language_name + '">'+uojLocale('editor::language')+'</label>'))
 			.append($('<div class="col-sm-2"/>')
 				.append(input_language)
 			)
-			.append($('<div class="col-sm-offset-3 col-sm-2 radio"/>')
+			.append($('<div class="col-sm-2 offset-sm-3 radio"/>')
 				.append($('<label/>')
 					.append(input_upload_type_editor)
 					.append(' '+uojLocale('editor::upload by editor'))
@@ -827,7 +828,7 @@ $.fn.source_code_form_group = function(name, text, langs_options_html) {
 					.append(input_upload_type_file)
 					.append(' '+uojLocale('editor::upload from local'))
 				)
-			)
+			))
 			.append(div_help_language)
 			.append(div_editor)
 			.append(div_file);
@@ -880,7 +881,7 @@ $.fn.text_file_form_group = function(name, text) {
 				.append(input_file)
 				.append($('<div class="input-group"/>')
 					.append(input_file_path)
-					.append($('<span class="input-group-btn"/>')
+					.append($('<div class="input-group-append"/>')
 						.append($('<button type="button" class="btn btn-primary">'+'<span class="glyphicon glyphicon-folder-open"></span> '+uojLocale('editor::browse')+'</button>')
 							.css('width', '100px')
 							.click(function() {
@@ -968,9 +969,10 @@ $.fn.text_file_form_group = function(name, text) {
 		});
 
 		$(this)
+			.append($('<div class="row"/>')
 			.append($('<label class="col-sm-2 control-label"><div class="text-left">' + text + '</div></label>'))
 			.append($('<div class="top-buffer-sm" />'))
-			.append($('<div class="col-sm-offset-6 col-sm-2 radio"/>')
+			.append($('<div class="col-sm-2 offset-sm-6 radio"/>')
 				.append($('<label/>')
 					.append(input_upload_type_editor)
 					.append(' '+uojLocale('editor::upload by editor'))
@@ -981,7 +983,7 @@ $.fn.text_file_form_group = function(name, text) {
 					.append(input_upload_type_file)
 					.append(' '+uojLocale('editor::upload from local'))
 				)
-			)
+			))
 			.append(div_editor)
 			.append(div_file);
 

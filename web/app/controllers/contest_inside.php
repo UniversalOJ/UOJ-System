@@ -410,11 +410,11 @@ EOD;
 	 	$time_str = UOJTime::$time_now_str;
 	 	$contest_ends_in = UOJLocale::get('contests::contest ends in');
 	 	echo <<<EOD
- 		<div class="panel panel-info">
- 			<div class="panel-heading">
- 				<h3 class="panel-title">$contest_ends_in</h3>
+ 		<div class="card border-info">
+ 			<div class="card-header bg-info">
+ 				<h3 class="card-title">$contest_ends_in</h3>
  			</div>
- 			<div class="panel-body text-center countdown" data-rest="$rest_second"></div>
+ 			<div class="card-body text-center countdown" data-rest="$rest_second"></div>
  		</div>
 		<script type="text/javascript">
 			checkContestNotice({$contest['id']}, '$time_str');
@@ -434,11 +434,11 @@ EOD;
 			$title = UOJLocale::get('contests::contest final testing');
 		}
 		echo <<<EOD
- 		<div class="panel panel-info">
- 			<div class="panel-heading">
- 				<h3 class="panel-title">$title</h3>
+ 		<div class="card border-info">
+ 			<div class="card-header bg-info">
+ 				<h3 class="card-title">$title</h3>
  			</div>
- 			<div class="panel-body">
+ 			<div class="card-body">
 				<div class="progress bot-buffer-no">
 					<div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="$rop" aria-valuemin="0" aria-valuemax="100" style="width: {$rop}%; min-width: 20px;">{$rop}%</div>
 				</div>
@@ -450,9 +450,9 @@ EOD;
 	function echoContestFinished() {
 		$title = UOJLocale::get('contests::contest ended');
 		echo <<<EOD
- 		<div class="panel panel-info">
- 			<div class="panel-heading">
- 				<h3 class="panel-title">$title</h3>
+ 		<div class="card border-info">
+ 			<div class="card-header bg-info">
+ 				<h3 class="card-title">$title</h3>
  			</div>
  		</div>
 EOD;
@@ -534,12 +534,12 @@ EOD;
 			<?php if ($cur_tab == 'standings'): ?>
 	</div>
 	<div class="col-sm-3">
-		<div class="panel panel-info">
+		<div class="card border-info">
 		<?php else: ?>
-		<div class="panel panel-info top-buffer-lg">
+		<div class="card border-info top-buffer-lg">
 		<?php endif ?>
-			<div class="panel-heading">
-				<h3 class="panel-title">比赛资料</h3>
+			<div class="card-header bg-info">
+				<h3 class="card-title">比赛资料</h3>
 			</div>
 			<div class="list-group">
 			<?php foreach ($contest['extra_config']['links'] as $link) { ?>

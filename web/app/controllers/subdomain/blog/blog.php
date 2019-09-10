@@ -161,8 +161,8 @@
 	?>
 	<div id="comment-<?= $comment['id'] ?>" class="list-group-item">
 		<div class="media">
-			<div class="media-left comtposterbox">
-				<a href="<?= HTML::url('/user/profile/'.$poster['username']) ?>" class="hidden-xs">
+			<div class="media-left comtposterbox mr-3">
+				<a href="<?= HTML::url('/user/profile/'.$poster['username']) ?>" class="d-none d-sm-block">
 					<img class="media-object img-rounded" src="<?= $asrc ?>" alt="avatar" />
 				</a>
 			</div>
@@ -185,7 +185,7 @@
 </div>
 <?= $comments_pag->pagination() ?>
 
-<h3>发表评论</h3>
+<h3 class="mt-4">发表评论</h3>
 <p>可以用@mike来提到mike这个用户，mike会被高亮显示。如果你真的想打“@”这个字符，请用“@@”。</p>
 <?php $comment_form->printHTML() ?>
 

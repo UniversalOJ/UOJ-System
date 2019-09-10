@@ -33,14 +33,14 @@
 <div class="row">
 	<div class="col-md-3">
 		<?php if (UOJContext::hasBlogPermission()): ?>
-		<div class="btn-group btn-group-justified">
+		<div class="btn-group d-flex">
 			<a href="<?=HTML::blog_url(UOJContext::userid(), '/post/new/write')?>" class="btn btn-primary"><span class="glyphicon glyphicon-edit"></span> 写新博客</a>
 			<a href="<?=HTML::blog_url(UOJContext::userid(), '/slide/new/write')?>" class="btn btn-primary"><span class="glyphicon glyphicon-edit"></span> 写新幻灯片</a>
 		</div>
 		<?php endif ?>
-		<div class="panel panel-info top-buffer-sm">
-			<div class="panel-heading">标签</div>
-			<div class="panel-body">
+		<div class="card border-info top-buffer-sm">
+			<div class="card-header bg-info">标签</div>
+			<div class="card-body">
 			<?php if ($all_tags): ?>
 			<?php foreach ($all_tags as $tag): ?>
 				<?php echoBlogTag($tag['tag']) ?>

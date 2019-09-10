@@ -1,11 +1,11 @@
 
-<ul class="nav nav-tabs" role="tablist">
-	<li class="active"><a href="#tab-question" role="tab" data-toggle="tab">提问</a></li>
+<ul class="nav nav-pills float-right" role="tablist">
+	<li class="nav-item"><a class="nav-link active" href="#tab-question" role="tab" data-toggle="tab">提问</a></li>
 	<?php if ($post_notice): ?>
-		<li><a href="#tab-notice" role="tab" data-toggle="tab">公告</a></li>
+		<li class="nav-item"><a class="nav-link" href="#tab-notice" role="tab" data-toggle="tab">公告</a></li>
 	<?php endif ?>
 	<?php if ($standings_data): ?>
-		<li><a href="#tab-standings" role="tab" data-toggle="tab">终榜</a></li>
+		<li class="nav-item"><a class="nav-link" href="#tab-standings" role="tab" data-toggle="tab">终榜</a></li>
 	<?php endif ?>
 </ul>
 <div class="tab-content">

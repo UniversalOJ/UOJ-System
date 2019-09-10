@@ -42,9 +42,9 @@
 	
 ?>
 <?php echoUOJPageHeader(UOJLocale::get('hacks')) ?>
-<div class="hidden-xs">
+<div class="d-none d-sm-block">
 	<?php if ($myUser != null): ?>
-	<div class="pull-right">
+	<div class="float-right">
 		<a href="/hacks?hacker=<?= $myUser['username'] ?>" class="btn btn-success btn-sm"><?= UOJLocale::get('problems::hacks by me') ?></a>
 		<a href="/hacks?owner=<?= $myUser['username'] ?>" class="btn btn-danger btn-sm"><?= UOJLocale::get('problems::hacks to me') ?></a>
 	</div>
@@ -74,7 +74,7 @@
 				<option value="2"<?= $selected_fail ?>>Failed.</option>
 			</select>
 		</div>
-		<button type="submit" id="submit-search" class="btn btn-default btn-sm"><?= UOJLocale::get('search') ?></button>
+		<button type="submit" id="submit-search" class="btn btn-secondary btn-sm ml-2"><?= UOJLocale::get('search') ?></button>
 	</form>
 	<script type="text/javascript">
 		$('#form-search').submit(function(e) {

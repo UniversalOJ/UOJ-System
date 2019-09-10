@@ -120,7 +120,7 @@
 	$http_host = HTML::escape(UOJContext::httpHost());
 	$download_url = HTML::url("/download.php?type=problem&id={$problem['id']}");
 	$info_form->appendHTML(<<<EOD
-<div class="form-group">
+<div class="form-group row">
 	<!--<label class="col-sm-3 control-label">zip上传数据</label>
 	<div class="col-sm-9">
 		<div class="form-control-static">
@@ -134,7 +134,7 @@
 EOD
 	);
 	$info_form->appendHTML(<<<EOD
-<div class="form-group">
+<div class="form-group row">
 	<label class="col-sm-3 control-label">problem_{$problem['id']}.zip</label>
 	<div class="col-sm-9">
 		<div class="form-control-static">
@@ -145,7 +145,7 @@ EOD
 EOD
 	);
 	$info_form->appendHTML(<<<EOD
-<div class="form-group">
+<div class="form-group row">
 	<label class="col-sm-3 control-label">testlib.h</label>
 	<div class="col-sm-9">
 		<div class="form-control-static">
@@ -158,7 +158,7 @@ EOD
 
 	$esc_submission_requirement = HTML::escape(json_encode(json_decode($problem['submission_requirement']), JSON_PRETTY_PRINT));
 	$info_form->appendHTML(<<<EOD
-<div class="form-group">
+<div class="form-group row">
 	<label class="col-sm-3 control-label">提交文件配置</label>
 	<div class="col-sm-9">
 		<div class="form-control-static"><pre>
@@ -171,7 +171,7 @@ EOD
 	);
 	$esc_extra_config = HTML::escape(json_encode(json_decode($problem['extra_config']), JSON_PRETTY_PRINT));
 	$info_form->appendHTML(<<<EOD
-<div class="form-group">
+<div class="form-group row">
 	<label class="col-sm-3 control-label">其它配置</label>
 	<div class="col-sm-9">
 		<div class="form-control-static"><pre>
@@ -282,12 +282,13 @@ EOD
 		}
 		public function echoDataFilesList($active_file) {
 			foreach ($this->data_files as $file_name) {
+				echo '<li class="nav-item">';
 				if ($file_name != $active_file) {
-					echo '<li>';
+					echo '<a class="nav-link" href="#">';
 				} else {
-					echo '<li class="active">';
+					echo '<a class="nav-link active" href="#">';
 				}
-				echo '<a href="#">', htmlspecialchars($file_name), '</a>', '</li>';
+				echo htmlspecialchars($file_name), '</a>', '</li>';
 			}
 		}
 		public function displayFile($file_name) {
@@ -610,17 +611,17 @@ EOD
 <?php echoUOJPageHeader(HTML::stripTags($problem['title']) . ' - 数据 - 题目管理') ?>
 <h1 class="page-header" align="center">#<?=$problem['id']?> : <?=$problem['title']?> 管理</h1>
 <ul class="nav nav-tabs" role="tablist">
-	<li><a href="/problem/<?= $problem['id'] ?>/manage/statement" role="tab">编辑</a></li>
-	<li><a href="/problem/<?= $problem['id'] ?>/manage/managers" role="tab">管理者</a></li>
-	<li class="active"><a href="/problem/<?= $problem['id'] ?>/manage/data" role="tab">数据</a></li>
-	<li><a href="/problem/<?=$problem['id']?>" role="tab">返回</a></li>
+	<li class="nav-item"><a class="nav-link" href="/problem/<?= $problem['id'] ?>/manage/statement" role="tab">编辑</a></li>
+	<li class="nav-item"><a class="nav-link" href="/problem/<?= $problem['id'] ?>/manage/managers" role="tab">管理者</a></li>
+	<li class="nav-item"><a class="nav-link active" href="/problem/<?= $problem['id'] ?>/manage/data" role="tab">数据</a></li>
+	<li class="nav-item"><a class="nav-link" href="/problem/<?=$problem['id']?>" role="tab">返回</a></li>
 </ul>
 
 <div class="row">
 	<div class="col-md-10 top-buffer-sm">
 		<div class="row">
 			<div class="col-md-3 top-buffer-sm" id="div-file_list">
-				<ul class="nav nav-pills nav-stacked">
+				<ul class="nav nav-pills flex-column">
 					<?php $data_disp->echoDataFilesList('problem.conf'); ?>
 				</ul>
 			</div>
@@ -667,7 +668,7 @@ EOD
 		<?php endif ?>
 		</div>
 		<div class="top-buffer-md">
-			<button id="button-display_view_type" type="button" class="btn btn-primary btn-block" onclick="$('#div-view_type').toggle('fast');">修改提交记录可视权限</button>
+			<button id="button-display_view_type" type="button" class="btn btn-primary btn-block" onclick="$('#div-view_type').toggle('fast');">提交记录可视权限</button>
 			<div class="top-buffer-sm" id="div-view_type" style="display:none; padding-left:5px; padding-right:5px;">
 				<?php $view_type_form->printHTML(); ?>
 			</div>
@@ -697,8 +698,8 @@ EOD
   		<div class="modal-dialog">
     			<div class="modal-content">
       				<div class="modal-header">
+						<h4 class="modal-title" id="myModalLabel">上传数据</h4>
         				<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-        				<h4 class="modal-title" id="myModalLabel">上传数据</h4>
       				</div>
       				<div class="modal-body">
         				<form action="" method="post" enctype="multipart/form-data" role="form">
@@ -712,7 +713,7 @@ EOD
       				<div class="modal-footer">
 						<button type="submit" class="btn btn-success">上传</button>
 						</form>
-        				<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+        				<button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
       				</div>
     			</div>
   		</div>
@@ -722,12 +723,12 @@ EOD
   		<div class="modal-dialog">
     			<div class="modal-content">
       				<div class="modal-header">
+						<h4 class="modal-title" id="myModalLabel">试题配置</h4>
         				<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-        				<h4 class="modal-title" id="myModalLabel">试题配置</h4>
       				</div>
       				<div class="modal-body">
         				<form class="form-horizontal" action="" method="post" role="form">
-        					<div class="form-group">
+        					<div class="form-group row">
     							<label for="use_builtin_checker" class="col-sm-5 control-label">比对函数</label>
     							<div class="col-sm-7">
 								<select class="form-control" id="use_builtin_checker" name="use_builtin_checker">
@@ -739,55 +740,55 @@ EOD
       								<!--<input type="hidden" class="form-control" id="use_builtin_checker" name="use_builtin_checker" placeholder="比对函数">-->
     							</div>
   							</div>
-  							<div class="form-group">
+  							<div class="form-group row">
     							<label for="n_tests" class="col-sm-5 control-label">n_tests</label>
     							<div class="col-sm-7">
       								<input type="text" class="form-control" id="n_tests" name="n_tests" placeholder="数据点个数">
     							</div>
   							</div>
-  							<div class="form-group">
+  							<div class="form-group row">
     							<label for="n_ex_tests" class="col-sm-5 control-label">n_ex_tests</label>
     							<div class="col-sm-7">
       								<input type="text" class="form-control" id="n_ex_tests" name="n_ex_tests" placeholder="额外数据点个数">
     							</div>
   							</div>
-  							<div class="form-group">
+  							<div class="form-group row">
     							<label for="n_sample_tests" class="col-sm-5 control-label">n_sample_tests</label>
     							<div class="col-sm-7">
       								<input type="text" class="form-control" id="n_sample_tests" name="n_sample_tests" placeholder="样例测试点个数">
     							</div>
   							</div>
-  							<div class="form-group">
+  							<div class="form-group row">
     							<label for="input_pre" class="col-sm-5 control-label">input_pre</label>
     							<div class="col-sm-7">
       								<input type="text" class="form-control" id="input_pre" name="input_pre" placeholder="输入文件名称">
     							</div>
   							</div>
-  							<div class="form-group">
+  							<div class="form-group row">
     							<label for="input_suf" class="col-sm-5 control-label">input_suf</label>
     							<div class="col-sm-7">
       								<input type="text" class="form-control" id="input_suf" name="input_suf" placeholder="输入文件后缀">
     							</div>
   							</div>
-  							<div class="form-group">
+  							<div class="form-group row">
     							<label for="output_pre" class="col-sm-5 control-label">output_pre</label>
     							<div class="col-sm-7">
       								<input type="text" class="form-control" id="output_pre" name="output_pre" placeholder="输出文件名称">
     							</div>
   							</div>
-  							<div class="form-group">
+  							<div class="form-group row">
     							<label for="output_suf" class="col-sm-5 control-label">output_suf</label>
     							<div class="col-sm-7">
       								<input type="text" class="form-control" id="output_suf" name="output_suf" placeholder="输出文件后缀">
     							</div>
   							</div>
-  							<div class="form-group">
+  							<div class="form-group row">
     							<label for="time_limit" class="col-sm-5 control-label">time_limit</label>
     							<div class="col-sm-7">
       								<input type="text" class="form-control" id="time_limit" name="time_limit" placeholder="时间限制（不能为小数！）">
     							</div>
   							</div>
-  							<div class="form-group">
+  							<div class="form-group row">
     							<label for="memory_limit" class="col-sm-5 control-label">memory_limit</label>
     							<div class="col-sm-7">
       								<input type="text" class="form-control" id="memory_limit" name="memory_limit" placeholder="内存限制">
@@ -798,7 +799,7 @@ EOD
       				<div class="modal-footer">
 						<button type="submit" class="btn btn-success">确定</button>
 						</form>
-        				<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+        				<button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
       				</div>
     			</div>
   		</div>

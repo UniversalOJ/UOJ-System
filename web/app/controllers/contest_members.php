@@ -49,7 +49,7 @@
 <h1 class="text-center"><?= $contest['name'] ?></h1>
 <?php if ($contest['cur_progress'] == CONTEST_NOT_STARTED): ?>
 	<?php if ($iHasRegistered): ?>
-		<div class="pull-right">
+		<div class="float-right">
 			<?php $unregister_form->printHTML(); ?>
 		</div>
 		<div><a style="color:green">已报名</a></div>

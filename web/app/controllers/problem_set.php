@@ -36,7 +36,7 @@
 			echo '<a href="/problem/', $problem['id'], '">', $problem['title'], '</a>';
 			if (isset($_COOKIE['show_tags_mode'])) {
 				foreach (queryProblemTags($problem['id']) as $tag) {
-					echo '<a class="uoj-problem-tag">', '<span class="badge">', HTML::escape($tag), '</span>', '</a>';
+					echo '<a class="uoj-problem-tag">', '<span class="badge badge-pill badge-secondary">', HTML::escape($tag), '</span>', '</a>';
 				}
 			}
 			echo '</td>';
@@ -138,26 +138,12 @@ EOD;
 	<div class="col-sm-4">
 		<?= HTML::tablist($tabs_info, $cur_tab, 'nav-pills') ?>
 	</div>
-	<div class="col-sm-4">
-		<form id="form-search" class="input-group form-group" method="get">
-			<input type="text" class="form-control" name="search" placeholder="<?= UOJLocale::get('search')?>" />  
-			<span class="input-group-btn">
-				<button type="submit" class="btn btn-search btn-primary" id="submit-search"><span class="glyphicon glyphicon-search"></span></button>  
-			</span>
-		</form>
+	<div class="col-sm-4 order-sm-9 checkbox text-right">
+		<label class="checkbox-inline" for="input-show_tags_mode"><input type="checkbox" id="input-show_tags_mode" <?= isset($_COOKIE['show_tags_mode']) ? 'checked="checked" ': ''?>/> <?= UOJLocale::get('problems::show tags') ?></label>
+		<label class="checkbox-inline" for="input-show_submit_mode"><input type="checkbox" id="input-show_submit_mode" <?= isset($_COOKIE['show_submit_mode']) ? 'checked="checked" ': ''?>/> <?= UOJLocale::get('problems::show statistics') ?></label>
 	</div>
-	<div class="col-sm-4 checkbox text-right">
-		<label class="checkbox-inline" for="input-show_tags_mode">
-			<input type="checkbox" id="input-show_tags_mode" <?= isset($_COOKIE['show_tags_mode']) ? 'checked="checked" ': ''?>/> <?= UOJLocale::get('problems::show tags') ?>
-		</label>
-		<label class="checkbox-inline" for="input-show_submit_mode">
-			<input type="checkbox" id="input-show_submit_mode" <?= isset($_COOKIE['show_submit_mode']) ? 'checked="checked" ': ''?>/> <?= UOJLocale::get('problems::show statistics') ?>
-		</label>
-	</div>
-</div>
-<div class="row">
-	<div class="col-xs-10 col-xs-push-1 col-sm-6 col-sm-push-3 input-group">
-		<?php echo $pag->pagination(); ?>
+	<div class="col-sm-4 order-sm-5">
+	<?php echo $pag->pagination(); ?>
 	</div>
 </div>
 <div class="top-buffer-sm"></div>
