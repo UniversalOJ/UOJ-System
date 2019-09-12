@@ -208,6 +208,62 @@
 		DB::delete("delete from custom_test_submissions order by id asc limit {$vdata['last']}");
 	};
 	$custom_test_deleter->runAtServer();
+
+	$judger_adder = new UOJForm('judger_adder');
+	$judger_adder->addInput('judger_adder_name', 'text', '评测机名称', '',
+		function ($x, &$vdata) {
+			if (!validateUsername($x)) {
+				return '不合法';
+			}
+			if(DB::selectCount("select count(*) from judger_info where judger_name='$x'")!=0) {
+				return '不合法';
+			}
+			$vdata['name'] = $x;
+			return '';
+		},
+		null
+	);
+	$judger_adder->handle = function(&$vdata) {
+		$password=uojRandString(32);
+		DB::insert("insert into judger_info (judger_name,password) values('{$vdata['name']}','{$password}')");
+	};
+	$judger_adder->runAtServer();
+	
+	$judger_deleter = new UOJForm('judger_deleter');
+	$judger_deleter->addInput('judger_deleter_name', 'text', '评测机名称', '',
+		function ($x, &$vdata) {
+			if (!validateUsername($x)) {
+				return '不合法';
+			}
+			if(DB::selectCount("select count(*) from judger_info where judger_name='$x'")!=1) {
+				return '不合法';
+			}
+			$vdata['name'] = $x;
+			return '';
+		},
+		null
+	);
+	$judger_deleter->handle = function(&$vdata) {
+		DB::delete("delete from judger_info where judger_name='{$vdata['name']}'");
+	};
+	$judger_deleter->runAtServer();
+	
+	$judgerlist_cols = array('judger_name', 'password');
+	$judgerlist_config = array();
+	$judgerlist_header_row = <<<EOD
+	<tr>
+		<th>评测机名称</th>
+		<th>密码</th>
+	</tr>
+EOD;
+	$judgerlist_print_row = function($row) {
+		echo <<<EOD
+			<tr>
+				<td>{$row['judger_name']}</td>
+				<td>{$row['password']}</td>
+			</tr>
+EOD;
+	};
 	
 	$banlist_cols = array('username', 'usergroup');
 	$banlist_config = array();
@@ -251,6 +307,10 @@ EOD;
 		'search' => array(
 			'name' => '搜索管理',
 			'url' => '/super-manage/search'
+		),
+		'judger' => array(
+			'name' => '评测机管理',
+			'url' => '/super-manage/judger'
 		)
 	);
 	
@@ -371,6 +431,17 @@ EOD;
 				'page_len' => 1000
 			))
 		?>
+		<?php elseif ($cur_tab === 'judger'): ?>
+			<div>
+				<h4>添加评测机</h4>
+				<?php $judger_adder->printHTML(); ?>
+			</div>
+			<div>
+				<h4>删除评测机</h4>
+				<?php $judger_deleter->printHTML(); ?>
+			</div>
+			<h3>评测机列表</h3>
+			<?php echoLongTable($judgerlist_cols, 'judger_info', "1=1", '', $judgerlist_header_row, $judgerlist_print_row, $judgerlist_config) ?>
 		<?php endif ?>
 	</div>
 </div>
