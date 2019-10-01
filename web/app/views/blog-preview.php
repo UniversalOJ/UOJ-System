@@ -17,8 +17,8 @@
 <h2><?= $extra_text ?><a class="header-a" href="<?= HTML::blog_url(UOJContext::userid(), '/post/'.$blog['id']) ?>"><?= $blog['title'] ?></a></h2>
 <div><?= $blog['post_time'] ?> <strong>By</strong> <?= getUserLink($blog['poster']) ?></div>
 <?php if (!$show_title_only): ?>
-<div class="panel panel-default">
-	<div class="panel-body">
+<div class="card mb-4">
+	<div class="card-body">
 		<?php if ($blog_type == 'post'): ?>
 		<article><?= $content ?></article>
 		<?php elseif ($blog_type == 'slide'): ?>
@@ -27,26 +27,26 @@
 				<iframe class="embed-responsive-item" src="<?= HTML::blog_url(UOJContext::userid(), '/slide/'.$blog['id']) ?>"></iframe>
 			</div>
 			<div class="text-right top-buffer-sm">
-				<a class="btn btn-default btn-md" href="<?= HTML::blog_url(UOJContext::userid(), '/slide/'.$blog['id']) ?>"><span class="glyphicon glyphicon-fullscreen"></span> 全屏</a>
+				<a class="btn btn-secondary btn-md" href="<?= HTML::blog_url(UOJContext::userid(), '/slide/'.$blog['id']) ?>"><span class="glyphicon glyphicon-fullscreen"></span> 全屏</a>
 			</div>
 		</article>
 		<?php endif ?>
 	</div>
-	<div class="panel-footer text-right">
+	<div class="card-footer text-right">
 		<ul class="list-inline bot-buffer-no">
-			<li>
+			<li class="list-inline-item">
 			<?php foreach (queryBlogTags($blog['id']) as $tag): ?>
 				<?php echoBlogTag($tag) ?>
 			<?php endforeach ?>
 			</li>
 			<?php if ($is_preview): ?>
-  			<li><a href="<?= HTML::blog_url(UOJContext::userid(), '/post/'.$blog['id']) ?>">阅读全文</a></li>
+  			<li class="list-inline-item"><a href="<?= HTML::blog_url(UOJContext::userid(), '/post/'.$blog['id']) ?>">阅读全文</a></li>
   			<?php endif ?>
   			<?php if (Auth::check() && (isSuperUser(Auth::user()) || Auth::id() == $blog['poster'])): ?>
-			<li><a href="<?=HTML::blog_url(UOJContext::userid(), '/'.$blog_type.'/'.$blog['id'].'/write')?>">修改</a></li>
-			<li><a href="<?=HTML::blog_url(UOJContext::userid(), '/post/'.$blog['id'].'/delete')?>">删除</a></li>
+			<li class="list-inline-item"><a href="<?=HTML::blog_url(UOJContext::userid(), '/'.$blog_type.'/'.$blog['id'].'/write')?>">修改</a></li>
+			<li class="list-inline-item"><a href="<?=HTML::blog_url(UOJContext::userid(), '/post/'.$blog['id'].'/delete')?>">删除</a></li>
 			<?php endif ?>
-  			<li><?= getClickZanBlock('B', $blog['id'], $blog['zan']) ?></li>
+  			<li class="list-inline-item"><?= getClickZanBlock('B', $blog['id'], $blog['zan']) ?></li>
 		</ul>
 	</div>
 </div>

@@ -31,9 +31,9 @@
 	}
 ?>
 <?php echoUOJPageHeader(UOJLocale::get('submissions')) ?>
-<div class="hidden-xs">
+<div class="d-none d-sm-block">
 	<?php if ($myUser != null): ?>
-	<div class="pull-right">
+	<div class="float-right">
 		<a href="/submissions?submitter=<?= $myUser['username'] ?>" class="btn btn-primary btn-sm"><?= UOJLocale::get('problems::my submissions') ?></a>
 	</div>
 	<?php endif ?>
@@ -56,7 +56,7 @@
 			<label for="input-language" class="control-label"><?= UOJLocale::get('problems::language')?>:</label>
 			<input type="text" class="form-control input-sm" name="language" id="input-language" value="<?= $html_esc_q_language ?>" maxlength="10" style="width:8em" />
 		</div>
-		<button type="submit" id="submit-search" class="btn btn-default btn-sm"><?= UOJLocale::get('search')?></button>
+		<button type="submit" id="submit-search" class="btn btn-secondary btn-sm ml-2"><?= UOJLocale::get('search')?></button>
 	</form>
 	<script type="text/javascript">
 		$('#form-search').submit(function(e) {

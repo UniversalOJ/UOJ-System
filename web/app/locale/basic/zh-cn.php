@@ -1,5 +1,6 @@
 <?php
 return [
+	'_common_name' => '中文',
 	'login' => '登录',
 	'register' => '注册',
 	'logout' => '登出',

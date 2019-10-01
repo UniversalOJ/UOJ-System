@@ -14,7 +14,7 @@ class HTML {
 	public static function tablist($tabs_info, $cur, $type = 'nav-tabs') {
 		$html = '<ul class="nav '.$type.'" role="tablist">';
 		foreach ($tabs_info as $id => $tab) {
-			$html .= '<li'.($cur == $id ? ' class="active"' : '').'><a href="'.$tab['url'].'" role="tab">'.$tab['name'].'</a></li>';
+			$html .= '<li class="nav-item"><a class="nav-link'.($cur == $id ? ' active' : '').'" href="'.$tab['url'].'" role="tab">'.$tab['name'].'</a></li>';
 		}
 		$html .= '</ul>';
 		return $html;

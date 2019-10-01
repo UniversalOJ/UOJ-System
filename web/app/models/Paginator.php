@@ -74,28 +74,26 @@ class Paginator {
 		if ($this->n_pages == 1) {
 			return '';
 		}
-		$html = '<div class="text-center">';
-		$html .= '<ul class="pagination top-buffer-no bot-buffer-sm">';
+		$html = '<ul class="pagination top-buffer-no bot-buffer-sm justify-content-center">';
 		if ($this->cur_page > 1) {
-			$html .= '<li><a href="'.$this->getPageUri($this->cur_page - 1).'"><span class="glyphicon glyphicon glyphicon-backward"></span></a></li>';
+			$html .= '<li class="page-item"><a class="page-link" href="'.$this->getPageUri($this->cur_page - 1).'"><span class="glyphicon glyphicon glyphicon-backward"></span></a></li>';
 		} else {
-			$html .= '<li class="disabled"><a><span class="glyphicon glyphicon glyphicon-backward"></span></a></li>';
+			$html .= '<li class="page-item disabled"><a class="page-link"><span class="glyphicon glyphicon glyphicon-backward"></span></a></li>';
 		}
 			
 		for ($i = max($this->cur_page - $this->max_extend, 1); $i <= min($this->cur_page + $this->max_extend, $this->n_pages); $i++) {
 			if ($i == $this->cur_page) {
-				$html .= '<li class="active"><a href="'.$this->getPageUri($i).'">'.$i.'</a></li>';
+				$html .= '<li class="page-item active"><a class="page-link" href="'.$this->getPageUri($i).'">'.$i.'</a></li>';
 			} else {
-				$html .= '<li><a href="'.$this->getPageUri($i).'">'.$i.'</a></li>';
+				$html .= '<li class="page-item"><a class="page-link" href="'.$this->getPageUri($i).'">'.$i.'</a></li>';
 			}
 		}
 		if ($this->cur_page < $this->n_pages) {
-			$html .= '<li><a href="'.$this->getPageUri($this->cur_page + 1).'"><span class="glyphicon glyphicon glyphicon-forward"></span></a></li>';
+			$html .= '<li class="page-item"><a class="page-link" href="'.$this->getPageUri($this->cur_page + 1).'"><span class="glyphicon glyphicon glyphicon-forward"></span></a></li>';
 		} else {
-			$html .= '<li class="disabled"><a><span class="glyphicon glyphicon glyphicon-forward"></span></a></li>';
+			$html .= '<li class="page-item disabled"><a class="page-link"><span class="glyphicon glyphicon glyphicon-forward"></span></a></li>';
 		}
 		$html .= '</ul>';
-		$html .= '</div>';
 		return $html;
 	}
 }

@@ -30,10 +30,10 @@
 <?php echoUOJPageHeader(HTML::stripTags($problem['title']) . ' - 管理者 - 题目管理') ?>
 <h1 class="page-header" align="center">#<?=$problem['id']?> : <?=$problem['title']?> 管理</h1>
 <ul class="nav nav-tabs" role="tablist">
-	<li><a href="/problem/<?= $problem['id'] ?>/manage/statement" role="tab">编辑</a></li>
-	<li class="active"><a href="/problem/<?= $problem['id'] ?>/manage/managers" role="tab">管理者</a></li>
-	<li><a href="/problem/<?= $problem['id'] ?>/manage/data" role="tab">数据</a></li>
-	<li><a href="/problem/<?=$problem['id']?>" role="tab">返回</a></li>
+	<li class="nav-item"><a class="nav-link" href="/problem/<?= $problem['id'] ?>/manage/statement" role="tab">编辑</a></li>
+	<li class="nav-item"><a class="nav-link active" href="/problem/<?= $problem['id'] ?>/manage/managers" role="tab">管理者</a></li>
+	<li class="nav-item"><a class="nav-link" href="/problem/<?= $problem['id'] ?>/manage/data" role="tab">数据</a></li>
+	<li class="nav-item"><a class="nav-link" href="/problem/<?=$problem['id']?>" role="tab">返回</a></li>
 </ul>
 
 <table class="table table-hover">

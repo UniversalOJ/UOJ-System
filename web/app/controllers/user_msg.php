@@ -111,22 +111,22 @@ EOD;
 </div>
 
 <div id="history" style="display:none">
-	<div class="panel panel-primary">
-		<div class="panel-heading">
-			<button type="button" id="goBack" class="btn btn-info btn-xs" style="position:absolute">返回</button>
+	<div class="card border-primary">
+		<div class="card-header bg-primary text-white">
+			<button type="button" id="goBack" class="btn btn-info btn-sm" style="position:absolute">返回</button>
 			<div id="conversation-name" class="text-center"></div>
 		</div>
-		<div class="panel-body">
-			<ul class="pager top-buffer-no">
-				<li class="previous"><a href="#" id="pageLeft">&larr; 更早的消息</a></li>
+		<div class="card-body">
+			<ul class="pagination top-buffer-no justify-content-between">
+				<li class="previous"><a class="btn btn-outline-secondary text-primary" href="#" id="pageLeft">&larr; 更早的消息</a></li>
 				<li class="text-center" id="pageShow" style="line-height:32px"></li>
-				<li class="next"><a href="#" id="pageRight">更新的消息 &rarr;</a></li>
+				<li class="next"><a class="btn btn-outline-secondary text-primary" href="#" id="pageRight">更新的消息 &rarr;</a></li>
 			</ul>
 			<div id="history-list" style="min-height: 200px;">
 			</div>
-			<ul class="pager bot-buffer-no">
-				<li class="previous"><a href="#history" id="pageLeft2">&larr; 更早的消息</a></li>
-				<li class="next"><a href="#history" id="pageRight2">更新的消息 &rarr;</a></li>
+			<ul class="pagination top-buffer-no justify-content-between">
+				<li class="previous"><a class="btn btn-outline-secondary text-primary" href="#history" id="pageLeft2">&larr; 更早的消息</a></li>
+				<li class="next"><a class="btn btn-outline-secondary text-primary" href="#history" id="pageRight2">更新的消息 &rarr;</a></li>
 			</ul>
 			<hr />
 			<form id="form-message">
@@ -172,8 +172,8 @@ function addButton(conversationName, send_time, type) {
 function addBubble(content, send_time, read_time, msgId, conversation, page, type) {
 	$("#history-list").append(
 			'<div style=' + (type ? "margin-left:0%;margin-right:20%;" : "margin-left:20%;margin-right:0%;") + '>' +
-				'<div class="panel panel-info">' +
-					'<div class="panel-body" style="background:#afeeee; word-break: break-all">' +
+				'<div class="card border-info mb-4">' +
+					'<div class="card-body" style="background:#17a2b8; word-break: break-all">' +
 						'<div style="white-space:pre-wrap">' +
 							htmlspecialchars(content) +
 						'</div>' +

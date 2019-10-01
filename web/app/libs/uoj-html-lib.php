@@ -180,8 +180,8 @@ function getSubmissionStatusDetails($submission) {
 	
 	$out_status = explode(', ', $submission['status'])[0];
 	
-	$fly = '<img src="http://img.uoj.ac/utility/bear-flying.gif" alt="小熊像超人一样飞" class="img-rounded" />';
-	$think = '<img src="http://img.uoj.ac/utility/bear-thinking.gif" alt="小熊像在思考" class="img-rounded" />';
+	$fly = '<img src="/images/utility/qpx_n/b37.gif" alt="小熊像超人一样飞" class="img-rounded" />';
+	$think = '<img src="/images/utility/qpx_n/b29.gif" alt="小熊像在思考" class="img-rounded" />';
 	
 	if ($out_status == 'Judged') {
 		$status_text = '<strong>Judged!</strong>';
@@ -420,14 +420,14 @@ function echoSubmissionContent($submission, $requirement) {
 					$sh_class = '';
 					break;
 			}
-			echo '<div class="panel panel-info">';
-			echo '<div class="panel-heading">';
-			echo '<h4 class="panel-title">'.$req['name'].'</h4>';
+			echo '<div class="card border-info mb-3">';
+			echo '<div class="card-header bg-info">';
+			echo '<h4 class="card-title">'.$req['name'].'</h4>';
 			echo '</div>';
-			echo '<div class="panel-body">';
+			echo '<div class="card-body">';
 			echo '<pre><code class="'.$sh_class.'">'.$file_content."\n".'</code></pre>';
 			echo '</div>';
-			echo '<div class="panel-footer">'.$footer_text.'</div>';
+			echo '<div class="card-footer">'.$footer_text.'</div>';
 			echo '</div>';
 		}
 		else if ($req['type'] == "text") {
@@ -435,14 +435,14 @@ function echoSubmissionContent($submission, $requirement) {
 			$file_content = strOmit($file_content, 500);
 			$file_content = uojTextEncode($file_content, array('allow_CR' => true, 'html_escape' => true));
 			$footer_text = UOJLocale::get('problems::text file');
-			echo '<div class="panel panel-info">';
-			echo '<div class="panel-heading">';
-			echo '<h4 class="panel-title">'.$req['file_name'].'</h4>';
+			echo '<div class="card border-info mb-3">';
+			echo '<div class="card-header bg-info">';
+			echo '<h4 class="card-title">'.$req['file_name'].'</h4>';
 			echo '</div>';
-			echo '<div class="panel-body">';
+			echo '<div class="card-body">';
 			echo '<pre>'."\n".$file_content."\n".'</pre>';
 			echo '</div>';
-			echo '<div class="panel-footer">'.$footer_text.'</div>';
+			echo '<div class="card-footer">'.$footer_text.'</div>';
 			echo '</div>';
 		}
 	}
@@ -473,7 +473,7 @@ class JudgementDetailsPrinter {
 			$this->_print_c($node);
 			echo "\n</pre>";
 		} elseif ($node->nodeName == 'tests') {
-			echo '<div class="panel-group" id="', $this->name, '_details_accordion">';
+			echo '<div id="', $this->name, '_details_accordion">';
 			if ($this->styler->show_small_tip) {
 				echo '<div class="text-right text-muted">', '小提示：点击横条可展开更详细的信息', '</div>';
 			}
@@ -487,16 +487,16 @@ class JudgementDetailsPrinter {
 			$subtask_score = $node->getAttribute('score');
 			$subtask_info = $node->getAttribute('info');
 			
-			echo '<div class="panel ', $this->styler->getTestInfoClass($subtask_info), '">';
+			echo '<div class="card ', $this->styler->getTestInfoClass($subtask_info), ' mb-3">';
 			
 			$accordion_parent = "{$this->name}_details_accordion";
 			$accordion_collapse =  "{$accordion_parent}_collapse_subtask_{$subtask_num}";
 			$accordion_collapse_accordion =  "{$accordion_collapse}_accordion";
-			echo 	'<div class="panel-heading" data-toggle="collapse" data-parent="#', $accordion_parent, '" data-target="#', $accordion_collapse, '">';
+			echo 	'<div class="card-header" data-toggle="collapse" data-parent="#', $accordion_parent, '" data-target="#', $accordion_collapse, '">';
 			
 			echo 		'<div class="row">';
 			echo 			'<div class="col-sm-2">';
-			echo 				'<h3 class="panel-title">', 'Subtask #', $subtask_num, ': ', '</h3>';
+			echo 				'<h3 class="card-title">', 'Subtask #', $subtask_num, ': ', '</h3>';
 			echo 			'</div>';
 			
 			if ($this->styler->show_score) {
@@ -515,10 +515,10 @@ class JudgementDetailsPrinter {
 			echo 		'</div>';
 			echo 	'</div>';
 			
-			echo 	'<div id="', $accordion_collapse, '" class="panel-collapse collapse">';
-			echo 		'<div class="panel-body">';
+			echo 	'<div id="', $accordion_collapse, '" class="card-collapse collapse">';
+			echo 		'<div class="card-body">';
 
-			echo 			'<div id="', $accordion_collapse_accordion, '" class="panel-group">';
+			echo 			'<div id="', $accordion_collapse_accordion, '">';
 			$this->subtask_num = $subtask_num;
 			$this->_print_c($node);
 			$this->subtask_num = null;
@@ -534,7 +534,7 @@ class JudgementDetailsPrinter {
 			$test_time = $node->getAttribute('time');
 			$test_memory = $node->getAttribute('memory');
 
-			echo '<div class="panel ', $this->styler->getTestInfoClass($test_info), '">';
+			echo '<div class="card ', $this->styler->getTestInfoClass($test_info), ' mb-3">';
 			
 			$accordion_parent = "{$this->name}_details_accordion";
 			if ($this->subtask_num != null) {
@@ -542,16 +542,16 @@ class JudgementDetailsPrinter {
 			}
 			$accordion_collapse = "{$accordion_parent}_collapse_test_{$test_num}";
 			if (!$this->styler->shouldFadeDetails($test_info)) {
-				echo '<div class="panel-heading" data-toggle="collapse" data-parent="#', $accordion_parent, '" data-target="#', $accordion_collapse, '">';
+				echo '<div class="card-header" data-toggle="collapse" data-parent="#', $accordion_parent, '" data-target="#', $accordion_collapse, '">';
 			} else {
-				echo '<div class="panel-heading">';
+				echo '<div class="card-header">';
 			}
 			echo '<div class="row">';
 			echo '<div class="col-sm-2">';
 			if ($test_num > 0) {
-				echo '<h4 class="panel-title">', 'Test #', $test_num, ': ', '</h4>';
+				echo '<h4 class="card-title">', 'Test #', $test_num, ': ', '</h4>';
 			} else {
-				echo '<h4 class="panel-title">', 'Extra Test:', '</h4>';
+				echo '<h4 class="card-title">', 'Extra Test:', '</h4>';
 			}
 			echo '</div>';
 				
@@ -584,12 +584,12 @@ class JudgementDetailsPrinter {
 			echo '</div>';
 
 			if (!$this->styler->shouldFadeDetails($test_info)) {
-				$accordion_collapse_class = 'panel-collapse collapse';
+				$accordion_collapse_class = 'card-collapse collapse';
 				if ($this->styler->collapse_in) {
 					$accordion_collapse_class .= ' in';
 				}
 				echo '<div id="', $accordion_collapse, '" class="', $accordion_collapse_class, '">';
-				echo '<div class="panel-body">';
+				echo '<div class="card-body">';
 
 				$this->_print_c($node);
 
@@ -603,18 +603,18 @@ class JudgementDetailsPrinter {
 			$test_time = $node->getAttribute('time');
 			$test_memory = $node->getAttribute('memory');
 
-			echo '<div class="panel ', $this->styler->getTestInfoClass($test_info), '">';
+			echo '<div class="card ', $this->styler->getTestInfoClass($test_info), ' mb-3">';
 			
 			$accordion_parent = "{$this->name}_details_accordion";
 			$accordion_collapse = "{$accordion_parent}_collapse_custom_test";
 			if (!$this->styler->shouldFadeDetails($test_info)) {
-				echo '<div class="panel-heading" data-toggle="collapse" data-parent="#', $accordion_parent, '" data-target="#', $accordion_collapse, '">';
+				echo '<div class="card-header" data-toggle="collapse" data-parent="#', $accordion_parent, '" data-target="#', $accordion_collapse, '">';
 			} else {
-				echo '<div class="panel-heading">';
+				echo '<div class="card-header">';
 			}
 			echo '<div class="row">';
 			echo '<div class="col-sm-2">';
-			echo '<h4 class="panel-title">', 'Custom Test: ', '</h4>';
+			echo '<h4 class="card-title">', 'Custom Test: ', '</h4>';
 			echo '</div>';
 				
 			echo '<div class="col-sm-4">';
@@ -637,12 +637,12 @@ class JudgementDetailsPrinter {
 			echo '</div>';
 
 			if (!$this->styler->shouldFadeDetails($test_info)) {
-				$accordion_collapse_class = 'panel-collapse collapse';
+				$accordion_collapse_class = 'card-collapse collapse';
 				if ($this->styler->collapse_in) {
 					$accordion_collapse_class .= ' in';
 				}
 				echo '<div id="', $accordion_collapse, '" class="', $accordion_collapse_class, '">';
-				echo '<div class="panel-body">';
+				echo '<div class="card-body">';
 
 				$this->_print_c($node);
 
@@ -706,13 +706,13 @@ class SubmissionDetailsStyler {
 	public $fade_all_details = false;
 	public function getTestInfoClass($info) {
 		if ($info == 'Accepted' || $info == 'Extra Test Passed') {
-			return 'panel-uoj-accepted';
+			return 'card-uoj-accepted';
 		} elseif ($info == 'Time Limit Exceeded') {
-			return 'panel-uoj-tle';
+			return 'card-uoj-tle';
 		} elseif ($info == 'Acceptable Answer') {
-			return 'panel-uoj-acceptable-answer';
+			return 'card-uoj-acceptable-answer';
 		} else {
-			return 'panel-uoj-wrong';
+			return 'card-uoj-wrong';
 		}
 	}
 	public function shouldFadeDetails($info) {
@@ -727,13 +727,13 @@ class CustomTestSubmissionDetailsStyler {
 	public $ioi_contest_is_running = false;
 	public function getTestInfoClass($info) {
 		if ($info == 'Success') {
-			return 'panel-uoj-accepted';
+			return 'card-uoj-accepted';
 		} elseif ($info == 'Time Limit Exceeded') {
-			return 'panel-uoj-tle';
+			return 'card-uoj-tle';
 		} elseif ($info == 'Acceptable Answer') {
-			return 'panel-uoj-acceptable-answer';
+			return 'card-uoj-acceptable-answer';
 		} else {
-			return 'panel-uoj-wrong';
+			return 'card-uoj-wrong';
 		}
 	}
 	public function shouldFadeDetails($info) {
@@ -747,13 +747,13 @@ class HackDetailsStyler {
 	public $fade_all_details = false;
 	public function getTestInfoClass($info) {
 		if ($info == 'Accepted' || $info == 'Extra Test Passed') {
-			return 'panel-uoj-accepted';
+			return 'card-uoj-accepted';
 		} elseif ($info == 'Time Limit Exceeded') {
-			return 'panel-uoj-tle';
+			return 'card-uoj-tle';
 		} elseif ($info == 'Acceptable Answer') {
-			return 'panel-uoj-acceptable-answer';
+			return 'card-uoj-acceptable-answer';
 		} else {
-			return 'panel-uoj-wrong';
+			return 'card-uoj-wrong';
 		}
 	}
 	public function shouldFadeDetails($info) {
@@ -910,7 +910,7 @@ function echoBlog($blog, $config = array()) {
 	uojIncludeView('blog-preview', $config);
 }
 function echoBlogTag($tag) {
-	echo '<a class="uoj-blog-tag"><span class="badge">', HTML::escape($tag), '</span></a>';
+	echo '<a class="uoj-blog-tag"><span class="badge badge-pill badge-secondary">', HTML::escape($tag), '</span></a>';
 }
 
 function echoUOJPageHeader($page_title, $extra_config = array()) {

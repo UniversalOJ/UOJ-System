@@ -18,9 +18,9 @@ function blog_editor_init(name, editor_config) {
 	
 	// init buttons
 	var save_btn = $('<button type="button" class="btn btn-sm"></button>');
-	var preview_btn = $('<button type="button" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-eye-open"></span></button>');
-	var bold_btn = $('<button type="button" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-bold"></span></button>');
-	var italic_btn = $('<button type="button" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-italic"></span></button>');
+	var preview_btn = $('<button type="button" class="btn btn-secondary btn-sm"><span class="glyphicon glyphicon-eye-open"></span></button>');
+	var bold_btn = $('<button type="button" class="btn btn-secondary btn-sm ml-2"><span class="glyphicon glyphicon-bold"></span></button>');
+	var italic_btn = $('<button type="button" class="btn btn-secondary btn-sm"><span class="glyphicon glyphicon-italic"></span></button>');
 	
 	save_btn.tooltip({ container: 'body', title: '保存 (Ctrl-S)' });
 	preview_btn.tooltip({ container: 'body', title: '预览 (Ctrl-D)' 	});

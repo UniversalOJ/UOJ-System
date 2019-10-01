@@ -262,7 +262,16 @@ EOD
 	$REQUIRE_LIB['shjs'] = '';
 ?>
 <?php echoUOJPageHeader(HTML::stripTags($problem['title']) . ' - ' . UOJLocale::get('problems::problem')) ?>
-<div class="pull-right">
+<?php
+	$limit = getUOJConf("/var/uoj_data/{$problem['id']}/problem.conf");
+	$time_limit = $limit['time_limit'];
+	$memory_limit = $limit['memory_limit'];
+?>
+<div class="row d-flex justify-content-center">
+	<span class="badge badge-secondary mr-1">时间限制:<?=$time_limit!=null?"$time_limit s":"N/A"?></span>
+	<span class="badge badge-secondary mr-1">空间限制:<?=$memory_limit!=null?"$memory_limit MB":"N/A"?></span>
+</div>
+<div class="float-right">
 	<?= getClickZanBlock('P', $problem['id'], $problem['zan']) ?>
 </div>
 
@@ -272,7 +281,7 @@ EOD
 	<h1 class="col-md-7 text-center"><?= $problem_letter ?>. <?= $problem['title'] ?></h1>
 	<div class="col-md-2 text-right" id="contest-countdown"></div>
 </div>
-<a role="button" class="btn btn-info pull-right" href="/contest/<?= $contest['id'] ?>/problem/<?= $problem['id'] ?>/statistics"><span class="glyphicon glyphicon-stats"></span> <?= UOJLocale::get('problems::statistics') ?></a>
+<a role="button" class="btn btn-info float-right" href="/contest/<?= $contest['id'] ?>/problem/<?= $problem['id'] ?>/statistics"><span class="glyphicon glyphicon-stats"></span> <?= UOJLocale::get('problems::statistics') ?></a>
 <?php if ($contest['cur_progress'] <= CONTEST_IN_PROGRESS): ?>
 <script type="text/javascript">
 checkContestNotice(<?= $contest['id'] ?>, '<?= UOJTime::$time_now_str ?>');
@@ -281,30 +290,14 @@ $('#contest-countdown').countdown(<?= $contest['end_time']->getTimestamp() - UOJ
 <?php endif ?>
 <?php else: ?>
 <h1 class="page-header text-center">#<?= $problem['id']?>. <?= $problem['title'] ?></h1>
-<a role="button" class="btn btn-info pull-right" href="/problem/<?= $problem['id'] ?>/statistics"><span class="glyphicon glyphicon-stats"></span> <?= UOJLocale::get('problems::statistics') ?></a>
+<a role="button" class="btn btn-info float-right" href="/problem/<?= $problem['id'] ?>/statistics"><span class="glyphicon glyphicon-stats"></span> <?= UOJLocale::get('problems::statistics') ?></a>
 <?php endif ?>
-<?php
-    $limit = getUOJConf("/var/uoj_data/{$problem['id']}/problem.conf");
-    $time_limit = $limit['time_limit'];
-    $memory_limit = $limit['memory_limit'];
-?>
-<div class="row text-center">
-    <?php if($time_limit != null ): ?>
-	    <span class="label label-info" style="font-size:15px">Time Limit:&nbsp;<?=$time_limit?> s</span>
-	<?php else: ?>
-	    <span class="label label-info" style="font-size:15px">Time Limit:&nbsp;N/A</span>
-	<?php endif ?>
-    <?php if($memory_limit != null ): ?>
-	    <span class="label label-info" style="font-size:15px">Memory Limit:&nbsp;<?=$memory_limit?> MB</span>
-	<?php else: ?>
-	    <span class="label label-info" style="font-size:15px">Memory Limit:&nbsp;N/A</span>
-	<?php endif ?>
-</div>
+
 <ul class="nav nav-tabs" role="tablist">
-	<li class="active"><a href="#tab-statement" role="tab" data-toggle="tab"><span class="glyphicon glyphicon-book"></span> <?= UOJLocale::get('problems::statement') ?></a></li>
-	<li><a href="#tab-submit-answer" role="tab" data-toggle="tab"><span class="glyphicon glyphicon-upload"></span> <?= UOJLocale::get('problems::submit') ?></a></li>
+	<li class="nav-item"><a class="nav-link active" href="#tab-statement" role="tab" data-toggle="tab"><span class="glyphicon glyphicon-book"></span> <?= UOJLocale::get('problems::statement') ?></a></li>
+	<li class="nav-item"><a class="nav-link" href="#tab-submit-answer" role="tab" data-toggle="tab"><span class="glyphicon glyphicon-upload"></span> <?= UOJLocale::get('problems::submit') ?></a></li>
 	<?php if ($custom_test_requirement): ?>
-	<li><a href="#tab-custom-test" role="tab" data-toggle="tab"><span class="glyphicon glyphicon-console"></span> <?= UOJLocale::get('problems::custom test') ?></a></li>
+	<li class="nav-item"><a class="nav-link" href="#tab-custom-test" role="tab" data-toggle="tab"><span class="glyphicon glyphicon-console"></span> <?= UOJLocale::get('problems::custom test') ?></a></li>
 	<?php endif ?>
 	<?php if($download_requirement): ?>
 	<li><a href="/download.php?type=problem&id=<?= $problem['id'] ?>" role="tab"><span class="glyphicon glyphicon-floppy-download"></span> <?= UOJLocale::get('problems::download') ?> </a></li>
@@ -313,10 +306,10 @@ $('#contest-countdown').countdown(<?= $contest['end_time']->getTimestamp() - UOJ
 	<li><a href="/download.php?type=data&id=<?= $problem['id'] ?>" role="tab"><span class="glyphicon glyphicon-cloud-save"></span> <?= UOJLocale::get('problems::data') ?> </a></li>
 	<?php endif ?>
 	<?php if (hasProblemPermission($myUser, $problem)): ?>
-	<li><a href="/problem/<?= $problem['id'] ?>/manage/statement" role="tab"><?= UOJLocale::get('problems::manage') ?></a></li>
+	<li class="nav-item"><a class="nav-link" href="/problem/<?= $problem['id'] ?>/manage/statement" role="tab"><?= UOJLocale::get('problems::manage') ?></a></li>
 	<?php endif ?>
 	<?php if ($contest): ?>
-	<li><a href="/contest/<?= $contest['id'] ?>" role="tab"><?= UOJLocale::get('contests::back to the contest') ?></a></li>
+	<li class="nav-item"><a class="nav-link" href="/contest/<?= $contest['id'] ?>" role="tab"><?= UOJLocale::get('contests::back to the contest') ?></a></li>
 	<?php endif ?>
 </ul>
 <div class="tab-content">

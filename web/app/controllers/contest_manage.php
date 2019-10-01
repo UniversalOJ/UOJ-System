@@ -198,14 +198,14 @@
 ?>
 <?php echoUOJPageHeader(HTML::stripTags($contest['name']) . ' - 比赛管理') ?>
 <h1 class="page-header" align="center"><?=$contest['name']?> 管理</h1>
-<ul class="nav nav-tabs" role="tablist">
-	<li class="active"><a href="#tab-time" role="tab" data-toggle="tab">比赛时间</a></li>
-	<li><a href="#tab-managers" role="tab" data-toggle="tab">管理者</a></li>
-	<li><a href="#tab-problems" role="tab" data-toggle="tab">试题</a></li>
+<ul class="nav nav-tabs mb-3" role="tablist">
+	<li class="nav-item"><a class="nav-link active" href="#tab-time" role="tab" data-toggle="tab">比赛时间</a></li>
+	<li class="nav-item"><a class="nav-link" href="#tab-managers" role="tab" data-toggle="tab">管理者</a></li>
+	<li class="nav-item"><a class="nav-link" href="#tab-problems" role="tab" data-toggle="tab">试题</a></li>
 	<?php if (isSuperUser($myUser)): ?>
-	<li><a href="#tab-others" role="tab" data-toggle="tab">其它</a></li>
+	<li class="nav-item"><a class="nav-link" href="#tab-others" role="tab" data-toggle="tab">其它</a></li>
 	<?php endif ?>
-	<li><a href="/contest/<?=$contest['id']?>" role="tab">返回</a></li>
+	<li class="nav-item"><a class="nav-link" href="/contest/<?=$contest['id']?>" role="tab">返回</a></li>
 </ul>
 <div class="tab-content top-buffer-sm">
 	<div class="tab-pane active" id="tab-time">

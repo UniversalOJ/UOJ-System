@@ -66,7 +66,7 @@
 <?php if ($my_questions_pag != null): ?>
 	<div>
 		<?php if ($post_question): ?>
-			<div class="pull-right">
+			<div class="float-right">
 				<button id="button-display-post-question" type="button" class="btn btn-primary btn-xs">提问题</button>
 			</div>
 		<?php endif ?>

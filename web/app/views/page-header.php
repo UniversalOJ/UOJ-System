@@ -6,17 +6,17 @@
 	if ($new_user_msg_num == 0) {
 		$new_user_msg_num_html = '';
 	} else {
-		$new_user_msg_num_html = '<span class="badge">'.$new_user_msg_num.'</span>';
+		$new_user_msg_num_html = '<span class="badge badge-pill badge-secondary">'.$new_user_msg_num.'</span>';
 	}
 	if ($new_system_msg_num == 0) {
 		$new_system_msg_num_html = '';
 	} else {
-		$new_system_msg_num_html = '<span class="badge">'.$new_system_msg_num.'</span>';
+		$new_system_msg_num_html = '<span class="badge badge-pill badge-secondary">'.$new_system_msg_num.'</span>';
 	}
 	if ($new_msg_tot == 0) {
 		$new_msg_tot_html = '';
 	} else {
-		$new_msg_tot_html = '<sup><span class="badge">'.$new_msg_tot.'</span></sup>';
+		$new_msg_tot_html = '<sup><span class="badge badge-pill badge-secondary">'.$new_msg_tot.'</span></sup>';
 	}
 	
 	if (!isset($PageMainTitle)) {
@@ -42,9 +42,9 @@
 		<script type="text/javascript">uojHome = '<?= HTML::url('/') ?>'</script>
 
 		<!-- Bootstrap core CSS -->
-		<?= HTML::css_link('/css/bootstrap.min.css?v=2015.5.31') ?>
-		<!-- Bootstrap theme -->
-		<?= HTML::css_link('/css/bootstrap-theme.min.css?v=2015.5.31') ?>
+		<?= HTML::css_link('/css/bootstrap.min.css?v=2019.5.31') ?>
+		<!-- Bootstrap Glyphicons CSS-->
+		<?= HTML::css_link('/css/bootstrap-glyphicons.min.css?v=2019.5.31') ?>
 
 		<!-- Custom styles for this template -->
 		<?= HTML::css_link('/css/uoj-theme.css?v=2.3333') ?>
@@ -72,7 +72,8 @@
 		<?php endif ?>
 		
 		<!-- Include all compiled plugins (below), or include individual files as needed -->
-		<?= HTML::js_src('/js/bootstrap.min.js?v=2015.5.31') ?>
+		<?= HTML::js_src('/js/popper.min.js?v=2019.5.31') ?>
+		<?= HTML::js_src('/js/bootstrap.min.js?v=2019.5.31') ?>
 		
 		<!-- Color converter -->
 		<?= HTML::js_src('/js/color-converter.min.js') ?>
@@ -86,8 +87,8 @@
 		<!-- LAB -->
 		<?= HTML::js_src('/js/LAB.min.js') ?>
 
-		<!-- UOJ ico -->
-		<link rel="shortcut icon" href="<?= HTML::url('/pictures/UOJ.ico') ?>" />
+		<!-- favicon -->
+		<link rel="shortcut icon" href="<?= HTML::url('/images/favicon.ico') ?>" />
 		
 		<?php if (isset($REQUIRE_LIB['blog-editor'])): ?>
 		<!-- UOJ blog editor -->
@@ -226,29 +227,29 @@
 		<div class="container theme-showcase" role="main">
 			<?php if ($ShowPageHeader): ?>
 			<div>
-				<ul class="nav nav-pills pull-right" role="tablist">
+				<ul class="nav nav-pills float-right" role="tablist">
 				<?php if (Auth::check()): ?>
-					<li class="dropdown">
-						<a href="#" data-toggle="dropdown">
+					<li class="nav-item dropdown">
+						<a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown">
 							<span class="uoj-username" data-rating="<?= Auth::user()['rating'] ?>" data-link="0"><?= Auth::id() ?></span> <?= $new_msg_tot_html ?>
 						</a>
 						<ul class="dropdown-menu" role="menu">
-							<li role="presentation"><a href="<?= HTML::url('/user/profile/' . Auth::id()) ?>"><?= UOJLocale::get('my profile') ?></a></li>
-							<li role="presentation"><a href="<?= HTML::url('/user/msg') ?>"><?= UOJLocale::get('private message') ?>&nbsp;&nbsp;<?= $new_user_msg_num_html ?></a></li>
-							<li role="presentation"><a href="<?= HTML::url('/user/system-msg') ?>"><?= UOJLocale::get('system message') ?>&nbsp;&nbsp;<?= $new_system_msg_num_html ?></a></li>
+							<li role="presentation"><a class="dropdown-item" href="<?= HTML::url('/user/profile/' . Auth::id()) ?>"><?= UOJLocale::get('my profile') ?></a></li>
+							<li role="presentation"><a class="dropdown-item" href="<?= HTML::url('/user/msg') ?>"><?= UOJLocale::get('private message') ?>&nbsp;&nbsp;<?= $new_user_msg_num_html ?></a></li>
+							<li role="presentation"><a class="dropdown-item" href="<?= HTML::url('/user/system-msg') ?>"><?= UOJLocale::get('system message') ?>&nbsp;&nbsp;<?= $new_system_msg_num_html ?></a></li>
 							<?php if (isSuperUser(Auth::user())): ?>
-								<li role="presentation"><a href="<?= HTML::url('/super-manage') ?>"><?= UOJLocale::get('system manage') ?></a></li>
+								<li role="presentation"><a class="dropdown-item" href="<?= HTML::url('/super-manage') ?>"><?= UOJLocale::get('system manage') ?></a></li>
 							<?php endif ?>
 						</ul>
 					</li>
-					<li role="presentation"><a href="<?= HTML::url('/logout?_token='.crsf_token()) ?>"><?= UOJLocale::get('logout') ?></a></li>
+					<li class="nav-item" role="presentation"><a class="nav-link" href="<?= HTML::url('/logout?_token='.crsf_token()) ?>"><?= UOJLocale::get('logout') ?></a></li>
 				<?php else: ?>
-					<li role="presentation"><a href="<?= HTML::url('/login') ?>"><?= UOJLocale::get('login') ?></a></li>
-					<li role="presentation"><a href="<?= HTML::url('/register') ?>"><?= UOJLocale::get('register') ?></a></li>
+					<li class="nav-item" role="presentation"><a class="nav-link" href="<?= HTML::url('/login') ?>"><?= UOJLocale::get('login') ?></a></li>
+					<li class="nav-item" role="presentation"><a class="nav-link" href="<?= HTML::url('/register') ?>"><?= UOJLocale::get('register') ?></a></li>
 				<?php endif ?>
 				</ul>
-				<h1 class="hidden-xs"><a href="<?= HTML::url('/') ?>"><img src="<?= HTML::url('/pictures/UOJ_small.png') ?>" alt="UOJ Logo" class="img-rounded" style="width:39px; height:39px;" /></a> <?= $PageMainTitle ?></h1>
-				<h1 class="visible-xs"><?= $PageMainTitleOnSmall ?></h1>
+				<h1 class="d-none d-sm-block"><a href="<?= HTML::url('/') ?>"><img src="<?= HTML::url('/images/logo_small.png') ?>" alt="Logo" class="img-rounded" style="width:39px; height:39px;" /></a> <?= $PageMainTitle ?></h1>
+				<h1 class="d-block d-sm-none"><?= $PageMainTitleOnSmall ?></h1>
 			</div>
 			
 			<?php uojIncludeView($PageNav) ?>

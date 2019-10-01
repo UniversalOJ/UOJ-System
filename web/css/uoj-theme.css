@@ -1,3 +1,7 @@
+html {
+	font-size: 14px
+}
+
 body {
 	padding-top: 10px;
 	padding-bottom: 10px;
@@ -17,6 +21,12 @@ body {
 }
 .uoj-footer a {
 	color: gray;
+}
+
+.page-header {
+	padding-bottom: 9px;
+	margin: 40px 0 20px;
+	border-bottom: 1px solid #eee;
 }
 
 a.header-a {
@@ -49,9 +59,14 @@ article img {
 }
 
 pre {
-    -moz-tab-size: 4;
-    -o-tab-size: 4;
-    tab-size: 4;
+	-moz-tab-size: 4;
+	-o-tab-size: 4;
+	tab-size: 4;
+	padding: 9.5px;
+	margin: 0 0 10px;
+	background-color: #f5f5f5;
+	border: 1px solid #ccc;
+	border-radius: 4px;
 }
 
 .uoj-username {
@@ -65,107 +80,107 @@ pre {
 	font-weight: 700;
 }
 
-.panel-uoj-accepted {
+.card-uoj-accepted {
 	border-color:#2bff4f;
 }
-.panel-uoj-accepted>.panel-heading {
+.card-uoj-accepted>.card-header {
 	cursor:pointer;
 	color:#333;
 	background-color:#00ee00;
 	border-color:#2bff4f;
 }
-.panel-uoj-accepted>.panel-heading:hover {
+.card-uoj-accepted>.card-header:hover {
 	background-color:#2bff4f;
 }
-.panel-uoj-accepted>.panel-heading+.panel-collapse>.panel-body {
+.card-uoj-accepted>.card-header+.card-collapse>.card-body {
 	border-top-color:#00ee00;
 }
-.panel-uoj-accepted>.panel-heading .badge {
+.card-uoj-accepted>.card-header .badge {
 	color:#00ee00;
 	background-color:#333;
 }
-.panel-uoj-accepted>.panel-heading:hover .badge {
+.card-uoj-accepted>.card-header:hover .badge {
 	color:#2bff4f;
 }
-.panel-uoj-accepted>.panel-footer+.panel-collapse>.panel-body {
+.card-uoj-accepted>.card-footer+.card-collapse>.card-body {
 	border-bottom-color:#2bff4f;
 }
 
-.panel-uoj-wrong {
+.card-uoj-wrong {
 	border-color:#ff0000;
 }
-.panel-uoj-wrong>.panel-heading {
+.card-uoj-wrong>.card-header {
 	cursor:pointer;
 	color:#333;
 	background-color:#dd0000;
 	border-color:#ff0000;
 }
-.panel-uoj-wrong>.panel-heading:hover {
+.card-uoj-wrong>.card-header:hover {
 	background-color:#ff0000;
 }
-.panel-uoj-wrong>.panel-heading+.panel-collapse>.panel-body {
+.card-uoj-wrong>.card-header+.card-collapse>.card-body {
 	border-top-color:#dd0000;
 }
-.panel-uoj-wrong>.panel-heading .badge {
+.card-uoj-wrong>.card-header .badge {
 	color:#dd0000;
 	background-color:#333;
 }
-.panel-uoj-wrong>.panel-heading:hover .badge {
+.card-uoj-wrong>.card-header:hover .badge {
 	color:#ff0000;
 }
-.panel-uoj-wrong>.panel-footer+.panel-collapse>.panel-body {
+.card-uoj-wrong>.card-footer+.card-collapse>.card-body {
 	border-bottom-color:#ff0000;
 }
 
-.panel-uoj-acceptable-answer {
+.card-uoj-acceptable-answer {
 	border-color:#ff7700;
 }
-.panel-uoj-acceptable-answer>.panel-heading {
+.card-uoj-acceptable-answer>.card-header {
 	cursor:pointer;
 	color:#333;
 	background-color:#ee5500;
 	border-color:#ff0000;
 }
-.panel-uoj-acceptable-answer>.panel-heading:hover {
+.card-uoj-acceptable-answer>.card-header:hover {
 	background-color:#ff7700;
 }
-.panel-uoj-acceptable-answer>.panel-heading+.panel-collapse>.panel-body {
+.card-uoj-acceptable-answer>.card-header+.card-collapse>.card-body {
 	border-top-color:#ee5500;
 }
-.panel-uoj-acceptable-answer>.panel-heading .badge {
+.card-uoj-acceptable-answer>.card-header .badge {
 	color:#ff7700;
 	background-color:#333;
 }
-.panel-uoj-acceptable-answer>.panel-heading:hover .badge {
+.card-uoj-acceptable-answer>.card-header:hover .badge {
 	color:#ff7700;
 }
-.panel-uoj-acceptable-answer>.panel-footer+.panel-collapse>.panel-body {
+.card-uoj-acceptable-answer>.card-footer+.card-collapse>.card-body {
 	border-bottom-color:#ff7700;
 }
 
-.panel-uoj-tle {
+.card-uoj-tle {
 	border-color:#ffff2b;
 }
-.panel-uoj-tle>.panel-heading {
+.card-uoj-tle>.card-header {
 	cursor:pointer;
 	color:#333;
 	background-color:#e6e61e;
 	border-color:#ffff2b;
 }
-.panel-uoj-tle>.panel-heading:hover {
+.card-uoj-tle>.card-header:hover {
 	background-color:#ffff2b;
 }
-.panel-uoj-tle>.panel-heading+.panel-collapse>.panel-body {
+.card-uoj-tle>.card-header+.card-collapse>.card-body {
 	border-top-color:#ffff2b;
 }
-.panel-uoj-tle>.panel-heading .badge {
+.card-uoj-tle>.card-header .badge {
 	color:#e6e61e;
 	background-color:#333;
 }
-.panel-uoj-tle>.panel-heading:hover .badge {
+.card-uoj-tle>.card-header:hover .badge {
 	color:#ffff2b;
 }
-.panel-uoj-tle>.panel-footer+.panel-collapse>.panel-body {
+.card-uoj-tle>.card-footer+.card-collapse>.card-body {
 	border-bottom-color:#ffff2b;
 }
 

@@ -47,7 +47,7 @@
   </div>
   <div class="form-group">
 	<div class="col-sm-offset-2 col-sm-3">
-	  <button type="submit" id="button-submit" class="btn btn-default">提交</button>
+	  <button type="submit" id="button-submit" class="btn btn-secondary">提交</button>
 	</div>
   </div>
 </form>

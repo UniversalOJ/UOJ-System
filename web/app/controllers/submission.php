@@ -151,11 +151,11 @@
 <?php endif ?>
 
 <?php if ($should_show_all_details): ?>
-	<div class="panel panel-info">
-		<div class="panel-heading">
-			<h4 class="panel-title"><?= UOJLocale::get('details') ?></h4>
+	<div class="card border-info mb-3">
+		<div class="card-header bg-info">
+			<h4 class="card-title"><?= UOJLocale::get('details') ?></h4>
 		</div>
-		<div class="panel-body">
+		<div class="card-body">
 			<?php echoJudgementDetails($submission_result['details'], $styler, 'details') ?>
 			<?php if ($should_show_details_to_me): ?>
 				<?php if (isset($submission_result['final_result'])): ?>

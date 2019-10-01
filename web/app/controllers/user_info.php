@@ -23,16 +23,14 @@
 		}
 		$esc_motto = HTML::escape($user['motto']);
 	?>
-	<div class="panel panel-info">
-		<div class="panel-heading">
-			<h2 class="panel-title"><?= UOJLocale::get('user profile') ?></h2>
-		</div>
-		<div class="panel-body">
-			<div class="row">
-				<div class="col-md-4 col-md-push-8">
-					<img class="media-object img-thumbnail center-block" alt="<?= $user['username'] ?> Avatar" src="<?= HTML::avatar_addr($user, 256) ?>" />
+	<div class="card border-info">
+		<h5 class="card-header bg-info"><?= UOJLocale::get('user profile') ?></h5>
+		<div class="card-body">
+			<div class="row mb-4">
+				<div class="col-md-4 order-md-9">
+					<img class="media-object img-thumbnail d-block mx-auto" alt="<?= $user['username'] ?> Avatar" src="<?= HTML::avatar_addr($user, 256) ?>" />
 				</div>
-				<div class="col-md-8 col-md-pull-4">
+				<div class="col-md-8 order-md-1">
 					<h2><span class="uoj-honor" data-rating="<?= $user['rating'] ?>"><?= $user['username'] ?></span> <span><strong style="<?= $col_sex ?>"><?= $esc_sex ?></strong></span></h2>
 					<div class="list-group">
 						<div class="list-group-item">
@@ -246,9 +244,9 @@ $("#rating-plot").bind("plotclick", function (event, pos, item) {
 </script>
 <?php else: ?>
 	<?php echoUOJPageHeader('不存在该用户' . ' - 用户信息') ?>
-	<div class="panel panel-danger">
-		<div class="panel-heading">用户信息</div>
-		<div class="panel-body">
+	<div class="card border-danger">
+		<div class="card-header bg-danger">用户信息</div>
+		<div class="card-body">
 		<h4>不存在该用户</h4>
 		</div>
 	</div>
