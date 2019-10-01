@@ -370,17 +370,16 @@ void init_conf(const RunProgramConfig &config) {
 
 		readable_file_name_set.insert("/usr/bin/python3");
 		readable_file_name_set.insert("/usr/lib/python3/");
-		# ifndef UOJ_JUDGER_PYTHON3_VERSION
-		readable_file_name_set.insert("/usr/bin/python3.4");
-		readable_file_name_set.insert("/usr/lib/python3.4/");
-		readable_file_name_set.insert("/usr/bin/lib/python3.4/");
-		readable_file_name_set.insert("/usr/local/lib/python3.4/");
-		# endif
 		# ifdef UOJ_JUDGER_PYTHON3_VERSION
 		readable_file_name_set.insert("/usr/bin/python" UOJ_JUDGER_PYTHON3_VERSION);
 		readable_file_name_set.insert("/usr/lib/python" UOJ_JUDGER_PYTHON3_VERSION "/");
 		readable_file_name_set.insert("/usr/bin/lib/python" UOJ_JUDGER_PYTHON3_VERSION "/");
 		readable_file_name_set.insert("/usr/local/lib/python" UOJ_JUDGER_PYTHON3_VERSION "/");
+		# else
+		readable_file_name_set.insert("/usr/bin/python3.4");
+		readable_file_name_set.insert("/usr/lib/python3.4/");
+		readable_file_name_set.insert("/usr/bin/lib/python3.4/");
+		readable_file_name_set.insert("/usr/local/lib/python3.4/");
 		# endif
 		readable_file_name_set.insert("/usr/bin/pyvenv.cfg");
 		readable_file_name_set.insert("/usr/pyvenv.cfg");
@@ -423,6 +422,7 @@ void init_conf(const RunProgramConfig &config) {
 		syscall_max_cnt[__NR_sysinfo        ] = -1;
 		syscall_max_cnt[__NR_clone          ] = -1;
 		syscall_max_cnt[__NR_set_robust_list] = -1;
+		syscall_max_cnt[__NR_prctl          ] = -1;
 		# endif
 
 		syscall_should_soft_ban[__NR_socket   ] = true;
@@ -438,6 +438,7 @@ void init_conf(const RunProgramConfig &config) {
 		readable_file_name_set.insert("/proc/");
 		# ifdef UOJ_JUDGER_BASESYSTEM_UBUNTU1804
 		readable_file_name_set.insert("/sys/fs/cgroup/cpu/");
+		readable_file_name_set.insert("/sys/fs/cgroup/cpu,cpuacct/");
 		readable_file_name_set.insert("/sys/fs/cgroup/memory/");
 		readable_file_name_set.insert("/usr/lib/locale/");
 		# endif
@@ -488,6 +489,7 @@ void init_conf(const RunProgramConfig &config) {
 		readable_file_name_set.insert("/proc/");
 		# ifdef UOJ_JUDGER_BASESYSTEM_UBUNTU1804
 		readable_file_name_set.insert("/sys/fs/cgroup/cpu/");
+		readable_file_name_set.insert("/sys/fs/cgroup/cpu,cpuacct/");
 		readable_file_name_set.insert("/sys/fs/cgroup/memory/");
 		readable_file_name_set.insert("/usr/share/java/");
 		readable_file_name_set.insert("/usr/lib/locale/");
@@ -558,6 +560,7 @@ void init_conf(const RunProgramConfig &config) {
 		readable_file_name_set.insert(abspath(0, string(self_path) + "/../runtime") + "/");
 		# ifdef UOJ_JUDGER_BASESYSTEM_UBUNTU1804
 		readable_file_name_set.insert("/sys/fs/cgroup/cpu/");
+		readable_file_name_set.insert("/sys/fs/cgroup/cpu,cpuacct/");
 		readable_file_name_set.insert("/sys/fs/cgroup/memory/");
 		readable_file_name_set.insert("/etc/oracle/java/usagetracker.properties");
 		# endif
@@ -577,11 +580,10 @@ void init_conf(const RunProgramConfig &config) {
 		soft_ban_file_name_set.insert("/etc/passwd"); // for javac = =
 
 		readable_file_name_set.insert("/etc/timezone");
-		# ifndef UOJ_JUDGER_FPC_VERSION
-		readable_file_name_set.insert("/etc/fpc-2.6.2.cfg.d/");
-		# endif
 		# ifdef UOJ_JUDGER_FPC_VERSION
 		readable_file_name_set.insert("/etc/fpc-" UOJ_JUDGER_FPC_VERSION ".cfg.d/");
+		# else
+		readable_file_name_set.insert("/etc/fpc-2.6.2.cfg.d/");
 		# endif
 		readable_file_name_set.insert("/etc/fpc.cfg");
 
