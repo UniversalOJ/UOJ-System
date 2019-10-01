@@ -67,11 +67,11 @@
 		$file_name = "/var/uoj_data/$id/download.zip";
 		
 		$finfo = finfo_open(FILEINFO_MIME);
-    	$mimetype = finfo_file($finfo, $file_name);
-    	if ($mimetype === false) {
-    		return false;
-    	}
-    	finfo_close($finfo);
+		$mimetype = finfo_file($finfo, $file_name);
+		if ($mimetype === false) {
+			return false;
+		}
+		finfo_close($finfo);
     	
 		return true;
 	}
@@ -90,12 +90,12 @@
 		$file_name = "/var/uoj_data/$id.zip";
 		
 		$finfo = finfo_open(FILEINFO_MIME);
-    	$mimetype = finfo_file($finfo, $file_name);
-    	if ($mimetype === false) {
-    		return false;
-    	}
-    	finfo_close($finfo);
-    	
+		$mimetype = finfo_file($finfo, $file_name);
+		if ($mimetype === false) {
+			return false;
+		}
+		finfo_close($finfo);
+
 		return true;
 	}
 	
