@@ -24,7 +24,7 @@
 		while ($row = DB::fetch($result, MYSQLI_NUM)) {
 			if ($row[0] == 0) {
 				$has_score_0 = true;
-			} else if ($row[0] == 100) {
+			} elseif ($row[0] == 100) {
 				$has_score_100 = true;
 			}
 			$score = $row[0] * 100;

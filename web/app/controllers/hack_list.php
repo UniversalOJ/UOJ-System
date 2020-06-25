@@ -5,29 +5,29 @@
 	$q_submission_id = isset($_GET['submission_id']) && validateUInt($_GET['submission_id']) ? $_GET['submission_id'] : null;
 	$q_hacker = isset($_GET['hacker']) && validateUsername($_GET['hacker']) ? $_GET['hacker'] : null;
 	$q_owner = isset($_GET['owner']) && validateUsername($_GET['owner']) ? $_GET['owner'] : null;
-	if($q_problem_id != null) {
+	if ($q_problem_id != null) {
 		$conds[] = "problem_id = $q_problem_id";
 	}
-	if($q_submission_id != null) {
+	if ($q_submission_id != null) {
 		$conds[] = "submission_id = $q_submission_id";
 	}
-	if($q_hacker != null) {
+	if ($q_hacker != null) {
 		$conds[] = "hacker = '$q_hacker'";
 	}
-	if($q_owner != null) {
+	if ($q_owner != null) {
 		$conds[] = "owner = '$q_owner'";
 	}
 	
 	$selected_all = ' selected="selected"';
 	$selected_succ ='';
 	$selected_fail ='';
-	if(isset($_GET['status']) && validateUInt($_GET['status'])) {
-		if($_GET['status'] == 1) {
+	if (isset($_GET['status']) && validateUInt($_GET['status'])) {
+		if ($_GET['status'] == 1) {
 			$selected_all = '';
 			$selected_succ =' selected="selected"';
 			$conds[] = 'success = 1';
 		}
-		if($_GET['status'] == 2) {
+		if ($_GET['status'] == 2) {
 			$selected_all = '';
 			$selected_fail = ' selected="selected"';
 			$conds[] = 'success = 0';

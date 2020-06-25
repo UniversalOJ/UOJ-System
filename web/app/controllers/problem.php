@@ -53,7 +53,7 @@
 	if ($custom_test_requirement && $_GET['get'] == 'custom-test-status-details' && Auth::check()) {
 		if ($custom_test_submission == null) {
 			echo json_encode(null);
-		} else if ($custom_test_submission['status'] != 'Judged') {
+		} elseif ($custom_test_submission['status'] != 'Judged') {
 			echo json_encode(array(
 				'judged' => false,
 				'html' => getSubmissionStatusDetails($custom_test_submission)
@@ -114,7 +114,7 @@
 		} else {
 			DB::query("insert into submissions (problem_id, submit_time, submitter, content, language, tot_size, status, result, is_hidden) values (${problem['id']}, now(), '${myUser['username']}', '$esc_content', '$esc_language', $tot_size, '${result['status']}', '$result_json', {$problem['is_hidden']})");
 		}
- 	}
+	}
 	function handleCustomTestUpload($zip_file_name, $content, $tot_size) {
 		global $problem, $contest, $myUser;
 		
@@ -139,7 +139,7 @@
 		$result_json = json_encode($result);
 		
 		DB::insert("insert into custom_test_submissions (problem_id, submit_time, submitter, content, status, result) values ({$problem['id']}, now(), '{$myUser['username']}', '$esc_content', '{$result['status']}', '$result_json')");
- 	}
+	}
 	
 	if ($can_use_zip_upload) {
 		$zip_answer_form = newZipSubmissionForm('zip_answer',

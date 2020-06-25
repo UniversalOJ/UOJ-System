@@ -113,7 +113,7 @@ class UOJBlogEditor {
 			} else {
 				$this->post_data['content'] = $purifier->purify($this->post_data['content']);
 			}
-		} else if ($this->type == 'slide') {
+		} elseif ($this->type == 'slide') {
 			$content_array = yaml_parse($this->post_data['content_md']);
 			if ($content_array === false || !is_array($content_array)) {
 				die(json_encode(array('content_md' => '不合法的 YAML 格式')));
@@ -150,7 +150,7 @@ EOD
 				die(json_encode(array('content_md' => '未知错误')));
 			}
 			
-			$marked = function($md) use($v8, $purifier) {
+			$marked = function($md) use ($v8, $purifier) {
 				try {
 					$v8->md = $md;
 					return $purifier->purify($v8->executeString('marked(PHP.md)'));
@@ -206,7 +206,7 @@ EOD
 				echo $this->post_data['content'];
 				echo '</article>';
 				echoUOJPageFooter(array('ShowPageFooter' => false));
-			} else if ($this->type == 'slide') {
+			} elseif ($this->type == 'slide') {
 				uojIncludeView('slide', array_merge(
 					UOJContext::pageConfig(),
 					array(

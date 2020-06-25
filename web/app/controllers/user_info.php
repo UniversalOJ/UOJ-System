@@ -10,11 +10,10 @@
 		$esc_qq = HTML::escape($user['qq'] != 0 ? $user['qq'] : 'Unfilled');
 		$esc_sex = HTML::escape($user['sex']);
 		$col_sex="color:blue";
-		if($esc_sex == "M") {
+		if ($esc_sex == "M") {
 			$esc_sex="♂";
 			$col_sex="color:blue";
-		}
-		else if($esc_sex == "F") {
+		} elseif ($esc_sex == "F") {
 			$esc_sex="♀";
 			$col_sex="color:red";
 		} else {

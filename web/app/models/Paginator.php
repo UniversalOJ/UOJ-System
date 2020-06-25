@@ -25,7 +25,7 @@ class Paginator {
 			$this->cur_page = validateUInt($_GET['page']) ? (int)$_GET['page'] : 1;
 			if ($this->cur_page < 1) {
 				$this->cur_page = 1;
-			} else if ($this->cur_page > $this->n_pages) {
+			} elseif ($this->cur_page > $this->n_pages) {
 				$this->cur_page = $this->n_pages;
 			}
 			$this->cur_start = ($this->cur_page - 1) * $this->page_len;
@@ -47,8 +47,9 @@ class Paginator {
 		parse_str($query_string, $param);
 		
 		$param['page'] = $page;
-		if ($page == 1)
+		if ($page == 1) {
 			unset($param['page']);
+		}
 		
 		if ($param) {
 			return $path . '?' . http_build_query($param);

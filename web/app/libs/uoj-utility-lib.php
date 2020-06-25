@@ -1,7 +1,7 @@
 <?php
 
 function mergeConfig(&$config, $default_config) {
-	foreach($default_config as $key => $val) {
+	foreach ($default_config as $key => $val) {
 		if (!isset($config[$key])) {
 			$config[$key] = $val;
 		} elseif (is_array($config[$key])) {
@@ -69,11 +69,11 @@ function uojTextEncode($str, $config = array()) {
 					if ($config['html_escape']) {
 						if ($c == '&') {
 							$res .= '&amp;';
-						} else if ($c == '"') {
+						} elseif ($c == '"') {
 							$res .= '&quot;';
-						} else if ($c == '<') {
+						} elseif ($c == '<') {
 							$res .= '&lt;';
-						} else if ($c == '>') {
+						} elseif ($c == '>') {
 							$res .= '&gt;';
 						} else {
 							$res .= $c;
@@ -108,11 +108,11 @@ function uojTextEncode($str, $config = array()) {
 	}
 }
 
-function base64url_encode($data) { 
-	return rtrim(strtr(base64_encode($data), '+/', '-_'), '='); 
+function base64url_encode($data) {
+	return rtrim(strtr(base64_encode($data), '+/', '-_'), '=');
 }
-function base64url_decode($data) { 
-	return base64_decode(str_pad(strtr($data, '-_', '+/'), strlen($data) % 4, '=', STR_PAD_RIGHT)); 
+function base64url_decode($data) {
+	return base64_decode(str_pad(strtr($data, '-_', '+/'), strlen($data) % 4, '=', STR_PAD_RIGHT));
 }
 
 function blog_name_encode($name) {

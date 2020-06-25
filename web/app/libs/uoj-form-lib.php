@@ -21,7 +21,8 @@
 		public function __construct($form_name) {
 			$this->form_name = $form_name;
 			$this->succ_href = $_SERVER['REQUEST_URI'];
-			$this->handle = function(&$vdata){};
+			$this->handle = function(&$vdata) {
+			};
 			
 			$this->run_at_server_handler["check-{$this->form_name}"] = function() {
 				die(json_encode($this->validateAtServer()));
@@ -53,7 +54,7 @@
 						$esc_err = htmlspecialchars($err);
 						$err_str .= "$name: $esc_err<br />";
 					}
-			 		becomeMsgPage($err_str);
+					becomeMsgPage($err_str);
 				}
 				$fun = $this->handle;
 				$fun($this->vdata);
@@ -244,7 +245,7 @@ EOD;
 			$name = $editor->name;
 			
 			$this->addVInput("{$name}_title", 'text', '标题', $editor->cur_data['title'],
-				function ($title) use($editor) {
+				function ($title) use ($editor) {
 					return $editor->validateTitle();
 				},
 				null
@@ -253,7 +254,7 @@ EOD;
 			$content_md_html = HTML::div_vtextarea("{$name}_content_md", '内容', $editor->cur_data['content_md']);
 			
 			$this->add("{$name}_content_md", $content_md_html,
-				function ($content_md) use($editor) {
+				function ($content_md) use ($editor) {
 					return $editor->validateContentMd();
 				},
 				'always_ok'
@@ -264,7 +265,7 @@ EOD;
 EOD
 			);
 			
-			$this->run_at_server_handler["save-{$name}"] = function() use($name, $editor) {
+			$this->run_at_server_handler["save-{$name}"] = function() use ($name, $editor) {
 				if ($this->no_submit) {
 					become404Page();
 				}
@@ -311,7 +312,7 @@ EOD;
 		
 		public function addSourceCodeInput($name, $text, $languages) {
 			$this->add("{$name}_upload_type", '',
-				function($type, &$vdata) use($name) {
+				function($type, &$vdata) use ($name) {
 					if ($type == 'editor') {
 						if (!isset($_POST["{$name}_editor"])) {
 							return '你在干啥……怎么什么都没交过来……？';
@@ -362,7 +363,7 @@ EOD
 		}
 		public function addTextFileInput($name, $text) {
 			$this->add("{$name}_upload_type", '',
-				function($type, &$vdata) use($name) {
+				function($type, &$vdata) use ($name) {
 					if ($type == 'editor') {
 						if (!isset($_POST["{$name}_editor"])) {
 							return '你在干啥……怎么什么都没交过来……？';
@@ -616,7 +617,7 @@ EOD;
 		$form = new UOJForm($form_name);
 		$form->addTextArea(
 			$form_name . '_cmds', '命令', '',
-			function($str, &$vdata) use($validate) {
+			function($str, &$vdata) use ($validate) {
 				$cmds = array();
 				foreach (explode("\n", $str) as $line_id => $raw_line) {
 					$line = trim($raw_line);
@@ -639,13 +640,13 @@ EOD;
 			null
 		);
 		if (!isset($final)) {
-			$form->handle = function(&$vdata) use($handle) {
+			$form->handle = function(&$vdata) use ($handle) {
 				foreach ($vdata['cmds'] as $cmd) {
 					$handle($cmd['type'], $cmd['obj']);
 				}
 			};
 		} else {
-			$form->handle = function(&$vdata) use($handle, $final) {
+			$form->handle = function(&$vdata) use ($handle, $final) {
 				foreach ($vdata['cmds'] as $cmd) {
 					$handle($cmd['type'], $cmd['obj']);
 				}
@@ -662,11 +663,11 @@ EOD;
 				$languages = isset($req['languages']) ? $req['languages'] : $GLOBALS['uojSupportedLanguages'];
 				$form->addSourceCodeInput("{$form_name}_{$req['name']}", UOJLocale::get('problems::source code').':'.$req['name'], $languages);
 			} elseif ($req['type'] == "text") {
-					$form->addTextFileInput("{$form_name}_{$req['name']}", UOJLocale::get('problems::text file').':'.$req['file_name']);
+				$form->addTextFileInput("{$form_name}_{$req['name']}", UOJLocale::get('problems::text file').':'.$req['file_name']);
 			}
 		}
 		
-		$form->handle = function(&$vdata) use($form_name, $requirement, $zip_file_name_gen, $handle) {
+		$form->handle = function(&$vdata) use ($form_name, $requirement, $zip_file_name_gen, $handle) {
 			global $myUser;
 			
 			if ($myUser == null) {
@@ -724,7 +725,9 @@ EOD;
 	function newZipSubmissionForm($form_name, $requirement, $zip_file_name_gen, $handle) {
 		$form = new UOJForm($form_name);
 		$name = "zip_ans_{$form_name}";
-		$text = UOJLocale::get('problems::zip file upload introduction', join(array_map(function($req){return $req['file_name'];}, $requirement), ', '));
+		$text = UOJLocale::get('problems::zip file upload introduction', join(array_map(function($req) {
+			return $req['file_name'];
+		}, $requirement), ', '));
 		$browse_text = UOJLocale::get('browse');
 		$html = <<<EOD
 <div id="div-{$name}">
@@ -744,7 +747,7 @@ EOD;
 		$form->is_big = true;
 		$form->has_file = true;
 		
-		$form->handle = function() use($name, $requirement, $zip_file_name_gen, $handle) {
+		$form->handle = function() use ($name, $requirement, $zip_file_name_gen, $handle) {
 			global $myUser;
 			
 			if ($myUser == null) {
@@ -791,7 +794,7 @@ EOD;
 			}
 			
 			foreach ($requirement as $req) {
- 				$zip_file->addFromString($req['file_name'], $zip_content[$req['name']]);
+				$zip_file->addFromString($req['file_name'], $zip_content[$req['name']]);
 			}
 			$zip_file->close();
 			

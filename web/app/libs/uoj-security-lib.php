@@ -4,7 +4,7 @@ function getPasswordToStore($password, $username) {
 	return md5($username . $password);
 }
 function checkPassword($user, $password) {
-   	return $user['password'] == md5($user['username'] . $password);
+	return $user['password'] == md5($user['username'] . $password);
 }
 function getPasswordClientSalt() {
 	return UOJConfig::$data['security']['user']['client_salt'];
@@ -19,7 +19,7 @@ function crsf_token() {
 function crsf_check() {
 	if (isset($_POST['_token'])) {
 		$_token = $_POST['_token'];
-	} else if (isset($_GET['_token'])) {
+	} elseif (isset($_GET['_token'])) {
 		$_token = $_GET['_token'];
 	} else {
 		return false;

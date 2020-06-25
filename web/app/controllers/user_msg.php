@@ -4,51 +4,55 @@
 	}
 
 	function handleMsgPost() {
-			global $myUser;
-			if (!isset($_POST['receiver'])) {
-				return 'fail';
-			}
-			if (!isset($_POST['message'])) {
-				return 'fail';
-			}
-			if (0 > strlen($_POST['message']) || strlen($_POST['message']) > 65535) {
-				return 'fail';
-			}
-			$receiver = $_POST['receiver'];
-			$esc_message = DB::escape($_POST['message']);
-			$sender = $myUser['username'];
+		global $myUser;
+		if (!isset($_POST['receiver'])) {
+			return 'fail';
+		}
+		if (!isset($_POST['message'])) {
+			return 'fail';
+		}
+		if (0 > strlen($_POST['message']) || strlen($_POST['message']) > 65535) {
+			return 'fail';
+		}
+		$receiver = $_POST['receiver'];
+		$esc_message = DB::escape($_POST['message']);
+		$sender = $myUser['username'];
 
-			if (!validateUsername($receiver) || !queryUser($receiver)) {
-				return 'fail';
-			}
+		if (!validateUsername($receiver) || !queryUser($receiver)) {
+			return 'fail';
+		}
 
-			DB::query("insert into user_msg (sender, receiver, message, send_time) values ('$sender', '$receiver', '$esc_message', now())");
-			return "ok";
+		DB::query("insert into user_msg (sender, receiver, message, send_time) values ('$sender', '$receiver', '$esc_message', now())");
+		return "ok";
 	}
 
 	function getConversations() {
-			global $myUser;
-			$username = $myUser['username'];
-			$result = DB::query( "select * from user_msg where sender = '$username' or receiver = '$username' order by send_time DESC" );
-			$ret = array();
-			while ($msg = DB::fetch($result)) {
-					if ($msg['sender'] !== $username) {
-							if (isset($ret[$msg['sender']])) {
-									$ret[$msg['sender']][1] |= ($msg['read_time'] == null);
-									continue;
-							}
-							$ret[$msg['sender']] = array($msg['send_time'], ($msg['read_time'] == null));
-					} else {
-							if (isset($ret[$msg['receiver']])) continue;
-							$ret[$msg['receiver']] = array($msg['send_time'], 0);
-					}
+		global $myUser;
+		$username = $myUser['username'];
+		$result = DB::query( "select * from user_msg where sender = '$username' or receiver = '$username' order by send_time DESC" );
+		$ret = array();
+		while ($msg = DB::fetch($result)) {
+			if ($msg['sender'] !== $username) {
+				if (isset($ret[$msg['sender']])) {
+					$ret[$msg['sender']][1] |= ($msg['read_time'] == null);
+					continue;
+				}
+				$ret[$msg['sender']] = array($msg['send_time'], ($msg['read_time'] == null));
+			} else {
+				if (isset($ret[$msg['receiver']])) {
+					continue;
+				}
+				$ret[$msg['receiver']] = array($msg['send_time'], 0);
 			}
-			$res = [];
-			foreach ($ret as $name => $con) {
-				$res[] = [$con[0], $con[1], $name];
-			}
-			usort($res, function($a, $b) { return -strcmp($a[0], $b[0]); });
-			return json_encode($res);
+		}
+		$res = [];
+		foreach ($ret as $name => $con) {
+			$res[] = [$con[0], $con[1], $name];
+		}
+		usort($res, function($a, $b) {
+			return -strcmp($a[0], $b[0]);
+		});
+		return json_encode($res);
 	}
 
 	function getHistory() {
@@ -95,11 +99,11 @@ EOD;
 */
 
 	if (isset($_POST['user_msg'])) {
-			die(handleMsgPost());
+		die(handleMsgPost());
 	} elseif (isset($_GET['getConversations'])) {
-			die(getConversations());
+		die(getConversations());
 	} elseif (isset($_GET['getHistory'])) {
-			die(getHistory());
+		die(getHistory());
 	} 
 ?>
 
