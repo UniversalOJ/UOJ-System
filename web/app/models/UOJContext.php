@@ -8,7 +8,7 @@ class UOJContext {
 			return array(
 				'PageNav' => 'main-nav'
 			);
-		} else if (self::$data['type'] == 'blog') {
+		} elseif (self::$data['type'] == 'blog') {
 			return array(
 				'PageNav' => 'blog-nav',
 				'PageMainTitle' => UOJContext::$data['user']['username'] . '的博客',
@@ -55,7 +55,7 @@ class UOJContext {
 	public static function httpHost() {
 		if (isset($_SERVER['HTTP_X_FORWARDED_HOST'])) {
 			return $_SERVER['HTTP_X_FORWARDED_HOST'];
-		} else if (isset($_SERVER['HTTP_HOST'])) {
+		} elseif (isset($_SERVER['HTTP_HOST'])) {
 			return $_SERVER['HTTP_HOST'];
 		} else {
 			return $_SERVER['SERVER_NAME'].($_SERVER['SERVER_PORT'] == '80' ? '' : ':'.$_SERVER['SERVER_PORT']);

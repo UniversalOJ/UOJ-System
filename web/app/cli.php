@@ -11,7 +11,7 @@ $handlers = [
 		if (func_num_args() != 1) {
 			die("php cli.php upgrade:up <name>\n");
 		}
-		Upgrader::transaction(function() use($name)  {
+		Upgrader::transaction(function() use ($name) {
 			Upgrader::up($name);
 		});
 		die("finished!\n");
@@ -20,7 +20,7 @@ $handlers = [
 		if (func_num_args() != 1) {
 			die("php cli.php upgrade:down <name>\n");
 		}
-		Upgrader::transaction(function() use($name)  {
+		Upgrader::transaction(function() use ($name) {
 			Upgrader::down($name);
 		});
 		die("finished!\n");
@@ -29,7 +29,7 @@ $handlers = [
 		if (func_num_args() != 1) {
 			die("php cli.php upgrade:refresh <name>\n");
 		}
-		Upgrader::transaction(function() use($name)  {
+		Upgrader::transaction(function() use ($name) {
 			Upgrader::refresh($name);
 		});
 		die("finished!\n");
@@ -38,7 +38,7 @@ $handlers = [
 		if (func_num_args() != 1) {
 			die("php cli.php upgrade:remove <name>\n");
 		}
-		Upgrader::transaction(function() use($name) {
+		Upgrader::transaction(function() use ($name) {
 			Upgrader::remove($name);
 		});
 		die("finished!\n");

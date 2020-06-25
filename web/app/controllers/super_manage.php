@@ -46,16 +46,24 @@
 	$blog_link_contests = new UOJForm('blog_link_contests');
 	$blog_link_contests->addInput('blog_id', 'text', '博客ID', '',
 		function ($x) {
-			if (!validateUInt($x)) return 'ID不合法';
-			if (!queryBlog($x)) return '博客不存在';
+			if (!validateUInt($x)) {
+				return 'ID不合法';
+			}
+			if (!queryBlog($x)) {
+				return '博客不存在';
+			}
 			return '';
 		},
 		null
 	);
 	$blog_link_contests->addInput('contest_id', 'text', '比赛ID', '',
 		function ($x) {
-			if (!validateUInt($x)) return 'ID不合法';
-			if (!queryContest($x)) return '比赛不存在';
+			if (!validateUInt($x)) {
+				return 'ID不合法';
+			}
+			if (!queryContest($x)) {
+				return '比赛不存在';
+			}
 			return '';
 		},
 		null
@@ -87,12 +95,13 @@
 			$config[$n] = $row;
 		}
 		if ($_POST['op-type'] == 'del') {
-			for ($i = 0; $i < $n; $i++)
+			for ($i = 0; $i < $n; $i++) {
 				if ($config[$i][1] == $blog_id) {
 					$config[$i] = $config[$n - 1];
 					unset($config[$n - 1]);
 					break;
 				}
+			}
 		}
 
 		$all_config['links'] = $config;
@@ -105,16 +114,24 @@
 	$blog_link_index = new UOJForm('blog_link_index');
 	$blog_link_index->addInput('blog_id2', 'text', '博客ID', '',
 		function ($x) {
-			if (!validateUInt($x)) return 'ID不合法';
-			if (!queryBlog($x)) return '博客不存在';
+			if (!validateUInt($x)) {
+				return 'ID不合法';
+			}
+			if (!queryBlog($x)) {
+				return '博客不存在';
+			}
 			return '';
 		},
 		null
 	);
 	$blog_link_index->addInput('blog_level', 'text', '置顶级别（删除不用填）', '0',
 		function ($x) {
-			if (!validateUInt($x)) return '数字不合法';
-			if ($x > 3) return '该级别不存在';
+			if (!validateUInt($x)) {
+				return '数字不合法';
+			}
+			if ($x > 3) {
+				return '该级别不存在';
+			}
 			return '';
 		},
 		null
@@ -215,7 +232,7 @@
 			if (!validateUsername($x)) {
 				return '不合法';
 			}
-			if(DB::selectCount("select count(*) from judger_info where judger_name='$x'")!=0) {
+			if (DB::selectCount("select count(*) from judger_info where judger_name='$x'")!=0) {
 				return '不合法';
 			}
 			$vdata['name'] = $x;
@@ -235,7 +252,7 @@
 			if (!validateUsername($x)) {
 				return '不合法';
 			}
-			if(DB::selectCount("select count(*) from judger_info where judger_name='$x'")!=1) {
+			if (DB::selectCount("select count(*) from judger_info where judger_name='$x'")!=1) {
 				return '不合法';
 			}
 			$vdata['name'] = $x;
@@ -367,8 +384,7 @@ EOD;
 				'tail' => 'order by id asc',
 				'page_len' => 5
 			));
-			foreach ($submissions_pag->get() as $submission)
-			{
+			foreach ($submissions_pag->get() as $submission) {
 				$problem = queryProblemBrief($submission['problem_id']);
 				$submission_result = json_decode($submission['result'], true);
 				echo '<dl class="dl-horizontal">';

@@ -2,7 +2,7 @@
 
 function uojHandleAtSign($str, $uri) {
 	$referrers = array();
-	$res = preg_replace_callback('/@(@|[a-zA-Z0-9_]{1,20})/', function($matches) use(&$referrers) {
+	$res = preg_replace_callback('/@(@|[a-zA-Z0-9_]{1,20})/', function($matches) use (&$referrers) {
 		if ($matches[1] === '@') {
 			return '@';
 		} else {
@@ -89,7 +89,7 @@ function getUserLink($username, $rating = null) {
 function getProblemLink($problem, $problem_title = '!title_only') {
 	if ($problem_title == '!title_only') {
 		$problem_title = $problem['title'];
-	} else if ($problem_title == '!id_and_title') {
+	} elseif ($problem_title == '!id_and_title') {
 		$problem_title = "#${problem['id']}. ${problem['title']}";
 	}
 	return '<a href="/problem/'.$problem['id'].'">'.$problem_title.'</a>';
@@ -97,7 +97,7 @@ function getProblemLink($problem, $problem_title = '!title_only') {
 function getContestProblemLink($problem, $contest_id, $problem_title = '!title_only') {
 	if ($problem_title == '!title_only') {
 		$problem_title = $problem['title'];
-	} else if ($problem_title == '!id_and_title') {
+	} elseif ($problem_title == '!id_and_title') {
 		$problem_title = "#{$problem['id']}. {$problem['title']}";
 	}
 	return '<a href="/contest/'.$contest_id.'/problem/'.$problem['id'].'">'.$problem_title.'</a>';
@@ -116,20 +116,21 @@ function getClickZanBlock($type, $id, $cnt, $val = null) {
 
 
 function getLongTablePageRawUri($page) {
-		$path = strtok(UOJContext::requestURI(), '?');
-		$query_string = strtok('?');
-		parse_str($query_string, $param);
+	$path = strtok(UOJContext::requestURI(), '?');
+	$query_string = strtok('?');
+	parse_str($query_string, $param);
 			
-		$param['page'] = $page;
-		if ($page == 1)
-			unset($param['page']);
-			
-		if ($param) {
-			return $path . '?' . http_build_query($param);
-		} else {
-			return $path;
-		}
+	$param['page'] = $page;
+	if ($page == 1) {
+		unset($param['page']);
 	}
+			
+	if ($param) {
+		return $path . '?' . http_build_query($param);
+	} else {
+		return $path;
+	}
+}
 function getLongTablePageUri($page) {
 	return HTML::escape(getLongTablePageRawUri($page));
 }
@@ -190,7 +191,7 @@ function getSubmissionStatusDetails($submission) {
 		if ($submission['status_details'] !== '') {
 			$status_img = $fly;
 			$status_text = HTML::escape($submission['status_details']);
-		} else  {
+		} else {
 			$status_img = $think;
 			$status_text = $out_status;
 		}
@@ -249,10 +250,12 @@ function echoSubmission($submission, $config, $user) {
 		}
 		echo '</td>';
 	}
-	if (!isset($config['used_time_hidden']))
+	if (!isset($config['used_time_hidden'])) {
 		echo '<td>', $used_time_str, '</td>';
-	if (!isset($config['used_memory_hidden']))
+	}
+	if (!isset($config['used_memory_hidden'])) {
 		echo '<td>', $used_memory_str, '</td>';
+	}
 
 	echo '<td>', '<a href="/submission/', $submission['id'], '">', $submission['language'], '</a>', '</td>';
 
@@ -263,10 +266,12 @@ function echoSubmission($submission, $config, $user) {
 	}
 	echo '<td>', $size_str, '</td>';
 
-	if (!isset($config['submit_time_hidden']))
+	if (!isset($config['submit_time_hidden'])) {
 		echo '<td><small>', $submission['submit_time'], '</small></td>';
-	if (!isset($config['judge_time_hidden']))
+	}
+	if (!isset($config['judge_time_hidden'])) {
 		echo '<td><small>', $submission['judge_time'], '</small></td>';
+	}
 	echo '</tr>';
 	if ($show_status_details) {
 		echo '<tr id="', "status_details_{$submission['id']}", '" class="info">';
@@ -282,24 +287,32 @@ function echoSubmissionsListOnlyOne($submission, $config, $user) {
 	echo '<table class="table table-bordered table-text-center">';
 	echo '<thead>';
 	echo '<tr>';
-	if (!isset($config['id_hidden']))
+	if (!isset($config['id_hidden'])) {
 		echo '<th>ID</th>';
-	if (!isset($config['problem_hidden']))
+	}
+	if (!isset($config['problem_hidden'])) {
 		echo '<th>'.UOJLocale::get('problems::problem').'</th>';
-	if (!isset($config['submitter_hidden']))
+	}
+	if (!isset($config['submitter_hidden'])) {
 		echo '<th>'.UOJLocale::get('problems::submitter').'</th>';
-	if (!isset($config['result_hidden']))
+	}
+	if (!isset($config['result_hidden'])) {
 		echo '<th>'.UOJLocale::get('problems::result').'</th>';
-	if (!isset($config['used_time_hidden']))
+	}
+	if (!isset($config['used_time_hidden'])) {
 		echo '<th>'.UOJLocale::get('problems::used time').'</th>';
-	if (!isset($config['used_memory_hidden']))
+	}
+	if (!isset($config['used_memory_hidden'])) {
 		echo '<th>'.UOJLocale::get('problems::used memory').'</th>';
+	}
 	echo '<th>'.UOJLocale::get('problems::language').'</th>';
 	echo '<th>'.UOJLocale::get('problems::file size').'</th>';
-	if (!isset($config['submit_time_hidden']))
+	if (!isset($config['submit_time_hidden'])) {
 		echo '<th>'.UOJLocale::get('problems::submit time').'</th>';
-	if (!isset($config['judge_time_hidden']))
+	}
+	if (!isset($config['judge_time_hidden'])) {
 		echo '<th>'.UOJLocale::get('problems::judge time').'</th>';
+	}
 	echo '</tr>';
 	echo '</thead>';
 	echo '<tbody>';
@@ -375,7 +388,7 @@ function echoSubmissionsList($cond, $tail, $config, $user) {
 	$table_config = isset($config['table_config']) ? $config['table_config'] : null;
 	
 	echoLongTable($col_names, $table_name, $cond, $tail, $header_row,
-		function($submission) use($config, $user) {
+		function($submission) use ($config, $user) {
 			echoSubmission($submission, $config, $user);
 		}, $table_config);
 }
@@ -429,8 +442,7 @@ function echoSubmissionContent($submission, $requirement) {
 			echo '</div>';
 			echo '<div class="card-footer">'.$footer_text.'</div>';
 			echo '</div>';
-		}
-		else if ($req['type'] == "text") {
+		} elseif ($req['type'] == "text") {
 			$file_content = $zip_file->getFromName("{$req['file_name']}", 504);
 			$file_content = strOmit($file_content, 500);
 			$file_content = uojTextEncode($file_content, array('allow_CR' => true, 'html_escape' => true));
@@ -476,8 +488,7 @@ class JudgementDetailsPrinter {
 			echo '<div id="', $this->name, '_details_accordion">';
 			if ($this->styler->show_small_tip) {
 				echo '<div class="text-right text-muted">', '小提示：点击横条可展开更详细的信息', '</div>';
-			}
-			elseif ($this->styler->ioi_contest_is_running) {
+			} elseif ($this->styler->ioi_contest_is_running) {
 				echo '<div class="text-right text-muted">', 'IOI赛制比赛中不支持显示详细信息', '</div>';
 			}
 			$this->_print_c($node);
@@ -774,10 +785,12 @@ function echoHackDetails($hack_details, $name) {
 function echoHack($hack, $config, $user) {
 	$problem = queryProblemBrief($hack['problem_id']);
 	echo '<tr>';
-	if (!isset($config['id_hidden']))
+	if (!isset($config['id_hidden'])) {
 		echo '<td><a href="/hack/', $hack['id'], '">#', $hack['id'], '</a></td>';
-	if (!isset($config['submission_hidden']))
+	}
+	if (!isset($config['submission_hidden'])) {
 		echo '<td><a href="/submission/', $hack['submission_id'], '">#', $hack['submission_id'], '</a></td>';
+	}
 	if (!isset($config['problem_hidden'])) {
 		if ($hack['contest_id']) {
 			echo '<td>', getContestProblemLink($problem, $hack['contest_id'], '!id_and_title'), '</td>';
@@ -785,13 +798,14 @@ function echoHack($hack, $config, $user) {
 			echo '<td>', getProblemLink($problem, '!id_and_title'), '</td>';
 		}
 	}
-	if (!isset($config['hacker_hidden']))
+	if (!isset($config['hacker_hidden'])) {
 		echo '<td>', getUserLink($hack['hacker']), '</td>';
-	if (!isset($config['owner_hidden']))
+	}
+	if (!isset($config['owner_hidden'])) {
 		echo '<td>', getUserLink($hack['owner']), '</td>';
-	if (!isset($config['result_hidden']))
-	{
-		if($hack['judge_time'] == null) {
+	}
+	if (!isset($config['result_hidden'])) {
+		if ($hack['judge_time'] == null) {
 			echo '<td><a href="/hack/', $hack['id'], '">Waiting</a></td>';
 		} elseif ($hack['success'] == null) {
 			echo '<td><a href="/hack/', $hack['id'], '">Judging</a></td>';
@@ -800,13 +814,15 @@ function echoHack($hack, $config, $user) {
 		} else {
 			echo '<td><a href="/hack/', $hack['id'], '" class="uoj-status" data-success="0"><strong>Failed.</strong></a></td>';
 		}
-	}
-	else
+	} else {
 		echo '<td>Hidden</td>';
-	if (!isset($config['submit_time_hidden']))
+	}
+	if (!isset($config['submit_time_hidden'])) {
 		echo '<td>', $hack['submit_time'], '</td>';
-	if (!isset($config['judge_time_hidden']))
+	}
+	if (!isset($config['judge_time_hidden'])) {
 		echo '<td>', $hack['judge_time'], '</td>';
+	}
 	echo '</tr>';
 }
 function echoHackListOnlyOne($hack, $config, $user) {
@@ -814,22 +830,30 @@ function echoHackListOnlyOne($hack, $config, $user) {
 	echo '<table class="table table-bordered table-text-center">';
 	echo '<thead>';
 	echo '<tr>';
-	if (!isset($config['id_hidden']))
+	if (!isset($config['id_hidden'])) {
 		echo '<th>ID</th>';
-	if (!isset($config['submission_id_hidden']))
+	}
+	if (!isset($config['submission_id_hidden'])) {
 		echo '<th>'.UOJLocale::get('problems::submission id').'</th>';
-	if (!isset($config['problem_hidden']))
+	}
+	if (!isset($config['problem_hidden'])) {
 		echo '<th>'.UOJLocale::get('problems::problem').'</th>';
-	if (!isset($config['hacker_hidden']))
+	}
+	if (!isset($config['hacker_hidden'])) {
 		echo '<th>'.UOJLocale::get('problems::hacker').'</th>';
-	if (!isset($config['owner_hidden']))
+	}
+	if (!isset($config['owner_hidden'])) {
 		echo '<th>'.UOJLocale::get('problems::owner').'</th>';
-	if (!isset($config['result_hidden']))
+	}
+	if (!isset($config['result_hidden'])) {
 		echo '<th>'.UOJLocale::get('problems::result').'</th>';
-	if (!isset($config['submit_time_hidden']))
+	}
+	if (!isset($config['submit_time_hidden'])) {
 		echo '<th>'.UOJLocale::get('problems::submit time').'</th>';
-	if (!isset($config['judge_time_hidden']))
+	}
+	if (!isset($config['judge_time_hidden'])) {
 		echo '<th>'.UOJLocale::get('problems::judge time').'</th>';
+	}
 	echo '</tr>';
 	echo '</thead>';
 	echo '<tbody>';
@@ -891,7 +915,7 @@ function echoHacksList($cond, $tail, $config, $user) {
 	}
 
 	echoLongTable($col_names, 'hacks', $cond, $tail, $header_row,
-		function($hacks) use($config, $user) {
+		function($hacks) use ($config, $user) {
 			echoHack($hacks, $config, $user);
 		}, null);
 }
@@ -935,10 +959,10 @@ function echoRanklist($config = array()) {
 	$header_row .= '</tr>';
 	
 	$users = array();
-	$print_row = function($user, $now_cnt) use(&$users) {
+	$print_row = function($user, $now_cnt) use (&$users) {
 		if (!$users) {
 			$rank = DB::selectCount("select count(*) from user_info where rating > {$user['rating']}") + 1;
-		} else if ($user['rating'] == $users[count($users) - 1]['rating']) {
+		} elseif ($user['rating'] == $users[count($users) - 1]['rating']) {
 			$rank = $users[count($users) - 1]['rank'];
 		} else {
 			$rank = $now_cnt;

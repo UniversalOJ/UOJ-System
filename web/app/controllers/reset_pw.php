@@ -18,7 +18,7 @@
 		$user = queryUser($username);
 		if ($user == null) {
 			return '不明错误';
-	}
+		}
 		if ($check_code !== md5($user['username'] . '+' . $user['password'])) {
 			return '不明错误';
 		}

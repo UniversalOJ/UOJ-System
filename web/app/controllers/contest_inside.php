@@ -86,7 +86,7 @@
 				$result = DB::query("select id, problem_id, content from submissions where contest_id = {$contest['id']}");
 				while ($submission = DB::fetch($result, MYSQLI_ASSOC)) {
 					if (!isset($contest['extra_config']["problem_{$submission['problem_id']}"])) {
-	 					$content = json_decode($submission['content'], true);
+						$content = json_decode($submission['content'], true);
 						if (isset($content['final_test_config'])) {
 							$content['config'] = $content['final_test_config'];
 							unset($content['final_test_config']);
@@ -225,14 +225,14 @@ EOD;
 			$reply_question = new UOJForm('reply_question');
 			$reply_question->addHidden('rid', '0',
 				function($id) {
-				    global $contest;
+					global $contest;
 				    
 					if (!validateUInt($id)) {
 						return '无效ID';
 					}
 					$q = DB::selectFirst("select * from contests_asks where id = $id");
 					if ($q['contest_id'] != $contest['id']) {
-					    return '无效ID';
+						return '无效ID';
 					}
 					return '';
 				},
@@ -247,15 +247,15 @@ EOD;
 			], '回复类型', 'private');
 			$reply_question->addVTextArea('rcontent', '回复', '', 
 				function($content) {
-				    if (!Auth::check()) {
-				        return '您尚未登录';
-				    }
-				    switch ($_POST['rtype']) {
+					if (!Auth::check()) {
+						return '您尚未登录';
+					}
+					switch ($_POST['rtype']) {
 				    	case 'public':
 				    	case 'private':
 				    		if (strlen($content) == 0) {
-								return '回复不能为空';
-							}
+				    			return '回复不能为空';
+				    		}
 							break;
 				    }
 					return '';
@@ -406,10 +406,10 @@ EOD;
 	
 	function echoContestCountdown() {
 		global $contest;
-	 	$rest_second = $contest['end_time']->getTimestamp() - UOJTime::$time_now->getTimestamp();
-	 	$time_str = UOJTime::$time_now_str;
-	 	$contest_ends_in = UOJLocale::get('contests::contest ends in');
-	 	echo <<<EOD
+		$rest_second = $contest['end_time']->getTimestamp() - UOJTime::$time_now->getTimestamp();
+		$time_str = UOJTime::$time_now_str;
+		$contest_ends_in = UOJLocale::get('contests::contest ends in');
+		echo <<<EOD
  		<div class="card border-info">
  			<div class="card-header bg-info">
  				<h3 class="card-title">$contest_ends_in</h3>
@@ -497,7 +497,7 @@ EOD;
 		<?php
 			if ($contest['cur_progress'] <= CONTEST_IN_PROGRESS) {
 				echoContestCountdown();
-			} else if ($contest['cur_progress'] <= CONTEST_TESTING) {
+			} elseif ($contest['cur_progress'] <= CONTEST_TESTING) {
 				echoContestJudgeProgress();
 			} else {
 				echoContestFinished();

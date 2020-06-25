@@ -10,12 +10,15 @@ function hasProblemPermission($user, $problem) {
 	return DB::selectFirst("select * from problems_permissions where username = '{$user['username']}' and problem_id = {$problem['id']}") != null;
 }
 function hasViewPermission($str,$user,$problem,$submission) {
-	if($str=='ALL')
+	if ($str=='ALL') {
 		return true;
-	if($str=='ALL_AFTER_AC')
+	}
+	if ($str=='ALL_AFTER_AC') {
 		return hasAC($user,$problem);
-	if($str=='SELF')
+	}
+	if ($str=='SELF') {
 		return $submission['submitter']==$user['username'];
+	}
 	return false;
 }
 
@@ -31,7 +34,7 @@ function hasContestPermission($user, $contest) {
 
 function hasRegistered($user, $contest) {
 	return DB::selectFirst("select * from contests_registrants where username = '${user['username']}' and contest_id = ${contest['id']}") != null;
-	}
+}
 function hasAC($user, $problem) {
 	return DB::selectFirst("select * from best_ac_submissions where submitter = '${user['username']}' and problem_id = ${problem['id']}") != null;
 }
@@ -122,7 +125,7 @@ function isContestProblemVisibleToUser($problem, $contest, $user) {
 function isSubmissionVisibleToUser($submission, $problem, $user) {
 	if (isSuperUser($user)) {
 		return true;
-	} else if (!$submission['is_hidden']) {
+	} elseif (!$submission['is_hidden']) {
 		return true;
 	} else {
 		return hasProblemPermission($user, $problem);

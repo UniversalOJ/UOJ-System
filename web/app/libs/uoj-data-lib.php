@@ -178,7 +178,9 @@
 					throw new UOJProblemConfException("syntax error");
 				}
 
-				$this->allow_files = array_flip(array_filter(scandir($this->upload_dir), function($x){return $x !== '.' && $x !== '..';}));
+				$this->allow_files = array_flip(array_filter(scandir($this->upload_dir), function($x) {
+					return $x !== '.' && $x !== '..';
+				}));
 
 				$zip_file = new ZipArchive();
 				if ($zip_file->open("{$this->prepare_dir}/download.zip", ZipArchive::CREATE) !== true) {

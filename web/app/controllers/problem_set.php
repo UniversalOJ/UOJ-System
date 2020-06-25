@@ -71,8 +71,8 @@ EOD;
 	if ($search_tag) {
 		$cond[] = "'".DB::escape($search_tag)."' in (select tag from problems_tags where problems_tags.problem_id = problems.id)";
 	}
-	if (isset($_GET["search"])) { 
-        $cond[]="title like '%".DB::escape($_GET["search"])."%' or id like '%".DB::escape($_GET["search"])."%'";
+	if (isset($_GET["search"])) {
+		$cond[]="title like '%".DB::escape($_GET["search"])."%' or id like '%".DB::escape($_GET["search"])."%'";
 	}
 	
 	if ($cond) {

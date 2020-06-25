@@ -4,20 +4,16 @@
 	}
 	function handlePost() {
 		global $myUser;
-		if (!isset($_POST['old_password']))
-		{
+		if (!isset($_POST['old_password'])) {
 			return '无效表单';
 		}
 		$old_password = $_POST['old_password'];
-		if (!validatePassword($old_password) || !checkPassword($myUser, $old_password))
-		{
+		if (!validatePassword($old_password) || !checkPassword($myUser, $old_password)) {
 			return "失败：密码错误。";
 		}
-		if ($_POST['ptag'])
-		{
+		if ($_POST['ptag']) {
 			$password = $_POST['password'];
-			if (!validatePassword($password))
-			{
+			if (!validatePassword($password)) {
 				return "失败：无效密码。";
 			}
 			$password = getPasswordToStore($password, $myUser['username']);
@@ -25,27 +21,23 @@
 		}
 
 		$email = $_POST['email'];
-		if (!validateEmail($email))
-		{
+		if (!validateEmail($email)) {
 			return "失败：无效电子邮箱。";
 		}
 		$esc_email = DB::escape($email);
 		DB::update("update user_info set email = '$esc_email' where username = '{$myUser['username']}'");
 
-		if ($_POST['Qtag'])
-		{
+		if ($_POST['Qtag']) {
 			$qq = $_POST['qq'];
-			if (!validateQQ($qq))
-			{
+			if (!validateQQ($qq)) {
 				return "失败：无效QQ。";
 			}
 			$esc_qq = DB::escape($qq);
 			DB::update("update user_info set qq = '$esc_qq' where username = '{$myUser['username']}'");
-		}
-		else
+		} else {
 			DB::update("update user_info set QQ = NULL where username = '{$myUser['username']}'");
-		if ($_POST['sex'] == "U" || $_POST['sex'] == 'M' || $_POST['sex'] == 'F')
-		{
+		}
+		if ($_POST['sex'] == "U" || $_POST['sex'] == 'M' || $_POST['sex'] == 'F') {
 			$sex = $_POST['sex'];
 			$esc_sex = DB::escape($sex);
 			DB::update("update user_info set sex = '$esc_sex' where username = '{$myUser['username']}'");

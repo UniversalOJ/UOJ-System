@@ -44,72 +44,71 @@
 
 
 	//上传数据
-	if($_POST['problem_data_file_submit']=='submit'){
-		if ($_FILES["problem_data_file"]["error"] > 0){
-  			$errmsg = "Error: ".$_FILES["problem_data_file"]["error"];
+	if ($_POST['problem_data_file_submit']=='submit') {
+		if ($_FILES["problem_data_file"]["error"] > 0) {
+			$errmsg = "Error: ".$_FILES["problem_data_file"]["error"];
 			becomeMsgPage('<div>' . $errmsg . '</div><a href="/problem/'.$problem['id'].'/manage/data">返回</a>');
-  		}
-		else{
+		} else {
 			$zip_mime_types = array('application/zip', 'application/x-zip', 'application/x-zip-compressed');
-			if(in_array($_FILES["problem_data_file"]["type"], $zip_mime_types)){
+			if (in_array($_FILES["problem_data_file"]["type"], $zip_mime_types)) {
 				$up_filename="/tmp/".rand(0,100000000)."data.zip";
 				move_uploaded_file($_FILES["problem_data_file"]["tmp_name"], $up_filename);
 				$zip = new ZipArchive;
-				if ($zip->open($up_filename) === TRUE){
+				if ($zip->open($up_filename) === TRUE) {
 					$zip->extractTo("/var/uoj_data/upload/{$problem['id']}");
 					$zip->close();
 					exec("cd /var/uoj_data/upload/{$problem['id']}; if [ `find . -maxdepth 1 -type f`File = File ]; then for sub_dir in `find -maxdepth 1 -type d ! -name .`; do mv -f \$sub_dir/* . && rm -rf \$sub_dir; done; fi");
 					echo "<script>alert('上传成功！')</script>";
-				}else{
+				} else {
 					$errmsg = "解压失败！";
 					becomeMsgPage('<div>' . $errmsg . '</div><a href="/problem/'.$problem['id'].'/manage/data">返回</a>');
 				}
 				unlink($up_filename);
-			}else{
+			} else {
 				$errmsg = "请上传zip格式！";
 				becomeMsgPage('<div>' . $errmsg . '</div><a href="/problem/'.$problem['id'].'/manage/data">返回</a>');
 			}
-  		}
+		}
 	}
 
 	//添加配置文件
-	if($_POST['problem_settings_file_submit']=='submit'){
-		if($_POST['use_builtin_checker'] and $_POST['n_tests'] and $_POST['input_pre'] and $_POST['input_suf'] and $_POST['output_pre'] and $_POST['output_suf'] and $_POST['time_limit'] and $_POST['memory_limit']){
-				$set_filename="/var/uoj_data/upload/{$problem['id']}/problem.conf";
-				$has_legacy=false;
-				if(file_exists($set_filename)){
-					$has_legacy=true;
-					unlink($set_filename);
-				}
-				$setfile = fopen($set_filename, "w");
-				fwrite($setfile, "use_builtin_judger on\n");
-				if($_POST['use_builtin_checker'] != 'ownchk'){
-					fwrite($setfile, "use_builtin_checker ".$_POST['use_builtin_checker']."\n");
-				}
-				fwrite($setfile, "n_tests ".$_POST['n_tests']."\n");
-				if($_POST['n_ex_tests']){
-					fwrite($setfile, "n_ex_tests ".$_POST['n_ex_tests']."\n");
-				}else{
-					fwrite($setfile, "n_ex_tests 0\n");
-				}
-				if($_POST['n_sample_tests']){
-					fwrite($setfile, "n_sample_tests ".$_POST['n_sample_tests']."\n");
-				}else{
-					fwrite($setfile, "n_sample_tests 0\n");
-				}
-				fwrite($setfile, "input_pre ".$_POST['input_pre']."\n");
-				fwrite($setfile, "input_suf ".$_POST['input_suf']."\n");
-				fwrite($setfile, "output_pre ".$_POST['output_pre']."\n");
-				fwrite($setfile, "output_suf ".$_POST['output_suf']."\n");
-				fwrite($setfile, "time_limit ".$_POST['time_limit']."\n");
-				fwrite($setfile, "memory_limit ".$_POST['memory_limit']."\n");
-				fclose($setfile);
-				if(!$has_legacy){
-					echo "<script>alert('添加成功！')</script>";
-				}else{
-					echo "<script>alert('替换成功!')</script>";
-				}
-		}else{
+	if ($_POST['problem_settings_file_submit']=='submit') {
+		if ($_POST['use_builtin_checker'] and $_POST['n_tests'] and $_POST['input_pre'] and $_POST['input_suf'] and $_POST['output_pre'] and $_POST['output_suf'] and $_POST['time_limit'] and $_POST['memory_limit']) {
+			$set_filename="/var/uoj_data/upload/{$problem['id']}/problem.conf";
+			$has_legacy=false;
+			if (file_exists($set_filename)) {
+				$has_legacy=true;
+				unlink($set_filename);
+			}
+			$setfile = fopen($set_filename, "w");
+			fwrite($setfile, "use_builtin_judger on\n");
+			if ($_POST['use_builtin_checker'] != 'ownchk') {
+				fwrite($setfile, "use_builtin_checker ".$_POST['use_builtin_checker']."\n");
+			}
+			fwrite($setfile, "n_tests ".$_POST['n_tests']."\n");
+			if ($_POST['n_ex_tests']) {
+				fwrite($setfile, "n_ex_tests ".$_POST['n_ex_tests']."\n");
+			} else {
+				fwrite($setfile, "n_ex_tests 0\n");
+			}
+			if ($_POST['n_sample_tests']) {
+				fwrite($setfile, "n_sample_tests ".$_POST['n_sample_tests']."\n");
+			} else {
+				fwrite($setfile, "n_sample_tests 0\n");
+			}
+			fwrite($setfile, "input_pre ".$_POST['input_pre']."\n");
+			fwrite($setfile, "input_suf ".$_POST['input_suf']."\n");
+			fwrite($setfile, "output_pre ".$_POST['output_pre']."\n");
+			fwrite($setfile, "output_suf ".$_POST['output_suf']."\n");
+			fwrite($setfile, "time_limit ".$_POST['time_limit']."\n");
+			fwrite($setfile, "memory_limit ".$_POST['memory_limit']."\n");
+			fclose($setfile);
+			if (!$has_legacy) {
+				echo "<script>alert('添加成功！')</script>";
+			} else {
+				echo "<script>alert('替换成功!')</script>";
+			}
+		} else {
 			$errmsg = "添加配置文件失败，请检查是否所有输入框都已填写！";
 			becomeMsgPage('<div>' . $errmsg . '</div><a href="/problem/'.$problem['id'].'/manage/data">返回</a>');
 		}
@@ -226,7 +225,9 @@ EOD
 			}
 
 			if (!isset($data_files)) {
-				$this->data_files = array_filter(scandir($data_dir), function($x){return $x !== '.' && $x !== '..' && $x !== 'problem.conf';});
+				$this->data_files = array_filter(scandir($data_dir), function($x) {
+					return $x !== '.' && $x !== '..' && $x !== 'problem.conf';
+				});
 				natsort($this->data_files);
 				array_unshift($this->data_files, 'problem.conf');
 			} else {
@@ -309,10 +310,12 @@ EOD
 		global $data_dir;
 		global $problem;
 
-		$allow_files = array_flip(array_filter(scandir($data_dir), function($x){return $x !== '.' && $x !== '..';}));
+		$allow_files = array_flip(array_filter(scandir($data_dir), function($x) {
+			return $x !== '.' && $x !== '..';
+		}));
 
-		$getDisplaySrcFunc = function($name) use($allow_files) {
-			return function() use($name, $allow_files) {
+		$getDisplaySrcFunc = function($name) use ($allow_files) {
+			return function() use ($name, $allow_files) {
 				$src_name = $name . '.cpp';
 				if (isset($allow_files[$src_name])) {
 					echoFilePre($src_name);
@@ -358,7 +361,7 @@ EOD
 
 			$data_disp = new DataDisplayer($problem_conf, array('problem.conf'));
 			$data_disp->addDisplayer('tests',
-				function($self) use($problem_conf, $allow_files, $n_tests, $n_ex_tests) {
+				function($self) use ($problem_conf, $allow_files, $n_tests, $n_ex_tests) {
 					for ($num = 1; $num <= $n_tests; $num++) {
 						$input_file_name = getUOJProblemInputFileName($problem_conf, $num);
 						$output_file_name = getUOJProblemOutputFileName($problem_conf, $num);
@@ -388,7 +391,7 @@ EOD
 				}
 
 				$data_disp->addDisplayer('extra tests',
-					function($self) use($problem_conf, $allow_files, $n_tests, $n_ex_tests) {
+					function($self) use ($problem_conf, $allow_files, $n_tests, $n_ex_tests) {
 						for ($num = 1; $num <= $n_ex_tests; $num++) {
 							$input_file_name = getUOJProblemExtraInputFileName($problem_conf, $num);
 							$output_file_name = getUOJProblemExtraOutputFileName($problem_conf, $num);
@@ -584,9 +587,9 @@ EOD
 			$esc_content = DB::escape(json_encode($content));
 			$esc_language = DB::escape('C++');
 		 	
-		 	$result = array();
-		 	$result['status'] = "Waiting";
-		 	$result_json = json_encode($result);
+			$result = array();
+			$result['status'] = "Waiting";
+			$result_json = json_encode($result);
 			$is_hidden = $problem['is_hidden'] ? 1 : 0;
 			
 			DB::insert("insert into submissions (problem_id, submit_time, submitter, content, language, tot_size, status, result, is_hidden) values ({$problem['id']}, now(), '{$user_std['username']}', '$esc_content', '$esc_language', $tot_size, '{$result['status']}', '$result_json', $is_hidden)");

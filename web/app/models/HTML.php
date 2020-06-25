@@ -131,7 +131,7 @@ class HTML {
 		$r = array();
 		foreach ((array)$q as $k => $v) {
 			if ($array_name !== null) {
-				if(is_numeric($k)) {
+				if (is_numeric($k)) {
 					$k = $array_name."[]";
 				} else {
 					$k = $array_name."[$k]";

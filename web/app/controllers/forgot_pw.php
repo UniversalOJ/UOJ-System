@@ -41,7 +41,7 @@ EOD;
 		$mailer->addAddress($user['email'], $user['username']);
 		$mailer->Subject = $oj_name_short."密码找回";
 		$mailer->msgHTML($html);
-		if (!$mailer->send()) {  
+		if (!$mailer->send()) {
 			error_log($mailer->ErrorInfo);
 			becomeMsgPage('<div class="text-center"><h2>邮件发送失败，请重试 <span class="glyphicon glyphicon-remove"></span></h2></div>');
 		} else {

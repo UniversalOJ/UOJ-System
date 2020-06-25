@@ -6,10 +6,10 @@
 	$q_min_score = isset($_GET['min_score']) && validateUInt($_GET['min_score']) ? $_GET['min_score'] : null;
 	$q_max_score = isset($_GET['max_score']) && validateUInt($_GET['max_score']) ? $_GET['max_score'] : null;
 	$q_language = isset($_GET['language']) ? $_GET['language'] : null;
-	if($q_problem_id != null) {
+	if ($q_problem_id != null) {
 		$conds[] = "problem_id = $q_problem_id";
 	}
-	if($q_submitter != null) {
+	if ($q_submitter != null) {
 		$conds[] = "submitter = '$q_submitter'";
 	}
 	if ($q_min_score != null) {
