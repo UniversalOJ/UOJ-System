@@ -5,5 +5,4 @@ app/storage/tmp/*
 app/storage/submission/*
 !app/storage/tmp/.gitkeep
 !app/storage/submission/.gitkeep
-test.php
 
