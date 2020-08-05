@@ -393,6 +393,59 @@ function echoSubmissionsList($cond, $tail, $config, $user) {
 		}, $table_config);
 }
 
+function echoPasteContent($paste) {
+	$zip_file = new ZipArchive();
+	$submission_content = json_decode($paste['content'], true);
+	$zip_file->open(UOJContext::storagePath().$submission_content['file_name']);
+
+	$config = array();
+	foreach ($submission_content['config'] as $config_key => $config_val) {
+		$config[$config_val[0]] = $config_val[1];
+	}
+
+	$file_content = $zip_file->getFromName("paste.code");
+	$file_content = uojTextEncode($file_content, array('allow_CR' => true, 'html_escape' => true));
+	$file_language = htmlspecialchars($config["paste_language"]);
+	$footer_text = UOJLocale::get('problems::source code').', '.UOJLocale::get('problems::language').': '.$file_language;
+	$footer_text .= ", ".UOJLocale::get("problems::submitter") . <<<HTML
+: <a href="/user/profile/${paste['creator']}">${paste['creator']}</a>
+HTML;
+
+	switch ($file_language) {
+		case 'C++':
+		case 'C++11':
+			$sh_class = 'sh_cpp';
+			break;
+		case 'Python2':
+		case 'Python3':
+			$sh_class = 'sh_python';
+			break;
+		case 'Java8':
+		case 'Java11':
+			$sh_class = 'sh_java';
+			break;
+		case 'C':
+			$sh_class = 'sh_c';
+			break;
+		case 'Pascal':
+			$sh_class = 'sh_pascal';
+			break;
+		default:
+			$sh_class = '';
+			break;
+	}
+	echo '<div class="card border-info mb-3">';
+	echo '<div class="card-header bg-info">';
+	echo '<h4 class="card-title">Paste!</h4>';
+	echo '</div>';
+	echo '<div class="card-body">';
+	echo '<pre><code class="'.$sh_class.'">'.$file_content."\n".'</code></pre>';
+	echo '</div>';
+	echo '<div class="card-footer">'.$footer_text.'</div>';
+	echo '</div>';
+
+	$zip_file->close();
+}
 
 function echoSubmissionContent($submission, $requirement) {
 	$zip_file = new ZipArchive();
