@@ -53,5 +53,10 @@ return [
 	'switch' => [
 		'web-analytics' => false,
 		'blog-domain-mode' => 3
+	],
+	'tools' => [
+		// 请仅在https下启用以下功能.
+		// 非https下, chrome无法进行复制.
+		'map-copy-enabled' => false,
 	]
 ];

@@ -204,6 +204,16 @@
 		<?= HTML::js_src('/js/ckeditor/ckeditor.js') ?>
 		<?php endif ?>
 
+		<?php if (isset($REQUIRE_LIB['dracula'])): ?>
+			<!-- dracula.js -->
+			<?= HTML::js_src('/js/dracula.min.js') ?>
+		<?php endif ?>
+
+		<?php if (isset($REQUIRE_LIB['base64'])): ?>
+			<!-- base64.js -->
+			<?= HTML::js_src('/js/base64.min.js') ?>
+		<?php endif ?>
+
 		<!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
 		<!--[if lt IE 9]>
 			<script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
