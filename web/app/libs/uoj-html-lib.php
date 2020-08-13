@@ -410,6 +410,7 @@ function echoPasteContent($paste) {
 	$footer_text .= ", ".UOJLocale::get("problems::submitter") . <<<HTML
 : <a href="/user/profile/${paste['creator']}">${paste['creator']}</a>
 HTML;
+	$footer_text .= ", ".UOJLocale::get("problems::submit time").": ".$paste['created_at'];
 
 	switch ($file_language) {
 		case 'C++':

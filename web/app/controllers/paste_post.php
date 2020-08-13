@@ -16,7 +16,7 @@ function handleUpload($zip_file_name, $content, $tot_size) {
 		$index = uojRandString(20);
 		$esc_index = DB::escape($index);
 	}
-	DB::query("insert into pastes (`index`, `creator`, `content`) values ('$esc_index', '${myUser['username']}', '$esc_content')");
+	DB::query("insert into pastes (`index`, `creator`, `content`, `created_at`) values ('$esc_index', '${myUser['username']}', '$esc_content', '".date('Y-m-d H:i:s')."')");
 	redirectTo("/pastes/".$index);
 }
 

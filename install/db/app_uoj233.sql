@@ -702,11 +702,15 @@ create table pastes
 (
 	`index` varchar(20) null,
 	creator varchar(20) null,
+	created_at datetime null,
 	content text null
 );
 
 create unique index pastes_index_uindex
 	on pastes (`index`);
+
+create index pastes_created_at_index
+	on pastes (created_at);
 
 alter table pastes
 	add constraint pastes_pk
