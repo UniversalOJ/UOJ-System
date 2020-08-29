@@ -24,7 +24,7 @@
 		if (isProblemVisibleToUser($problem, $myUser)) {
 			echo '<tr class="text-center">';
 			if ($problem['submission_id']) {
-				echo '<td class="success">';
+				echo '<td class="table-success">';
 			} else {
 				echo '<td>';
 			}
