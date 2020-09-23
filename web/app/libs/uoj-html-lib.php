@@ -426,7 +426,6 @@ function echoPastesList() {
 	</td>
 </tr>
 HTML;
-
 		}, []);
 }
 
