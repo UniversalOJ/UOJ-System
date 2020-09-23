@@ -480,8 +480,8 @@ EOD;
 			<?php echoLongTable($judgerlist_cols, 'judger_info', "1=1", '', $judgerlist_header_row, $judgerlist_print_row, $judgerlist_config) ?>
 		<?php elseif ($cur_tab === 'paste'): ?>
 			<div>
-				<h4>删除Paste</h4>
-				<?php $paste_deleter->printHTML(); ?>
+				<h4>Paste管理</h4>
+				<?php echoPastesList() ?>
 			</div>
 		<?php endif ?>
 	</div>
