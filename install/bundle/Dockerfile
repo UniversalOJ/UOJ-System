@@ -3,8 +3,9 @@ MAINTAINER MascoSkray <MascoSkray@gmail.com>
 ARG CLONE_ADDFLAG
 
 WORKDIR /opt
+ENV DEBIAN_FRONTEND=noninteractive
 #Update apt and install git
-RUN apt-get update && apt-get install -y git
+RUN apt-get update && apt-get install -y apache2 cmake curl fp-compiler g++ git gnupg libapache2-mod-php libapache2-mod-xsendfile libyaml-dev make mysql-server ntp openjdk-11-jdk openjdk-8-jdk php php-dev php-mbstring php-mysql php-pear php-zip python python3 python3-requests re2c unzip vim wget zip
 #Clone the latest UOJ Community verison to local
 RUN git clone https://github.com/UniversalOJ/UOJ-System.git --depth 1 --single-branch ${CLONE_ADDFLAG} uoj
 #Install environment and set startup script
