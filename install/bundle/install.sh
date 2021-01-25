@@ -83,6 +83,10 @@ UOJEOF
 
 setJudgeConf(){
     printf "\n\n==> Setting judger files\n"
+    #specify environment
+    cat > /etc/environment <<UOJEOF
+PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+UOJEOF
     #Add local_main_judger user
     useradd -m local_main_judger && usermod -a -G www-data local_main_judger
     #Set uoj_data path

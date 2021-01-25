@@ -1,5 +1,6 @@
 .conf.json
-log
+log/*
+!/log/.gitkeep
 uoj_judger/builtin/checker/*
 !uoj_judger/builtin/checker/*.cpp
 !uoj_judger/builtin/checker/*.h
