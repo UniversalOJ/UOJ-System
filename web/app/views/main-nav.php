@@ -11,6 +11,16 @@
 			<li class="nav-item"><a class="nav-link" href="<?= HTML::url('/hacks') ?>"><span class="glyphicon glyphicon-flag"></span> <?= UOJLocale::get('hacks') ?></a></li>
 			<li class="nav-item"><a class="nav-link" href="<?= HTML::blog_list_url() ?>"><span class="glyphicon glyphicon-edit"></span> <?= UOJLocale::get('blogs') ?></a></li>
 			<li class="nav-item"><a class="nav-link" href="<?= HTML::url('/faq') ?>"><span class="glyphicon glyphicon-info-sign"></span> <?= UOJLocale::get('help') ?></a></li>
+			<li class="nav-item dropdown">
+				<a class="nav-link dropdown-toggle" href="#" id="toolsDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+					<span class="glyphicon glyphicon-wrench"></span>
+					工具
+				</a>
+				<div class="dropdown-menu" aria-labelledby="navbarDropdown">
+					<a class="dropdown-item" href="<?= HTML::url('/paste') ?>"><span class="glyphicon glyphicon-paste"></span> 代码分享 </a>
+					<a class="dropdown-item" href="<?= HTML::url('/map_visualizer') ?>"><span class="glyphicon glyphicon-retweet"></span> 图可视化 </a>
+				</div>
+			</li>
 		</ul>
 		<form id="form-search-problem" class="form-inline my-2 my-lg-0" method="get">
 			 <div class="input-group">
