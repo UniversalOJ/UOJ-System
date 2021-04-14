@@ -233,7 +233,7 @@
 					} else {
 						$n_ex_tests = getUOJConfVal($this->problem_conf, 'n_ex_tests', 0);
 						if (!validateUInt($n_ex_tests) || $n_ex_tests < 0) {
-							throw new UOJProblemConfException("n_ex_tests must be a non-nagative integer");
+							throw new UOJProblemConfException("n_ex_tests must be a non-negative integer");
 						}
 
 						for ($num = 1; $num <= $n_ex_tests; $num++) {
@@ -267,7 +267,7 @@
 
 						$n_sample_tests = getUOJConfVal($this->problem_conf, 'n_sample_tests', $n_tests);
 						if (!validateUInt($n_sample_tests) || $n_sample_tests < 0) {
-							throw new UOJProblemConfException("n_sample_tests must be a non-nagative integer");
+							throw new UOJProblemConfException("n_sample_tests must be a non-negative integer");
 						}
 						if ($n_sample_tests > $n_ex_tests) {
 							throw new UOJProblemConfException("n_sample_tests can't be greater than n_ex_tests");
