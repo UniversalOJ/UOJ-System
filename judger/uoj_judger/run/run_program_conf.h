@@ -160,7 +160,7 @@ inline bool is_writable_file(string name) {
 	if (name == "/") {
 		return writable_file_name_set.count("system_root");
 	}
-	return is_in_set_smart(name, writable_file_name_set) || is_in_set_smart(realpath(name), readable_file_name_set);
+	return is_in_set_smart(name, writable_file_name_set) || is_in_set_smart(realpath(name), writable_file_name_set);
 }
 inline bool is_readable_file(const string &name) {
 	if (is_writable_file(name)) {
