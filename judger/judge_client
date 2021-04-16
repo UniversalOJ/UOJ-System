@@ -140,7 +140,7 @@ def handle_task():
 					uoj_download('/judger', 'judger_update.zip')
 					execute('unzip -o judger_update.zip && cd %s && make clean && make' % uoj_judger_path())
 				except:
-					print(sys.stderr, "error when update")
+					print("error when update", file=sys.stderr)
 				if jconf['judger_name'] == 'main_judger':
 					uoj_sync_judge_client()
 				need_restart = True
@@ -149,7 +149,7 @@ def handle_task():
 				socket_server_thread.join()
 				
 				print_judge_client_status()
-				print(sys.stderr, "goodbye!")
+				print("goodbye!", file=sys.stderr)
 				
 				sys.exit(0)
 			
