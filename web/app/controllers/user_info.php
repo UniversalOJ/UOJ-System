@@ -104,20 +104,20 @@
 var rating_data = [[
 <?php
 	$user_rating_min = $user_rating_max = 1500;
-	$result = DB::query("select contest_id, rank, user_rating from contests_registrants where username = '{$user['username']}' and has_participated = 1 order by contest_id");
+	$result = DB::query("select contest_id, `rank`, user_rating from contests_registrants where username = '{$user['username']}' and has_participated = 1 order by contest_id");
 	$is_first_row = true;
 	$last_rating = 1500;
 	while ($row = DB::fetch($result)) {
 		$contest = queryContest($row['contest_id']);
 		$rating_delta = $row['user_rating'] - $last_rating;
 		if (!$is_first_row) {
-			echo "[$last_contest_time, {$row['user_rating']}, $last_contest_id, '$last_contest_name', $last_rank, $rating_delta],";
+			echo "[$last_contest_time, {$row['user_rating']}, $last_contest_id, $last_contest_name, $last_rank, $rating_delta],";
 		} else {
 			$is_first_row = false;
 		}
 		$contest_start_time = new DateTime($contest['start_time']);
 		$last_contest_time = ($contest_start_time->getTimestamp() + $contest_start_time->getOffset()) * 1000;
-		$last_contest_name = $contest['name'];
+		$last_contest_name = json_encode($contest['name']);
 		$last_contest_id = $contest['id'];
 		$last_rank = $row['rank'];
 		$last_rating = $row['user_rating'];
@@ -134,7 +134,7 @@ var rating_data = [[
 		echo "[{$time_now_stamp}, {$user['rating']}, 0]";
 	} else {
 		$rating_delta = $user['rating'] - $last_rating;
-		echo "[$last_contest_time, {$user['rating']}, $last_contest_id, '$last_contest_name', $last_rank, $rating_delta]";
+		echo "[$last_contest_time, {$user['rating']}, $last_contest_id, $last_contest_name, $last_rank, $rating_delta]";
 	}
 	if ($user['rating'] < $user_rating_min) {
 		$user_rating_min = $user['rating'];
