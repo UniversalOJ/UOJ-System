@@ -62,13 +62,14 @@ EOD;
 	);
 
 	if ($rest_second <= 86400) {
+		$notification = json_encode($upcoming_contest_name . " 已经开始了。是否要跳转到比赛页面？");
 		echo <<<EOD
 <div class="text-center bot-buffer-lg">
 <div class="text-warning">$upcoming_contest_name 倒计时</div>
 <div id="contest-countdown"></div>
 <script type="text/javascript">
 $('#contest-countdown').countdown($rest_second, function() {
-	if (confirm('$upcoming_contest_name 已经开始了。是否要跳转到比赛页面？')) {
+	if (confirm($notification)) {
 		window.location.href = "$upcoming_contest_href";
 	}
 });
