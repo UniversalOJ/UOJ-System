@@ -11,6 +11,7 @@ RUN git clone https://github.com/UniversalOJ/UOJ-System.git --depth 1 --single-b
 #Install environment and set startup script
 RUN cd uoj/install/bundle && sh install.sh -p && echo "\
 #!/bin/sh\n\
+rm -rf /run/mysqld/*\n\
 chown -R mysql:mysql /var/lib/mysql /var/run/mysqld\n\
 if [ ! -f \"/var/uoj_data/.UOJSetupDone\" ]; then\n\
   cd /opt/uoj/install/bundle && sh install.sh -i\n\
