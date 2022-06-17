@@ -10,6 +10,7 @@
 		}
 	} else {
 		$blog = DB::selectFirst("select * from blogs where poster = '".UOJContext::user()['username']."' and type = 'B' and is_draft = true");
+
 	}
 	
 	$blog_editor = new UOJBlogEditor();

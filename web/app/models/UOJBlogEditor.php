@@ -197,7 +197,6 @@ EOD
 		if (!$ret) {
 			$ret = array();
 		}
-		
 		if (isset($_POST['need_preview'])) {
 			ob_start();
 			if ($this->type == 'blog') {
