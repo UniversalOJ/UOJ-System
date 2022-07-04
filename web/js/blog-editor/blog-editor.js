@@ -1,3 +1,58 @@
+
+var fileList = [];
+
+$(document).ready(function (){
+	var fileCatcher = document.getElementById('form_example');
+	var files = document.getElementById("files"), renderFileList;
+	var fileListDisplay = document.getElementById('file-list-display'), sendFile;
+	fileCatcher.addEventListener("submit", function (event) {
+		event.preventDefault();
+		//上传文件
+		sendFile();
+	});
+	files.addEventListener("change", function (event) {
+		for (var i = 0; i < files.files.length; i++) {
+			fileList.push(files.files[i]);
+		}
+ 	});
+	renderFileList = function () {
+		fileListDisplay.innerHTML = '';
+		fileList.forEach(function (file, index) {
+			var fileDisplayEl = document.createElement("li");
+			fileDisplayEl.innerHTML = (index + 1) + ":" + file.name;
+			fileDisplayEl.classList.add("list-group-item");
+			fileListDisplay.appendChild(fileDisplayEl);
+		})
+	};
+	sendFile = function () {
+		var formData = new FormData();
+		var request = new XMLHttpRequest();
+		//循环添加到formData中
+		fileList.forEach(function (file) {
+			formData.append('file', file, file.name);
+		});
+		url = "";
+		dirs = window.location.href.split("/");
+		for(var i=0;i<dirs.length-1;i++){
+			url+=dirs[i]+"/";
+		}
+		url+="upload";
+		request.onreadystatechange = function (){
+			if(request.readyState === 4 && request.status === 200){
+				// 逻辑梳理 response.responseText
+				json = JSON.parse(request.responseText);
+				if(json["msg"]==="成功"){
+					renderFileList();
+					alert("上传成功");
+				}else{
+					alert("上传失败，请联系管理员解决" + json["status"]);
+				}
+			}
+		}
+		request.open("POST", url);
+		request.send(formData);
+	}
+})
 function blog_editor_init(name, editor_config) {
 	if (editor_config === undefined) {
 		editor_config = {};
@@ -12,7 +67,7 @@ function blog_editor_init(name, editor_config) {
 	var input_content_md = $("#input-" + name + "_content_md");
 	var input_is_hidden = $("#input-" + name + "_is_hidden");
 	var this_form = input_content_md[0].form;
-	
+
 	var is_saved;
 	var last_save_done = true;
 	
@@ -146,7 +201,6 @@ function blog_editor_init(name, editor_config) {
 			return;
 		}
 		last_save_done = false;
-		
 		if (config.need_preview) {
 			set_preview_status(1);
 		}
@@ -159,7 +213,12 @@ function blog_editor_init(name, editor_config) {
 			post_data['need_preview'] = 'on';
 		}
 		post_data["save-" + name] = '';
-		
+		fileListName = [];
+		fileList.forEach(function (file){
+			fileListName.push(file.name);
+		})
+		post_data["fileList"] = fileListName;
+		console.log(post_data);
 		$.ajax({
 			type : 'POST',
 			data : post_data,
@@ -168,7 +227,6 @@ function blog_editor_init(name, editor_config) {
 				try {
 					data = JSON.parse(data)
 				} catch (e) {
-					alert(data);
 					if (config.need_preview) {
 						set_preview_status(0);
 					}

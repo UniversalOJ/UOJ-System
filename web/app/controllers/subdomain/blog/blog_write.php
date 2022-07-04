@@ -10,9 +10,7 @@
 		}
 	} else {
 		$blog = DB::selectFirst("select * from blogs where poster = '".UOJContext::user()['username']."' and type = 'B' and is_draft = true");
-
 	}
-	
 	$blog_editor = new UOJBlogEditor();
 	$blog_editor->name = 'blog';
 	if ($blog) {
@@ -44,6 +42,23 @@
 	function insertBlog($data) {
 		DB::insert("insert into blogs (title, content, content_md, poster, is_hidden, is_draft, post_time) values ('".DB::escape($data['title'])."', '".DB::escape($data['content'])."', '".DB::escape($data['content_md'])."', '".Auth::id()."', {$data['is_hidden']}, {$data['is_draft']}, now())");
 	}
+	function updateBlogOfFile($id,$data){
+		$existFile = DB::selectAll("select filename from blogs_file where blog_id= '".DB::escape($id)."' ");
+		foreach ($data as $file){
+			$flag = false;
+			foreach ($existFile as $efile){
+				if($efile["filename"]==$file){
+					$flag = true;
+					break;
+				}
+			}
+			if($flag){
+				continue;
+			}else{
+				DB::insert("insert into blogs_file (blog_id,filename) values ('".$id."','".$file."')");
+			}
+		}
+	}
 	
 	$blog_editor->save = function($data) {
 		global $blog;
@@ -61,10 +76,12 @@
 				}
 			} else {
 				updateBlog($blog['id'], $data);
+				updateBlogOfFile($blog['id'],$data["fileList"]);
 			}
 		} else {
 			insertBlog(array_merge($data, array('is_draft' => $data['is_hidden'] ? 1 : 0)));
 			$blog = array('id' => DB::insert_id(), 'tags' => array());
+			updateBlogOfFile($blog['id'],$data["fileList"]);
 			if (!$data['is_hidden']) {
 				$ret['blog_write_url'] = HTML::blog_url(UOJContext::user()['username'], "/post/{$blog['id']}/write");
 				$ret['blog_url'] = HTML::blog_url(UOJContext::user()['username'], "/post/{$blog['id']}");
@@ -78,7 +95,6 @@
 		}
 		return $ret;
 	};
-	
 	$blog_editor->runAtServer();
 ?>
 <?php echoUOJPageHeader('写博客') ?>
@@ -86,4 +102,11 @@
 <a href="http://uoj.ac/blog/7">这玩意儿怎么用？</a>
 </div>
 <?php $blog_editor->printHTML() ?>
+<form id="form_example"	action="upload" enctype="multipart/form-data" method="post">
+	<input type="file"  id="files" name="pic" multiple/>
+	<input type="submit" value="上传">
+</form>
+<ul class="list-group" id="file-list-display">
+	<li	class="list-group-item"></li>
+</ul>
 <?php echoUOJPageFooter() ?>

@@ -23,7 +23,6 @@ class UOJBlogEditor {
 	function __construct() {
 		global $REQUIRE_LIB;
 		$REQUIRE_LIB['blog-editor'] = '';
-		
 		$this->validator = array(
 			'title' => function(&$title) {
 				if ($title == '') {
@@ -94,7 +93,8 @@ class UOJBlogEditor {
 		$purifier = HTML::pruifier();
 		
 		$this->post_data['title'] = HTML::escape($this->post_data['title']);
-		
+		// 接受文件列表
+		$this->post_data['fileList'] = $_POST["fileList"];
 		if ($this->type == 'blog') {
 			$content_md = $_POST[$this->name . '_content_md'];
 			try {
@@ -229,4 +229,5 @@ EOD
 	public function printHTML() {
 		uojIncludeView('blog-editor', array('editor' => $this));
 	}
+
 }
