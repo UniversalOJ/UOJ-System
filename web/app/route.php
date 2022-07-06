@@ -10,6 +10,7 @@ Route::pattern('upgrade_name', '[a-zA-Z0-9_]{1,50}');
 Route::group([
 		'domain' => '('.UOJConfig::$data['web']['main']['host'].'|127.0.0.1'.')'
 	], function() {
+		Route::any('/transfer', '/extension/problem_transfer.php');
 		Route::any('/', '/index.php');
 		Route::any('/problems', '/problem_set.php');
 		Route::any('/problems/template', '/problem_set.php?tab=template');
