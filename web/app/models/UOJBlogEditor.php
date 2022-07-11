@@ -217,7 +217,6 @@ EOD
 			$ret['html'] = ob_get_contents();
 			ob_end_clean();
 		}
-		
 		die(json_encode($ret));
 	}
 	

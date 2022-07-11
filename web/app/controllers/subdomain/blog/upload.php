@@ -1,6 +1,5 @@
 <?php
 	global $myUser;
-
 	header('Content-Type:text/json;charset=utf-8');
 	$ret = [];
 	if($myUser==null){
@@ -9,15 +8,18 @@
 		echo $ret;
 		return ;
 	}
-	$ret["file"]=$_FILES;
+	// TODO: 将文件存储路径进行可配置
+	$absPath = "/opt/uoj/web/app/upload/";
 	$fileName = $myUser['username']."-".$_FILES['file']["name"];
+	$base64FileName = base64_encode($fileName);
 	$tmpName  = $_FILES['file']["tmp_name"];
 	$uploads_dir = "upload/";
-	$ret["filename"] = $fileName.time();
+	$ret["filename"] = $_FILES['file']["name"];
 	$ret["tmpName"] = $tmpName;
 	$ret["status"] = 0;
 	if(file_exists($tmpName)){
-		if(move_uploaded_file($tmpName, "/opt/uoj/web/app/upload/".$fileName)){
+		if(move_uploaded_file($tmpName,$absPath.$base64FileName)){
+			$ret["path"] = $base64FileName;
 			$ret["msg"]="成功";
 			$ret["status"] = 0;
 		}else{

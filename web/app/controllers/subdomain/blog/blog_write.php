@@ -14,12 +14,14 @@
 	$blog_editor = new UOJBlogEditor();
 	$blog_editor->name = 'blog';
 	if ($blog) {
+		$blog["files"] = DB::selectAll("select filename,path from blogs_file where blog_id='".DB::escape($blog['id'])."'");
 		$blog_editor->cur_data = array(
 			'title' => $blog['title'],
 			'content_md' => $blog['content_md'],
 			'content' => $blog['content'],
 			'tags' => queryBlogTags($blog['id']),
-			'is_hidden' => $blog['is_hidden']
+			'is_hidden' => $blog['is_hidden'],
+			'files' => $blog["files"]
 		);
 	} else {
 		$blog_editor->cur_data = array(
@@ -38,16 +40,20 @@
 	
 	function updateBlog($id, $data) {
 		DB::update("update blogs set title = '".DB::escape($data['title'])."', content = '".DB::escape($data['content'])."', content_md = '".DB::escape($data['content_md'])."', is_hidden = {$data['is_hidden']} where id = {$id}");
+		updateBlogOfFile($id,$data["fileList"]);
 	}
 	function insertBlog($data) {
 		DB::insert("insert into blogs (title, content, content_md, poster, is_hidden, is_draft, post_time) values ('".DB::escape($data['title'])."', '".DB::escape($data['content'])."', '".DB::escape($data['content_md'])."', '".Auth::id()."', {$data['is_hidden']}, {$data['is_draft']}, now())");
+
 	}
 	function updateBlogOfFile($id,$data){
 		$existFile = DB::selectAll("select filename from blogs_file where blog_id= '".DB::escape($id)."' ");
 		foreach ($data as $file){
 			$flag = false;
+			$fileName = $file["fileName"];
+			$filePath = $file["filePath"];
 			foreach ($existFile as $efile){
-				if($efile["filename"]==$file){
+				if($efile["filename"]==$fileName){
 					$flag = true;
 					break;
 				}
@@ -55,7 +61,7 @@
 			if($flag){
 				continue;
 			}else{
-				DB::insert("insert into blogs_file (blog_id,filename) values ('".$id."','".$file."')");
+				DB::insert("insert into blogs_file (blog_id,filename,path) values ('".DB::escape($id)."','".DB::escape($fileName)."','".DB::escape($filePath)."')");
 			}
 		}
 	}
@@ -71,12 +77,13 @@
 					deleteBlog($blog['id']);
 					insertBlog(array_merge($data, array('is_draft' => 0)));
 					$blog = array('id' => DB::insert_id(), 'tags' => array());
+					updateBlogOfFile($blog['id'],$data["fileList"]);
 					$ret['blog_write_url'] = HTML::blog_url(UOJContext::user()['username'], "/post/{$blog['id']}/write");
 					$ret['blog_url'] = HTML::blog_url(UOJContext::user()['username'], "/post/{$blog['id']}");
 				}
 			} else {
 				updateBlog($blog['id'], $data);
-				updateBlogOfFile($blog['id'],$data["fileList"]);
+				//updateBlogOfFile($blog['id'],$data["fileList"]);
 			}
 		} else {
 			insertBlog(array_merge($data, array('is_draft' => $data['is_hidden'] ? 1 : 0)));

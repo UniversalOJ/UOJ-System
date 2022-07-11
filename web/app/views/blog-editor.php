@@ -31,5 +31,8 @@
 	labelText: <?= json_encode($editor->label_text['blog visibility']) ?>,
 	handleWidth: 100
 });
-blog_editor_init("<?= $editor->name ?>", <?= json_encode(array('type' => $editor->type)) ?>);
+	<?php foreach ($editor->cur_data["files"] as $file): ?>
+	GetFileOfBlog("<?=$file["filename"]?>","<?=$file["path"]?>");
+	<?php endforeach; ?>
+	blog_editor_init("<?= $editor->name ?>", <?= json_encode(array('type' => $editor->type)) ?>);
 </script>
