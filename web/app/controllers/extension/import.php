@@ -83,38 +83,13 @@
 
 	$info_form = new UOJForm('info');
 	$http_host = HTML::escape(UOJContext::httpHost());
-	$download_url = HTML::url("/download.php?type=problem&id={$problem['id']}");
+	$download_url = HTML::url("/download.php?type=export&id={$problem['id']}");
 	$info_form->appendHTML(<<<EOD
 <div class="form-group row">
-	<!--<label class="col-sm-3 control-label">zip上传数据</label>
-	<div class="col-sm-9">
-		<div class="form-control-static">
-			<row>
-			<button type="button" style="width:30%" class="btn btn-primary" data-toggle="modal" data-target="#UploadDataModal">上传数据</button>
-			<button type="submit" style="width:30%" id="button-submit-data" name="submit-data" value="data" class="btn btn-danger">检验配置并同步数据</button>
-			</row>
-		</div>
-	</div>-->
-</div>
-EOD
-	);
-	$info_form->appendHTML(<<<EOD
-<div class="form-group row">
-	<label class="col-sm-3 control-label">problem_{$problem['id']}.zip</label>
+	<label class="col-sm-3 control-label">export_{$problem['id']}.zip</label>
 	<div class="col-sm-9">
 		<div class="form-control-static">
 			<a href="$download_url">$download_url</a>
-		</div>
-	</div>
-</div>
-EOD
-	);
-	$info_form->appendHTML(<<<EOD
-<div class="form-group row">
-	<label class="col-sm-3 control-label">testlib.h</label>
-	<div class="col-sm-9">
-		<div class="form-control-static">
-			<a href="/download.php?type=testlib.h">下载</a>
 		</div>
 	</div>
 </div>
@@ -214,6 +189,10 @@ EOD
 		$ret = problemLoadProblem($problem, $myUser);
 		if ($ret) {
 			becomeMsgPage('<div>' . $ret . '</div><a href="/problem/'.$problem['id'].'/manage/transfer">返回</a>');
+		} else {
+			if ($ret) {
+				becomeMsgPage('<div>加载成功，请查看题目和数据界面</div><a href="/problem/'.$problem['id'].'/manage/data">返回</a>');
+			}
 		}
 	};
 	$data_form->submit_button_config['class_str'] = 'btn btn-danger btn-block';
@@ -236,7 +215,7 @@ EOD
 </ul>
 
 <div class="row">
-	<div class="col-md-10 top-buffer-sm">
+	<!-- <div class="col-md-10 top-buffer-sm">
 		<div class="row">
 			<script type="text/javascript">
 				curFileName = '';
@@ -261,6 +240,11 @@ EOD
 					return false;
 				});
 			</script>
+		</div>
+	</div> -->
+	<div class="col-md-8 top-buffer-sm">
+	<div class="top-buffer-md">
+			<?php $info_form->printHTML(); ?>
 		</div>
 	</div>
 	<div class="col-md-2 top-buffer-sm">
@@ -300,5 +284,6 @@ EOD
     			</div>
   		</div>
 	</div>
+	
 </div>
 <?php echoUOJPageFooter() ?>
