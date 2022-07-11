@@ -344,11 +344,40 @@
 				return "please wait until the last sync finish";
 			}
 
+			$this->allow_files = array_flip(array_filter(scandir($this->upload_dir), function($x) {
+				return $x !== '.' && $x !== '..';
+			}));
+
+			$problem_id = $id;
+			try {
+				mkdir($this->prepare_dir, 0755, true);
+
+				if (!is_file("{$this->upload_dir}/info.json")) {
+					throw new UOJFileNotFoundException("info.json");
+				}
+				$this->copy_file_to_prepare("info.json");
+				$statements = file_get_contents("{$this->upload_dir}/info.json");
+
+				$title = json_decode($statements, true)['title'];
+
+				if (!is_file("{$this->upload_dir}/statements.md")) {
+					throw new UOJFileNotFoundException("statements.md");
+				}
+				$this->copy_file_to_prepare("statements.md");
+				$content = file_get_contents("{$this->upload_dir}/statements.md");
+
+				DB::update("update problems set title = '".DB::escape($title)."' where id = {$problem_id}");
+				DB::update("update problems_contents set statement = '".DB::escape($content)."', statement_md = '".DB::escape($content)."' where id = {$problem_id}");
+				
+			} catch (Exception $e) {
+				exec("rm {$this->prepare_dir} -r");
+				return $e->getMessage();
+			}
+
 			try {
 				$this->requirement = array();
 				$this->problem_extra_config = json_decode($this->problem['extra_config'], true);
 
-				mkdir($this->prepare_dir, 0755, true);
 				if (!is_file("{$this->upload_dir}/problem.conf")) {
 					throw new UOJFileNotFoundException("problem.conf");
 				}
@@ -360,10 +389,6 @@
 				} elseif ($this->problem_conf === -2) {
 					throw new UOJProblemConfException("syntax error");
 				}
-
-				$this->allow_files = array_flip(array_filter(scandir($this->upload_dir), function($x) {
-					return $x !== '.' && $x !== '..';
-				}));
 
 				$zip_file = new ZipArchive();
 				if ($zip_file->open("{$this->prepare_dir}/download.zip", ZipArchive::CREATE) !== true) {
@@ -502,33 +527,17 @@
 				exec("rm {$this->prepare_dir} -r");
 				return $e->getMessage();
 			}
-			
-			$problem_id = $id;
-			echo "<script>alert('$this->upload_dir')</script>";
 
-			try {
-				if (!is_file("{$this->upload_dir}/info.json")) {
-					throw new UOJFileNotFoundException("info.json");
-				}
-				$statements = file_get_contents("{$this->upload_dir}/info.json");
-				echo "<script>alert('before decode')</script>";
-
-				$title = json_decode($statements, true)['title'];
-				echo "<script>alert('got title')</script>";
-
-				if (!is_file("{$this->upload_dir}/statements.md")) {
-					throw new UOJFileNotFoundException("statements.md");
-				}
-				$content = file_get_contents("{$this->upload_dir}/statements.md");
-				echo "<script>alert('got statements')</script>";
-
-				DB::update("update problems set title = '".DB::escape($title)."' where id = {$problem_id}");
-				DB::update("update problems_contents set statement = '".DB::escape($content)."', statement_md = '".DB::escape($content)."' where id = {$problem_id}");
-			} catch (Exception $e) {
-				exec("rm {$this->prepare_dir} -r");
-				return $e->getMessage();
+			$export_zip_file = new ZipArchive();
+			if ($export_zip_file->open("{$this->prepare_dir}/export.zip", ZipArchive::CREATE) !== true) {
+				throw new Exception("<strong>download.zip</strong> : failed to create the zip file");
 			}
-			echo "<script>alert('on remove')</script>";
+			foreach (scandir("{$this->upload_dir}") as $file_name) {
+				if (is_file("{$this->upload_dir}/{$file_name}")) {
+					$export_zip_file->addFile("{$this->upload_dir}/{$file_name}", $file_name);
+				}
+			}
+			$export_zip_file->close();
 
 			exec("rm {$this->data_dir} -r");
 			rename($this->prepare_dir, $this->data_dir);
