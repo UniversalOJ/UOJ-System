@@ -327,8 +327,221 @@
 
 			return '';
 		}
+
+
+		public function load() {
+			$id = $this->problem['id'];
+			if (!validateUInt($id)) {
+				error_log("load problem: hacker detected");
+				return "invalid problem id";
+			}
+
+			$this->upload_dir = "/var/uoj_data/transfer/$id";
+			$this->data_dir = "/var/uoj_data/$id";
+			$this->prepare_dir = "/var/uoj_data/prepare_transfer_$id";
+
+			if (file_exists($this->prepare_dir)) {
+				return "please wait until the last sync finish";
+			}
+
+			try {
+				$this->requirement = array();
+				$this->problem_extra_config = json_decode($this->problem['extra_config'], true);
+
+				mkdir($this->prepare_dir, 0755, true);
+				if (!is_file("{$this->upload_dir}/problem.conf")) {
+					throw new UOJFileNotFoundException("problem.conf");
+				}
+
+				$this->problem_conf = getUOJConf("{$this->upload_dir}/problem.conf");
+				$this->final_problem_conf = $this->problem_conf;
+				if ($this->problem_conf === -1) {
+					throw new UOJFileNotFoundException("problem.conf");
+				} elseif ($this->problem_conf === -2) {
+					throw new UOJProblemConfException("syntax error");
+				}
+
+				$this->allow_files = array_flip(array_filter(scandir($this->upload_dir), function($x) {
+					return $x !== '.' && $x !== '..';
+				}));
+
+				$zip_file = new ZipArchive();
+				if ($zip_file->open("{$this->prepare_dir}/download.zip", ZipArchive::CREATE) !== true) {
+					throw new Exception("<strong>download.zip</strong> : failed to create the zip file");
+				}
+				
+				if (isset($this->allow_files['require']) && is_dir("{$this->upload_dir}/require")) {
+					$this->copy_to_prepare('require');
+				}
+
+				if ($this->check_conf_on('use_builtin_judger')) {
+					$n_tests = getUOJConfVal($this->problem_conf, 'n_tests', 10);
+					if (!validateUInt($n_tests) || $n_tests <= 0) {
+						throw new UOJProblemConfException("n_tests must be a positive integer");
+					}
+					for ($num = 1; $num <= $n_tests; $num++) {
+						$input_file_name = getUOJProblemInputFileName($this->problem_conf, $num);
+						$output_file_name = getUOJProblemOutputFileName($this->problem_conf, $num);
+
+						$this->copy_file_to_prepare($input_file_name);
+						$this->copy_file_to_prepare($output_file_name);
+					}
+
+					if (!$this->check_conf_on('interaction_mode')) {
+						if (isset($this->problem_conf['use_builtin_checker'])) {
+							if (!preg_match('/^[a-zA-Z0-9_]{1,20}$/', $this->problem_conf['use_builtin_checker'])) {
+								throw new Exception("<strong>" . htmlspecialchars($this->problem_conf['use_builtin_checker']) . "</strong> is not a valid checker");
+							}
+						} else {
+							$this->copy_file_to_prepare('chk.cpp');
+							$this->compile_at_prepare('chk', array('need_include_header' => true));
+						}
+					}
+					
+					if ($this->check_conf_on('submit_answer')) {
+						if ($this->problem['hackable']) {
+							throw new UOJProblemConfException("the problem can't be hackable if submit_answer is on");
+						}
+
+						for ($num = 1; $num <= $n_tests; $num++) {
+							$input_file_name = getUOJProblemInputFileName($this->problem_conf, $num);
+							$output_file_name = getUOJProblemOutputFileName($this->problem_conf, $num);
+							
+							if (!isset($this->problem_extra_config['dont_download_input'])) {
+								$zip_file->addFile("{$this->prepare_dir}/$input_file_name", "$input_file_name");
+							}
+
+							$this->requirement[] = array('name' => "output$num", 'type' => 'text', 'file_name' => $output_file_name);
+						}
+					} else {
+						$n_ex_tests = getUOJConfVal($this->problem_conf, 'n_ex_tests', 0);
+						if (!validateUInt($n_ex_tests) || $n_ex_tests < 0) {
+							throw new UOJProblemConfException("n_ex_tests must be a non-nagative integer");
+						}
+
+						for ($num = 1; $num <= $n_ex_tests; $num++) {
+							$input_file_name = getUOJProblemExtraInputFileName($this->problem_conf, $num);
+							$output_file_name = getUOJProblemExtraOutputFileName($this->problem_conf, $num);
+
+							$this->copy_file_to_prepare($input_file_name);
+							$this->copy_file_to_prepare($output_file_name);
+						}
+
+						if ($this->problem['hackable']) {
+							$this->copy_file_to_prepare('std.cpp');
+							if (isset($this->problem_conf['with_implementer']) && $this->problem_conf['with_implementer'] == 'on') {
+								$this->compile_at_prepare('std',
+									array(
+										'src' => 'implementer.cpp std.cpp',
+										'path' => 'require'
+									)
+								);
+							} else {
+								$this->compile_at_prepare('std');
+							}
+							$this->copy_file_to_prepare('val.cpp');
+							$this->compile_at_prepare('val', array('need_include_header' => true));
+						}
+						
+						if ($this->check_conf_on('interaction_mode')) {
+							$this->copy_file_to_prepare('interactor.cpp');
+							$this->compile_at_prepare('interactor', array('need_include_header' => true));
+						}
+
+						$n_sample_tests = getUOJConfVal($this->problem_conf, 'n_sample_tests', $n_tests);
+						if (!validateUInt($n_sample_tests) || $n_sample_tests < 0) {
+							throw new UOJProblemConfException("n_sample_tests must be a non-nagative integer");
+						}
+						if ($n_sample_tests > $n_ex_tests) {
+							throw new UOJProblemConfException("n_sample_tests can't be greater than n_ex_tests");
+						}
+
+						if (!isset($this->problem_extra_config['dont_download_sample'])) {
+							for ($num = 1; $num <= $n_sample_tests; $num++) {
+								$input_file_name = getUOJProblemExtraInputFileName($this->problem_conf, $num);
+								$output_file_name = getUOJProblemExtraOutputFileName($this->problem_conf, $num);
+								$zip_file->addFile("{$this->prepare_dir}/{$input_file_name}", "$input_file_name");
+								if (!isset($this->problem_extra_config['dont_download_sample_output'])) {
+									$zip_file->addFile("{$this->prepare_dir}/{$output_file_name}", "$output_file_name");
+								}
+							}
+						}
+
+						$this->requirement[] = array('name' => 'answer', 'type' => 'source code', 'file_name' => 'answer.code');
+					}
+				} else {
+					if (!isSuperUser($this->user)) {
+						throw new UOJProblemConfException("use_builtin_judger must be on.");
+					} else {
+						foreach ($this->allow_files as $file_name => $file_num) {
+							$this->copy_to_prepare($file_name);
+						}
+						$this->makefile_at_prepare();
+						
+						$this->requirement[] = array('name' => 'answer', 'type' => 'source code', 'file_name' => 'answer.code');
+					}
+				}
+				putUOJConf("{$this->prepare_dir}/problem.conf", $this->final_problem_conf);
+
+				if (isset($this->allow_files['download']) && is_dir("{$this->upload_dir}/download")) {
+					foreach (scandir("{$this->upload_dir}/download") as $file_name) {
+						if (is_file("{$this->upload_dir}/download/{$file_name}")) {
+							$zip_file->addFile("{$this->upload_dir}/download/{$file_name}", $file_name);
+						}
+					}
+				}
+				
+				$zip_file->close();
+
+				$orig_requirement = json_decode($this->problem['submission_requirement'], true);
+				if (!$orig_requirement) {
+					$esc_requirement = DB::escape(json_encode($this->requirement));
+					DB::update("update problems set submission_requirement = '$esc_requirement' where id = $id");
+				}
+			} catch (Exception $e) {
+				exec("rm {$this->prepare_dir} -r");
+				return $e->getMessage();
+			}
+			
+			$problem_id = $id;
+			echo "<script>alert('$this->upload_dir')</script>";
+
+			try {
+				if (!is_file("{$this->upload_dir}/info.json")) {
+					throw new UOJFileNotFoundException("info.json");
+				}
+				$statements = file_get_contents("{$this->upload_dir}/info.json");
+				echo "<script>alert('before decode')</script>";
+
+				$title = json_decode($statements, true)['title'];
+				echo "<script>alert('got title')</script>";
+
+				if (!is_file("{$this->upload_dir}/statements.md")) {
+					throw new UOJFileNotFoundException("statements.md");
+				}
+				$content = file_get_contents("{$this->upload_dir}/statements.md");
+				echo "<script>alert('got statements')</script>";
+
+				DB::update("update problems set title = '".DB::escape($title)."' where id = {$problem_id}");
+				DB::update("update problems_contents set statement = '".DB::escape($content)."', statement_md = '".DB::escape($content)."' where id = {$problem_id}");
+			} catch (Exception $e) {
+				exec("rm {$this->prepare_dir} -r");
+				return $e->getMessage();
+			}
+			echo "<script>alert('on remove')</script>";
+
+			exec("rm {$this->data_dir} -r");
+			rename($this->prepare_dir, $this->data_dir);
+		
+			exec("cd /var/uoj_data; rm $id.zip; zip $id.zip $id -r -q");
+
+			return '';
+		}
 	}
 	
+	function problemLoadProblem($problem, $user = null) {
+		return (new SyncProblemDataHandler($problem, $user))->load();
+	}
 	function dataSyncProblemData($problem, $user = null) {
 		return (new SyncProblemDataHandler($problem, $user))->handle();
 	}
