@@ -546,8 +546,47 @@
 
 			return '';
 		}
+		public function export() {
+			$id = $this->problem['id'];
+			if (!validateUInt($id)) {
+				error_log("load problem: hacker detected");
+				return "invalid problem id";
+			}
+
+			$this->data_dir = "/var/uoj_data/$id";
+			exec("rm {$this->data_dir}/export.zip");
+			exec("rm {$this->data_dir}/info.json");
+			exec("rm {$this->data_dir}/statements.md");
+
+			$content = queryProblemContent($id)['statement'];
+			$title = $this->problem['title'];
+			
+			$info = array('title' => $title, 'source' => 'uoj');
+			$js = json_encode($info);
+			if (!file_put_contents("{$this->data_dir}/info.json", $js)) {
+				return "error occured put info.json";
+			}
+			if (!file_put_contents("{$this->data_dir}/statements.md", $content)) {
+				return "error occured put statements.md";
+			}
+
+			$export_zip_file = new ZipArchive();
+			if ($export_zip_file->open("{$this->data_dir}/export.zip", ZipArchive::CREATE) !== true) {
+				throw new Exception("<strong>export.zip</strong> : failed to create the zip file");
+			}
+			foreach (scandir("{$this->data_dir}") as $file_name) {
+				if (is_file("{$this->data_dir}/{$file_name}")) {
+					$export_zip_file->addFile("{$this->data_dir}/{$file_name}", $file_name);
+				}
+			}
+			$export_zip_file->close();
+
+			return '';
+		}
 	}
-	
+	function exportProblem($problem, $user = null) {
+		return (new SyncProblemDataHandler($problem, $user))->export();
+	}
 	function problemLoadProblem($problem, $user = null) {
 		return (new SyncProblemDataHandler($problem, $user))->load();
 	}

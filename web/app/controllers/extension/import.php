@@ -81,7 +81,7 @@
 	//添加配置文件
 
 
-	$info_form = new UOJForm('info');
+	$info_form = new UOJForm('data');
 	$http_host = HTML::escape(UOJContext::httpHost());
 	$download_url = HTML::url("/download.php?type=export&id={$problem['id']}");
 	$info_form->appendHTML(<<<EOD
@@ -95,6 +95,24 @@
 </div>
 EOD
 	);
+
+	$info_form->handle = function() {
+		global $problem, $myUser;
+		set_time_limit(60 * 5);
+		//$ret = dataSyncProblemData($problem, $myUser);
+		$ret = exportProblem($problem, $myUser);
+		if ($ret) {
+			becomeMsgPage('<div>' . $ret . '</div><a href="/problem/'.$problem['id'].'/manage/transfer">返回</a>');
+		} else {
+			if ($ret) {
+				becomeMsgPage('<div>加载成功，请点击下载</div><a href="$download_url">下载</a>');
+			}
+		}
+	};
+	$info_form->submit_button_config['class_str'] = 'btn btn-danger btn-block';
+	$info_form->submit_button_config['text'] = '下载';
+	$info_form->runAtServer();
+
 	class DataDisplayer {
 		public $problem_conf = array();
 		public $data_files = array();
@@ -215,34 +233,8 @@ EOD
 </ul>
 
 <div class="row">
-	<!-- <div class="col-md-10 top-buffer-sm">
-		<div class="row">
-			<script type="text/javascript">
-				curFileName = '';
-				$('#div-file_list a').click(function(e) {
-					$('#div-file_content').html('<h3>Loading...</h3>');
-					$(this).tab('show');
-
-					var fileName = $(this).text();
-					curFileName = fileName;
-					$.get('/problem/<?= $problem['id'] ?>/manage/data', {
-							display_file: '',
-							file_name: fileName
-						},
-						function(data) {
-							if (curFileName != fileName) {
-								return;
-							}
-							$('#div-file_content').html(data);
-						},
-						'html'
-					);
-					return false;
-				});
-			</script>
-		</div>
-	</div> -->
-	<div class="col-md-8 top-buffer-sm">
+	
+	<div class="col-md-4 top-buffer-sm">
 	<div class="top-buffer-md">
 			<?php $info_form->printHTML(); ?>
 		</div>
