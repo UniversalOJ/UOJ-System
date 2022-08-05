@@ -1,72 +1,3 @@
-var editor_js= "<script type=\"text/javascript\">uojHome = 'http://127.0.0.1'</script>\n" +
-	"\n" +
-	"<!-- Bootstrap core CSS -->\n" +
-	"<link type=\"text/css\" rel=\"stylesheet\" href=\"http://127.0.0.1/css/bootstrap.min.css?v=2019.5.31\" />\t<!-- Bootstrap Glyphicons CSS-->\n" +
-	"<link type=\"text/css\" rel=\"stylesheet\" href=\"http://127.0.0.1/css/bootstrap-glyphicons.min.css?v=2019.5.31\" />\n" +
-	"<!-- Custom styles for this template -->\n" +
-	"<link type=\"text/css\" rel=\"stylesheet\" href=\"http://127.0.0.1/css/uoj-theme.css?v=2.3333\" />\n" +
-	"<!-- jQuery (necessary for Bootstrap\\'s JavaScript plugins) -->\n" +
-	"<script src=\"http://127.0.0.1/js/jquery.min.js\"></script>\n" +
-	"<!-- jQuery autosize -->\n" +
-	"<script src=\"http://127.0.0.1/js/jquery.autosize.min.js\"></script>\t<script type=\"text/javascript\">\n" +
-	"\t$(document).ready(function () {\n" +
-	"\t\t$('textarea').autosize();\n" +
-	"\t});\n" +
-	"</script>\n" +
-	"\n" +
-	"<!-- jQuery cookie -->\n" +
-	"<script src=\"http://127.0.0.1/js/jquery.cookie.min.js\"></script>\n" +
-	"<!-- jQuery modal -->\n" +
-	"<script src=\"http://127.0.0.1/js/jquery.modal.js\"></script>\n" +
-	"\n" +
-	"<!-- Include all compiled plugins (below), or include individual files as needed -->\n" +
-	"<script src=\"http://127.0.0.1/js/popper.min.js?v=2019.5.31\"></script>\n" +
-	"<script src=\"http://127.0.0.1/js/bootstrap.min.js?v=2019.5.31\"></script>\n" +
-	"<!-- Color converter -->\n" +
-	"<script src=\"http://127.0.0.1/js/color-converter.min.js\"></script>\n" +
-	"<!-- uoj -->\n" +
-	"<script src=\"http://127.0.0.1/js/uoj.js?v=2017.01.01\"></script>\n" +
-	"<!-- readmore -->\n" +
-	"<script src=\"http://127.0.0.1/js/readmore/readmore.min.js\"></script>\n" +
-	"<!-- LAB -->\n" +
-	"<script src=\"http://127.0.0.1/js/LAB.min.js\"></script>\t<!-- favicon -->\n" +
-	"<link rel=\"shortcut icon\" href=\"http://127.0.0.1/images/favicon.ico\"/>\n" +
-	"<!-- MathJax -->\n" +
-	"<script type=\"text/x-mathjax-config\">\n" +
-	"\t\t\tMathJax.Hub.Config({\n" +
-	"\t\t\t\tshowProcessingMessages: false,\n" +
-	"\t\t\t\ttex2jax: {\n" +
-	"\t\t\t\t\tinlineMath: [[\"$\", \"$\"], [\"\\\\\\\\(\", \"\\\\\\\\)\"]],\n" +
-	"\t\t\t\t\tprocessEscapes:true\n" +
-	"\t\t\t\t},\n" +
-	"\t\t\t\tmenuSettings: {\n" +
-	"\t\t\t\t\tzoom: \"Hover\"\n" +
-	"    \t\t\t}\n" +
-	"\t\t\t});\n" +
-	"\t\t</script>\n" +
-	"<script src=\"//cdn.bootcss.com/mathjax/2.6.0/MathJax.js?config=TeX-AMS_HTML\"></script>\n" +
-	"<!-- shjs -->\n" +
-	"<link type=\"text/css\" rel=\"stylesheet\" href=\"http://127.0.0.1/css/sh_typical.min.css\" />\n" +
-	"<script src=\"http://127.0.0.1/js/sh_main.min.js\"></script>\n" +
-	"<script type=\"text/javascript\">\n" +
-	"\t$(document).ready(function () {\n" +
-	"\tsh_highlightDocument()\n" +
-	"\t})\n" +
-	"</script>\n" +
-	"<!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->\n" +
-	"<!--[if lt IE 9]>\n" +
-	"<script src=\"https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js\"></script>\n" +
-	"<script src=\"https://oss.maxcdn.com/respond/1.4.2/respond.min.js\"></script>\n" +
-	"<![endif]-->\n" +
-	"\n" +
-	"<script type=\"text/javascript\">\n" +
-	"\tbefore_window_unload_message = null;\n" +
-	"\t$(window).on('beforeunload', function () {\n" +
-	"\t\tif (before_window_unload_message !== null) {\n" +
-	"\t\t\treturn before_window_unload_message;\n" +
-	"\t\t}\n" +
-	"\t});\n" +
-	"</script>";
 function comment_editor_init(name,editor_config){
 	if (editor_config === undefined) {
 		editor_config = {};
@@ -145,6 +76,16 @@ function comment_editor_init(name,editor_config){
 		});
 	}
 
+	function get_comment_preview_url(url){
+		let strings = url.split("/");
+		let new_url = "";
+		for(let i = 0; i < strings.length - 2; i++){
+			new_url+=strings[i];
+			new_url+="/";
+		}
+		new_url+="comment/preview";
+		return new_url;
+	}
 	function preview(html) {
 		var iframe = $('<iframe frameborder="0"></iframe>');
 		blog_contend_md_editor.append(
@@ -153,10 +94,7 @@ function comment_editor_init(name,editor_config){
 		);
 		var iframe_document = iframe[0].contentWindow.document;
 		iframe_document.open();
-		iframe_document.write(editor_js);
-		iframe_document.write("<div class=\"container theme-showcase\" role=\"main\"><div class='uoj-content'><article>")
 		iframe_document.write(html);
-		iframe_document.write("</article></div></div>")
 		iframe_document.close();
 		$(iframe_document).bind('keydown', 'ctrl+d', function() {
 			preview_btn.click();
@@ -185,27 +123,54 @@ function comment_editor_init(name,editor_config){
 			});
 			codeeditor.focus();
 		} else {
-			// save({need_preview: true});
 			var post_data = {};
 			$($(this_form).serializeArray()).each(function() {
 				post_data[this["name"]] = this["value"];
 			});
-			console.log(post_data);
-			marked.setOptions({
-				pedantic: false,
-				gfm: true,
-				tables: true,
-				breaks: false,
-				sanitize: false,
-				smartLists: true,
-				smartypants: false,
-				xhtml: false
+			$.ajax({
+				type : 'POST',
+				data : post_data,
+				url : get_comment_preview_url(window.location.href),
+				success : function(data) {
+					try {
+						data = JSON.parse(data)
+					} catch (e) {
+						set_preview_status(0);
+						return;
+					}
+					var ok = true;
+					if (!ok) {
+						set_preview_status(0);
+						return;
+					}
+					preview(data['html']);
+				}
+			}).fail(function() {
+				set_preview_status(0);
+			}).always(function() {
+				last_save_done = true;
 			});
-			console.log(marked(post_data['comment']));
-			preview(marked(post_data['comment']));
-			$(document).ready(function () {
-				sh_highlightDocument()
-			});
+			// save({need_preview: true});
+			// var post_data = {};
+			// $($(this_form).serializeArray()).each(function() {
+			// 	post_data[this["name"]] = this["value"];
+			// });
+			// console.log(post_data);
+			// marked.setOptions({
+			// 	pedantic: false,
+			// 	gfm: true,
+			// 	tables: true,
+			// 	breaks: false,
+			// 	sanitize: false,
+			// 	smartLists: true,
+			// 	smartypants: false,
+			// 	xhtml: false
+			// });
+			// console.log(marked(post_data['comment']));
+			// preview(marked(post_data['comment']));
+			// $(document).ready(function () {
+			// 	sh_highlightDocument()
+			// });
 			set_preview_status(1);
 		}
 	});
