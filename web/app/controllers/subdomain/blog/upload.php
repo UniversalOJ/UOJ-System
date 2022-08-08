@@ -13,7 +13,6 @@
 	$fileName = $myUser['username']."-".$_FILES['file']["name"];
 	$base64FileName = base64_encode($fileName);
 	$tmpName  = $_FILES['file']["tmp_name"];
-	$uploads_dir = "upload/";
 	$ret["filename"] = $_FILES['file']["name"];
 	$ret["tmpName"] = $tmpName;
 	$ret["status"] = 0;

@@ -61,7 +61,10 @@ Route::group([
 		Route::any('/super-manage(?:/{tab})?', '/super_manage.php');
 		Route::any('/download.php', '/download.php');
 		Route::any('/click-zan', '/click_zan.php');
-		Route::any("/post/download/", '/subdomain/blog/download.php');
+		Route::any("/post/download", '/subdomain/blog/download.php');
+		Route::any('/picture/upload','/picture_upload.php');
+		Route::any('/picture/v','/picture_download.php');
+
 }
 );
 

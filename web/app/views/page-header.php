@@ -57,7 +57,10 @@ if (!isset($ShowPageHeader)) {
 	<?= HTML::js_src('/js/jquery.autosize.min.js') ?>
 	<script type="text/javascript">
 		$(document).ready(function () {
-			$('textarea').autosize();
+			let obj = $('textarea');
+			if(obj.length !== 0){
+				obj.autosize();
+			}
 		});
 	</script>
 
@@ -89,6 +92,18 @@ if (!isset($ShowPageHeader)) {
 	<?= HTML::js_src('/js/LAB.min.js') ?>
 	<!-- favicon -->
 	<link rel="shortcut icon" href="<?= HTML::url('/images/favicon.ico') ?>"/>
+	<?php if(isset($REQUIRE_LIB["picture_preview"])): ?>
+		<?= HTML::css_link('/css/fileinput.min.css') ?>
+		<?= HTML::css_link('/css/fileinput-rtl.css') ?>
+		<?= HTML::js_src('/js/jquery.min.js')?>
+		<?= HTML::js_src('/js/bootstrap-fileinput/fileinput.min.js') ?>
+		<?= HTML::js_src('/js/bootstrap-fileinput/plugins/buffer.min.js') ?>
+		<?= HTML::js_src('/js/bootstrap-fileinput/plugins/filetype.min.js') ?>
+		<?= HTML::js_src('/js/bootstrap-fileinput/plugins/piexif.min.js') ?>
+		<?= HTML::js_src('/js/bootstrap-fileinput/plugins/sortable.min.js') ?>
+		<?= HTML::js_src('/js/bootstrap-fileinput/locales/LANG.js')?>
+
+	<?php endif ?>
 	<?php if(isset($REQUIRE_LIB['blog'])):?>
 		<?php $REQUIRE_LIB['jquery.hotkeys'] = '' ?>
 		<?php $REQUIRE_LIB['switch'] = '' ?>

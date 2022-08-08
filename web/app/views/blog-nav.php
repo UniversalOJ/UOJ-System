@@ -8,6 +8,7 @@
 		<ul class="nav navbar-nav">
 			<li class="nav-item"><a class="nav-link" href="<?= HTML::blog_url(UOJContext::userid(), '/archive')?>"><span class="glyphicon glyphicon-inbox"></span> 日志</a></li>
 			<li class="nav-item"><a class="nav-link" href="<?= HTML::blog_url(UOJContext::userid(), '/aboutme')?>"><span class="glyphicon glyphicon-user"></span> 关于我</a></li>
+			<li class="nav-item"><a class="nav-link" href="<?= HTML::blog_url(UOJContext::userid(), '/picture')?>"><span class="glyphicon glyphicon-bed"></span> 图床</a></li>
 			<li class="nav-item"><a class="nav-link" href="<?= HTML::url('/') ?>"><span class="glyphicon glyphicon-link"></span> <?= UOJConfig::$data['profile']['oj-name-short'] ?></a></li>
 		</ul>
 	</div><!--/.nav-collapse -->
