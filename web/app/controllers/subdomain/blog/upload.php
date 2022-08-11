@@ -9,7 +9,7 @@
 		return ;
 	}
 	// TODO: 将文件存储路径进行可配置
-	$absPath = "/opt/uoj/web/app/upload/";
+	$absPath = "/var/uoj_data/upload/";
 	$fileName = $myUser['username']."-".$_FILES['file']["name"];
 	$base64FileName = base64_encode($fileName);
 	$tmpName  = $_FILES['file']["tmp_name"];

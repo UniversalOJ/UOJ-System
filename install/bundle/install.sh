@@ -19,8 +19,8 @@ getAptPackage(){
     apt-get update && apt-get install -y vim ntp zip unzip curl wget apache2 libapache2-mod-xsendfile libapache2-mod-php php php-dev php-pear php-zip php-mysql php-mbstring mysql-server cmake fp-compiler re2c libv8-7.5-dev libyaml-dev python python3 python3-requests openjdk-8-jdk openjdk-11-jdk
     #Install PHP extensions
     yes | pecl install yaml
-    git clone https://github.com/phpv8/v8js.git --depth=1 /tmp/pear/download/v8js-master && cd /tmp/pear/download/v8js-master
-    phpize && ./configure --with-php-config=/usr/bin/php-config --with-v8js=/opt/libv8-7.5 && make install && cd -
+    git clone https://hub.fastgit.xyz/phpv8/v8js.git /tmp/pear/download/v8js-master && cd /tmp/pear/download/v8js-master
+    git checkout acd9431ec9d8212f6503490639bc7997c9488c46 && phpize && ./configure --with-php-config=/usr/bin/php-config --with-v8js=/opt/libv8-7.5 && make install && cd -
 }
 
 setLAMPConf(){
@@ -78,7 +78,7 @@ file_put_contents('/var/www/uoj/app/.config.php', "<?php\nreturn ".str_replace('
 UOJEOF
     #Import MySQL database
     service mysql restart
-    mysql -u root --password=$_database_password_ <../db/app_uoj233.sql
+    mysql -u root --password=$_database_password_ < /opt/uoj/install/db/app_uoj233.sql
     echo "ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY '$_database_password_';" | mysql -u root --password=$_database_password_
 }
 

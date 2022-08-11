@@ -4,7 +4,7 @@ class ImageBed{
 	public  $path;// 图片保存路径
 	public  $apiPath;// api请求路径
 	function __construct(){
-		$this->path = "/opt/uoj/web/app/upload/";
+		$this->path = "/var/uoj_data/upload/";
 		$this->apiPath = "/picture/v?p=";
 	}
 	public function upload($file){

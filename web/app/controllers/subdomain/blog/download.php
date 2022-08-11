@@ -7,7 +7,7 @@ ob_clean();//清除一下缓冲区
 $filename = basename(urldecode($_GET['p']));
 $fileAlias = urldecode($_GET['name']);
 //文件完整路径（这里将真实的文件存放在temp目录下）
-$filePath = "/opt/uoj/web/app/upload/".$filename;
+$filePath = "/var/uoj_data/upload/".$filename;
 //将utf8编码转换成gbk编码，否则，文件中文名称的文件无法打开
 $filePath = iconv('UTF-8','gbk',$filePath);
 //检查文件是否可读
