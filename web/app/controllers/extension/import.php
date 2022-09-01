@@ -81,7 +81,7 @@
 	//添加配置文件
 
 
-	$info_form = new UOJForm('data');
+	$info_form = new UOJForm('info');
 	$http_host = HTML::escape(UOJContext::httpHost());
 	$download_url = HTML::url("/download.php?type=export&id={$problem['id']}");
 	$info_form->appendHTML(<<<EOD
