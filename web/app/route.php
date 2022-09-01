@@ -19,6 +19,8 @@ Route::group([
 		Route::any('/problem/{id}/manage/statement', '/problem_statement_manage.php');
 		Route::any('/problem/{id}/manage/managers', '/problem_managers_manage.php');
 		Route::any('/problem/{id}/manage/data', '/problem_data_manage.php');
+
+		Route::any('/problems/batch_transfer', '/extension/batch_transfer.php');
 		Route::any('/problem/{id}/manage/transfer', '/extension/import.php');
 
 
