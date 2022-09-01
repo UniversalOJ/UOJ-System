@@ -23,7 +23,7 @@
 		$trans_problem_form->handle = function() {
 			ob_start();
 			$root = (!empty($_SERVER['HTTPS']) ? 'https' : 'http') . '://' . $_SERVER['HTTP_HOST'] . '/';
-			header("LOCATION:problems/batch_transfer");
+			header("LOCATION:problems/batch_export");
 			ob_end_flush();
 			die();
 		};
