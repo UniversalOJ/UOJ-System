@@ -13,13 +13,13 @@
     }
     function download($probs)
     {
-		function zipall ($folder, $ziparchive) {
+		function zipall($folder, $ziparchive) {
 			$allow_files = array_flip(array_filter(scandir($folder), function($x) {
 				return $x !== '.' && $x !== '..' && $x != "export.zip";
 			}));
 			foreach($allow_files as $k => $v) {
 				if (file_exists($folder."/".$k)) {
-					$ziparchive->addFile($folder."/".$k);
+					$ziparchive->addFile($folder."/".$k, $k);
 				}
 			}
 			if ($ziparchive->close() == FALSE) {
@@ -27,7 +27,7 @@
 			} 
 		}
 		$data_dir = "/var/uoj_data";
-		$zip_file = new ZipArchive();
+		$zip_file = new ZipArchive;
 		if (file_exists($data_dir."/export.lock")) {
 			system("rm /var/uoj_data/export.lock");
 			becomeMsgPage("正在进行其他导出，请等待");
@@ -43,14 +43,14 @@
 				continue;
 			} 
 			$file_dir = "/var/uoj_data/".$p;
-			$zip_cur = new ZipArchive();
+			$zip_cur = new ZipArchive;
 			system("rm ".$file_dir.".zip");
 			if ($zip_cur->open($file_dir.".zip", ZipArchive::CREATE) !== True) {
 				system("rm ".$data_dir."/export.lock");
 				becomeMsgPage('下载失败，请重试！');
 			}
 			zipall($file_dir, $zip_cur);
-			$zip_file->addFile($file_dir.".zip");
+			$zip_file->addFile($file_dir.".zip", $p.".zip");
 		}
 		$zip_file->close();
 		header("Location: /download.php?type=exportbatch");
@@ -112,14 +112,18 @@
 <?php echoUOJPageHeader("none") ?>
 
 <h1 class="page-header text-center">题目批量迁移</h1>
+<ul class="nav nav-tabs" role="tablist">
+	<li class="nav-item"><a class="nav-link active" href="/problems/batch_export" role="tab">导出</a></li>
+	<li class="nav-item"><a class="nav-link" href="/problems/batch_import" role="tab">导入</a></li>
+</ul>
 <div class="tab-content">
 	<form id="checkForm" method="get"></form>
 	<form id="submitForm" method="get"></form>
 	<div class="input-group">
 		<input type="text" class="form-control" name="export-batch" form="checkForm" placeholder="请输入要导出的题目编号，用英文逗号(,)隔开。如'1,2,3,5'" value="<?php echo gen($probs);?>" />  
 		<div class="input-group-append">
-			<button type="submit" class="btn btn-search btn-outline-primary" id="submit" form="checkForm"><span class="glyphicon"></span>预览题目</button>
-			<button type="submit" class="btn btn-outline-primary" id="startdown" form="submitForm" name="down" value="<?php echo htmlspecialchars($_GET['export-batch']); ?>"><span class="glyphicon glyphicon-download"></span>确认后导出</button>
+			<button type="submit" class="btn btn-search btn-outline-primary" id="submit" form="checkForm"><span class="glyphicon"></span>确认题目</button>
+			<button type="submit" class="btn btn-outline-primary" id="startdown" form="submitForm" name="down" value="<?php echo htmlspecialchars($_GET['export-batch']); ?>"><span class="glyphicon glyphicon-download"></span>确认题目后导出</button>
 		</div>
 	</div>
 
