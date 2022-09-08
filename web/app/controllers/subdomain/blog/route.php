@@ -42,7 +42,10 @@ call_user_func(function() { // to prevent variable scope leak
 			Route::any("$prefix/slide/{id}", '/subdomain/blog/slide.php');
 			Route::any("$prefix/post/(?:{id}|new)/write", '/subdomain/blog/blog_write.php');
 			Route::any("$prefix/slide/(?:{id}|new)/write", '/subdomain/blog/slide_write.php');
+			Route::any("$prefix/post/(?:{id}|new)/upload", '/subdomain/blog/upload.php');
 			Route::any("$prefix/post/{id}/delete", '/subdomain/blog/blog_delete.php');
-		}
+			Route::any("$prefix/comment/preview",'/subdomain/blog/comment_preview.php');
+			Route::any("$prefix/picture","/subdomain/blog/picture_view.php");
+	}
 	);
 });

@@ -9,7 +9,7 @@
 	</div>
 </div>
 <?= HTML::div_vtextarea("{$editor->name}_content_md", $editor->label_text['content'], $editor->cur_data['content_md']) ?>
-<div class="row mt-2">
+	<div class="row mt-2">
 	<div class="col-sm-6">
 		<?php if ($editor->blog_url): ?>
 		<a id="a-<?= $editor->name ?>_view_blog" class="btn btn-info" href="<?= HTML::escape($editor->blog_url) ?>"><?= $editor->label_text['view blog'] ?></a>
@@ -23,7 +23,7 @@
 </div>
 </form>
 <script type="text/javascript">
-$('#<?= "input-{$editor->name}_is_hidden" ?>').bootstrapSwitch({
+	$('#<?= "input-{$editor->name}_is_hidden" ?>').bootstrapSwitch({
 	onText: <?= json_encode($editor->label_text['private']) ?>,
 	onColor: 'danger',
 	offText: <?= json_encode($editor->label_text['public']) ?>,
@@ -31,5 +31,8 @@ $('#<?= "input-{$editor->name}_is_hidden" ?>').bootstrapSwitch({
 	labelText: <?= json_encode($editor->label_text['blog visibility']) ?>,
 	handleWidth: 100
 });
-blog_editor_init("<?= $editor->name ?>", <?= json_encode(array('type' => $editor->type)) ?>);
+	<?php foreach ($editor->cur_data["files"] as $file): ?>
+	GetFileOfBlog("<?=$file["filename"]?>","<?=$file["path"]?>");
+	<?php endforeach; ?>
+	blog_editor_init("<?= $editor->name ?>", <?= json_encode(array('type' => $editor->type)) ?>);
 </script>

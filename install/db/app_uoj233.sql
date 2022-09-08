@@ -87,6 +87,17 @@ UNLOCK TABLES;
 -- Table structure for table `blogs_comments`
 --
 
+CREATE TABLE `blogs_file`
+(
+    `blog_id`  int          not null,
+    `filename` varchar(100) not null,
+    `path`     varchar(100) null comment 'the absolute path of file'
+)ENGINE = MyISAM CHARSET = utf8mb4;
+
+
+LOCK TABLE `blogs_file` WRITE;
+UNLOCK TABLES;
+
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `blogs_comments` (

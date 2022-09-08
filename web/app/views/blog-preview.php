@@ -49,5 +49,11 @@
   			<li class="list-inline-item"><?= getClickZanBlock('B', $blog['id'], $blog['zan']) ?></li>
 		</ul>
 	</div>
+	<a class="uoj-username">附件下载</a>
+	<?php foreach ($blog["files"] as $file): ?>
+		<ul class="list-group" id="file-list-display">
+			<li	class="list-group-item"><a href="<?="/post/download?p=".$file["path"]."&name=".$file["filename"]?>"><?=$file["filename"]?></a></li>
+		</ul>
+	<?php endforeach;?>
 </div>
 <?php endif ?>
