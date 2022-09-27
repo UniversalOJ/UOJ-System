@@ -17,7 +17,8 @@ getAptPackage(){
     add-apt-repository ppa:stesie/libv8 -y
     echo "deb http://ppa.launchpad.net/stesie/libv8/ubuntu bionic main" | tee /etc/apt/sources.list.d/stesie-libv8.list
     add-apt-repository ppa:ondrej/php -y
-    find /etc/apt/sources.list.d/ -type f -name "*.list" -exec  sed  -i.bak -r  's#deb(-src)?s*http(s)?://ppa.launchpad.net#deb1 http2://launchpad.proxy.ustclug.org#ig' {} \;
+    find /etc/apt/sources.list.d/ -type f -name "*.list" -exec  sed  -i.bak -r  's#deb(-src)?\s*http(s)?://ppa.launchpad.net#deb\1 http\2://launchpad.proxy.ustclug.org#ig' {} \;
+    find /etc/apt/sources.list.d/ -type f -name "*.list" -exec  sed  -i.bak -r  's#deb(-src)?\s*http(s)?://ppa.launchpadcontent.net#deb\1 http\2://launchpad.proxy.ustclug.org#ig' {} \;
     apt-get install -y libv8 php7.4 php7.4-yaml php7.4-xml php7.4-dev php7.4-zip php7.4-mysql php7.4-mbstring
     apt-get install -y libseccomp-dev vim ntp zip unzip curl wget libapache2-mod-xsendfile mysql-server php-pear cmake fp-compiler re2c libv8-7.5-dev libyaml-dev python2.7 python3 python3-requests openjdk-8-jdk openjdk-11-jdk openjdk-17-jdk
     ln -s /bin/python2.7 /usr/bin/python
