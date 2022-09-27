@@ -14,13 +14,16 @@ getAptPackage(){
     export DEBIAN_FRONTEND=noninteractive
     (echo "mysql-server mysql-server/root_password password $_database_password_";echo "mysql-server mysql-server/root_password_again password $_database_password_") | debconf-set-selections
     #Update apt sources and install
-    dpkg -s gnupg 2>/dev/null || (apt-get update && apt-get install -y gnupg)
-    echo "deb http://ppa.launchpad.net/stesie/libv8/ubuntu bionic main" | tee /etc/apt/sources.list.d/stesie-libv8.list && apt-key adv --keyserver keyserver.ubuntu.com --recv-keys D858A0DF
-    apt-get update && apt-get install -y vim ntp zip unzip curl wget apache2 libapache2-mod-xsendfile libapache2-mod-php php php-dev php-pear php-zip php-mysql php-mbstring mysql-server cmake fp-compiler re2c libv8-7.5-dev libyaml-dev python python3 python3-requests openjdk-8-jdk openjdk-11-jdk
+    add-apt-repository ppa:stesie/libv8 -y
+    echo "deb http://ppa.launchpad.net/stesie/libv8/ubuntu bionic main" | tee /etc/apt/sources.list.d/stesie-libv8.list
+    add-apt-repository ppa:ondrej/php -y
+    apt-get install -y libv8 php7.4 php7.4-yaml php7.4-xml php7.4-dev php7.4-zip php7.4-mysql php7.4-mbstring
+    apt-get install -y libseccomp-dev vim ntp zip unzip curl wget libapache2-mod-xsendfile mysql-server php-pear cmake fp-compiler re2c libv8-7.5-dev libyaml-dev python2.7 python3 python3-requests openjdk-8-jdk openjdk-11-jdk openjdk-17-jdk
+    ln -s /bin/python2.7 /usr/bin/python
     #Install PHP extensions
     yes | pecl install yaml
-    git clone https://github.com/phpv8/v8js.git --depth=1 /tmp/pear/download/v8js-master && cd /tmp/pear/download/v8js-master
-    phpize && ./configure --with-php-config=/usr/bin/php-config --with-v8js=/opt/libv8-7.5 && make install && cd -
+    git clone https://hub.fastgit.xyz/phpv8/v8js.git /tmp/pear/download/v8js-master && cd /tmp/pear/download/v8js-master
+    git checkout acd9431ec9d8212f6503490639bc7997c9488c46 && phpize && ./configure --with-php-config=/usr/bin/php-config --with-v8js=/opt/libv8-7.5 && make install && cd -
 }
 
 setLAMPConf(){
@@ -40,6 +43,7 @@ setLAMPConf(){
 
     XSendFile On
     XSendFilePath /var/uoj_data
+    XSendFilePath /var/uoj_data_copy
     XSendFilePath /var/www/uoj/app/storage
     XSendFilePath /opt/uoj/judger/uoj_judger/include
 </VirtualHost>
@@ -78,7 +82,7 @@ file_put_contents('/var/www/uoj/app/.config.php', "<?php\nreturn ".str_replace('
 UOJEOF
     #Import MySQL database
     service mysql restart
-    mysql -u root --password=$_database_password_ <../db/app_uoj233.sql
+    mysql -u root --password=$_database_password_ < /opt/uoj/install/db/app_uoj233.sql
     echo "ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY '$_database_password_';" | mysql -u root --password=$_database_password_
 }
 
@@ -89,21 +93,18 @@ setJudgeConf(){
     #Set uoj_data path
     mkdir -p /var/uoj_data/upload
     chown -R www-data:www-data /var/uoj_data
+    mkdir -p /var/uoj_data_copy/
+    chown -R local_main_judger:www-data /var/uoj_data_copy
     #Compile uoj_judger and set runtime
     chown -R local_main_judger:local_main_judger /opt/uoj/judger
+    ln -s /var/uoj_data /opt/uoj/judger/uoj_judger/data
+    ln -s /var/uoj_data_copy /opt/uoj/judger/uoj_judger/data_copy
     su local_main_judger <<EOD
-ln -s /var/uoj_data /opt/uoj/judger/uoj_judger/data
 cd /opt/uoj/judger && chmod +x judge_client
-cat >uoj_judger/include/uoj_work_path.h <<UOJEOF
-#define UOJ_WORK_PATH "/opt/uoj/judger/uoj_judger"
-#define UOJ_JUDGER_BASESYSTEM_UBUNTU1804
-#define UOJ_JUDGER_PYTHON3_VERSION "3.8"
-#define UOJ_JUDGER_FPC_VERSION "3.0.4"
-UOJEOF
 cd uoj_judger && make -j$(($(nproc) + 1))
 EOD
     #Set judge_client config file
-    cat >../../judger/.conf.json <<UOJEOF
+    cat >/opt/uoj/judger/.conf.json <<UOJEOF
 {
     "uoj_protocol": "http",
     "uoj_host": "127.0.0.1",
@@ -113,7 +114,7 @@ EOD
     "socket_password": "_judger_socket_password_"
 }
 UOJEOF
-    chmod 600 ../../judger/.conf.json && chown local_main_judger ../../judger/.conf.json
+    chmod 600 /opt/uoj/judger/.conf.json && chown local_main_judger /opt/uoj/judger/.conf.json
 }
 
 initProgress(){
