@@ -120,6 +120,7 @@ const size_t MAX_PATH_LEN = 512;
 const uint64_t MAX_FD_ID = 1 << 20;
 
 const string INVALID_PATH(PATH_MAX + 8, 'X');
+const string EMPTY_PATH_AFTER_FD = '?empty_path_after_fd';
 
 runp::config run_program_config;
 
@@ -493,8 +494,10 @@ string read_abspath_from_fd_and_addr(reg_val_t fd, reg_val_t addr, pid_t pid) {
 		// if p is empty, in the following cases, Linux will understand the path as the path of fd:
 		// newfstatat + AT_EMPTY_PATH, linkat + AT_EMPTY_PATH, execveat + AT_EMPTY_PATH, readlinkat
 		// otherwise, the syscall will return with an error
-		// we just retreat as if the path will be understood as the path of fd; if not, the syscall will fail automatically
-		a = getfdp(pid, (int)fd);
+        // since fd is already opened, the program should have the permission to do the things listed above
+        // (no read -> write conversion, no deletion, no chmod, etc.)
+        // we just report this special case. the program will skip the permission check later
+        a = EMPTY_PATH_AFTER_FD;
 	} else {
 		a = abspath(p, pid, (int)fd);
 	}
@@ -640,7 +643,7 @@ bool rp_child_proc::check_safe_syscall() {
 	if (run_program_config.need_show_trace_details) {
 		fprintf(stderr, "[syscall %s]\n", syscall_name[syscall].c_str());
 	}
-    this->try_to_create_new_process = syscall == __NR_fork || syscall == __NR_clone || syscall == __NR_vfork;
+    this->try_to_create_new_process = syscall == __NR_fork || syscall == __NR_clone || syscall == __NR_clone3 || syscall == __NR_vfork;
 
 	auto &cursc = syscall_info_set[syscall];
 
@@ -711,7 +714,7 @@ bool rp_child_proc::check_safe_syscall() {
 		if (run_program_config.need_show_trace_details) {
 			fprintf(stderr, "%-8s : %s\n", syscall_name[syscall].c_str(), fn.c_str());
 		}
-		if (!check_file_permission(textop, fn, mode)) {
+		if (fn != EMPTY_PATH_AFTER_FD && !check_file_permission(textop, fn, mode)) {
 			return false;
 		}
 
@@ -733,7 +736,7 @@ bool rp_child_proc::check_safe_syscall() {
 			if (run_program_config.need_show_trace_details) {
 				fprintf(stderr, "%-8s : %s\n", syscall_name[syscall].c_str(), fn.c_str());
 			}
-			if (!check_file_permission(textop, fn, mode)) {
+			if (fn != EMPTY_PATH_AFTER_FD && !check_file_permission(textop, fn, mode)) {
 				return false;
 			}
 		}
