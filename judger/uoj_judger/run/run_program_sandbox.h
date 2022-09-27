@@ -120,7 +120,7 @@ const size_t MAX_PATH_LEN = 512;
 const uint64_t MAX_FD_ID = 1 << 20;
 
 const string INVALID_PATH(PATH_MAX + 8, 'X');
-const string EMPTY_PATH_AFTER_FD = '?empty_path_after_fd';
+const string EMPTY_PATH_AFTER_FD = "?empty_path_after_fd";
 
 runp::config run_program_config;
 
