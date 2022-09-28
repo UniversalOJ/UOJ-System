@@ -1,22 +1,20 @@
-#include "uoj_judger.h"
+#include "uoj_judger_v2.h"
 
 int main(int argc, char **argv)  {
 	main_judger_init(argc, argv);
-	RunResult res = run_program(
-			(result_path + "/run_judger_result.txt").c_str(),
-			"/dev/null",
-			"/dev/null",
-			"stderr",
-			conf_run_limit("judger", 0, RL_JUDGER_DEFAULT),
-			"--unsafe",
-			conf_str("judger").c_str(),
-			main_path.c_str(),
-			work_path.c_str(),
-			result_path.c_str(),
-			data_path.c_str(),
-			NULL);
-	if (res.type != RS_AC) {
-		end_judge_judgement_failed("Judgement Failed : Judger " + info_str(res));
+
+	runp::config rpc(conf_str("judger"), {
+		main_path, work_path, result_path, data_path
+	});
+	rpc.result_file_name = result_path / "run_judger_result.txt";
+	rpc.input_file_name = "/dev/null";
+	rpc.output_file_name = "/dev/null";
+	rpc.error_file_name = "stderr";
+	rpc.limits = conf_run_limit("judger", 0, RL_JUDGER_DEFAULT);
+	rpc.unsafe = true;
+	runp::result res = runp::run(rpc);
+	if (res.type != runp::RS_AC) {
+		end_judge_judgment_failed("Judgment Failed : Judger " + runp::rstype_str(res.type));
 	}
 	return 0;
 }
