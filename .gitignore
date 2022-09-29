@@ -1,7 +1,6 @@
 *
 !*.*
 !*/
-/judger/log
 .gitignore.swp
 /judger/uoj_judger/work/*
 /judger/uoj_judger/result/*
