@@ -7,4 +7,6 @@
 /judger/uoj_judger/result/*
 /judger/.conf.json
 /judger/uoj_judger/include/uoj_work_path.h
+/judger/judge_client
+/judger/log/judge.log
 web/app/.config.php
