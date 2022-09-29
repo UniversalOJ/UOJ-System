@@ -55,7 +55,6 @@
 		$zip_file->close();
 		header("Location: /download.php?type=exportbatch");
 		exit();
-        // do stuff     
     }	
 	function gen($array_list) {
 		$ret = '';

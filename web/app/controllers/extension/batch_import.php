@@ -1,149 +1,21 @@
 <?php
 	requirePHPLib('form');
 	requirePHPLib('judger');
-	function gen($array_list) {
-		$ret = '';
-		foreach($array_list as $i) {
-			if ($ret == '') {
-				$ret = $i;
-			} else {
-				$ret = $ret.','.$i;
-			}
-		}
-		return $ret;
-	}
-	function gen_desp($probs) {
-		$problem = array();
-		if (empty($probs)) {
-			return;
-		}
-		foreach($probs as $p) {
-			if ($p == '') {
-				continue;
-			}
-			$r = queryProblemBrief($p);
-			if ($r == null or $r == false) {
-				$problem[$p] = "invalid id, will be ignored";
-				#array_push($problem, "id ".$p." is invalid and will be ignored");
-			} else {
-				$problem[$p] = $r['title'];
-			}
-	#		array_push($problem, $r['title']);
-		}
-		echo '<div class="top-buffer-md"></div>';
+	requirePHPLib('data');
 
-				echo '<table class="table table-bordered table-hover table-striped table-text-center">';
-				echo '<thead>';
-				echo '<tr>';
-				echo '<th>id</th>';
-				echo '<th>title</th>';
-				echo '</tr>';
-				echo '</thead>';
-				echo '<tbody>';
-				foreach ($problem as $k => $v) {
-						echo '<tr>';
-						echo '<td>', htmlspecialchars($k), '</td>';
-						echo '<td>', htmlspecialchars($v), '</td>';
-						echo '</tr>';
-				}
-				echo '</tbody>';
-				echo '</table>';
-	}
 #	echo '<pre>'; print_r($data_disp->data_files); echo '</pre>';
 
-#	$data_disp->displayFile('problem.conf');
-	class DataDisplayer {
-		public $problem_conf = array();
-		public $data_files = array();
-		public $displayers = array();
-
-		public function __construct($problem_conf = null, $data_files = null) {
+#	$data_disp->displayFile('problem.conf')
 
 
-		}
-
-		public function setProblemConfRowStatus($key, $status) {
-			$this->problem_conf[$key]['status'] = $status;
-			return $this;
-		}
-
-		public function setDisplayer($file_name, $fun) {
-			$this->displayers[$file_name] = $fun;
-			return $this;
-		}
-		public function addDisplayer($file_name, $fun) {
-			$this->data_files[] = $file_name;
-			$this->displayers[$file_name] = $fun;
-			return $this;
-		}
-		public function echoDataFilesList($active_file) {
-			foreach ($this->data_files as $file_name) {
-				echo '<li class="nav-item">';
-				if ($file_name != $active_file) {
-					echo '<a class="nav-link" href="#">';
-				} else {
-					echo '<a class="nav-link active" href="#">';
-				}
-				echo htmlspecialchars($file_name), '</a>', '</li>';
-			}
-		}
-		public function displayFile($file_name) {
-			global $data_dir;
-
-			if (isset($this->displayers[$file_name])) {
-				$fun = $this->displayers[$file_name];
-				$fun($this);
-			} elseif (in_array($file_name, $this->data_files)) {
-				echoFilePre($file_name);
-			} else {
-				echoFileNotFound($file_name);
-			}
-		}
-	}
-
-	function getDataDisplayer() {
-		global $data_dir;
-		global $problem;
-
-		$allow_files = array_flip(array_filter(scandir($data_dir), function($x) {
-			return $x !== '.' && $x !== '..';
-		}));
-
-		$getDisplaySrcFunc = function($name) use ($allow_files) {
-			return function() use ($name, $allow_files) {
-				$src_name = $name . '.cpp';
-				if (isset($allow_files[$src_name])) {
-					echoFilePre($src_name);
-				} else {
-					echoFileNotFound($src_name);
-				}
-				if (isset($allow_files[$name])) {
-					echoFilePre($name);
-				} else {
-					echoFileNotFound($name);
-				}
-			};
-		};
-		return new DataDisplayer();
-	}
-
-	$data_disp = getDataDisplayer();
-
-	if (isset($_GET['display_file'])) {
-		if (!isset($_GET['file_name'])) {
-			echoFileNotFound('');
-		} else {
-			$data_disp->displayFile($_GET['file_name']);
-		}
-		die();
-	}
-
-	$data_form = new UOJForm('data');
-	$data_form->handle = function() {
-		global $problem, $myUser;
+	$data_form2 = new UOJForm('data');
+	$data_form2->handle = function() {
+		global $myUser;
 		set_time_limit(60 * 5);
 		//$ret = dataSyncProblemData($problem, $myUser);
-		$ret = problemLoadProblem($problem, $myUser);
+
+		$ret = problemImportBatch();
+		echo $ret;
 		if ($ret) {
 			becomeMsgPage('<div>' . $ret . '</div><a href="/problem/'.$problem['id'].'/manage/transfer">返回</a>');
 		} else {
@@ -152,11 +24,10 @@
 			}
 		}
 	};
-	$data_form->submit_button_config['class_str'] = 'btn btn-danger btn-block';
-	$data_form->submit_button_config['text'] = '加载';
-	$data_form->submit_button_config['smart_confirm'] = '';
-	
-	$data_form->runAtServer();
+	$data_form2->submit_button_config['class_str'] = 'btn btn-danger btn-block';
+	$data_form2->submit_button_config['text'] = '加载新题';
+	$data_form2->submit_button_config['smart_confirm'] = '加载会连续创建新题';
+	$data_form2->runAtServer();
 
 if ($_POST['problem_data_file_submit']=='submit') {
 	if ($_FILES["problem_data_file"]["error"] > 0) {
@@ -165,37 +36,40 @@ if ($_POST['problem_data_file_submit']=='submit') {
 	} else {
 		$zip_mime_types = array('application/zip', 'application/x-zip', 'application/x-zip-compressed');
 		if (in_array($_FILES["problem_data_file"]["type"], $zip_mime_types)) {
-			$up_filename="/tmp/".rand(0,100000000)."batch_data.zip";
+			$up_filename="/tmp/".rand(0,100000000)."import_batch_data.zip";
 			move_uploaded_file($_FILES["problem_data_file"]["tmp_name"], $up_filename);
 			$zip = new ZipArchive;
 			if ($zip->open($up_filename) === TRUE) {
-				system("rm -r /var/uoj_data/batch_transfer");
-				$ret = mkdir("/var/uoj_data/batch_transfer", 0777, true);
+				system("rm -r /var/uoj_data/import_batch");
+				$ret = mkdir("/var/uoj_data/import_batch", 0777, true);
 				// if (!$ret) {
 				// 	$error = error_get_last();
 				// 	echo "<script>alert('${ret} ${error['message']}')</script>";
 				// }
-				$ret = $zip->extractTo("/var/uoj_data/batch_transfer");
+				$ret = $zip->extractTo("/var/uoj_data/import_batch/");
 				if (!$ret) {
 					echo "<script>alert('解压失败')</script>";
 				}
 				$zip->close();
-				$allow_files = array_flip(array_filter(scandir("/var/uoj_data/batch_transfer"), function($x) {
-					return $x !== '.' && $x !== '..';
+				$allow_files = array_flip(array_filter(scandir("/var/uoj_data/import_batch"), function($x) {
+					return $x !== '.' && $x !== '..' && $x != '__MACOSX';
 				}));
 				$len = count($allow_files);
 				$cur = 0;
 				foreach($allow_files as $k => $v) {
-					system("mkdir -p /var/uoj_data/batch_transfer/".$cur);
+					system("mkdir -p /var/uoj_data/import_batch/".$cur);
 					$zip = new ZipArchive();
-					if ($zip->open("/var/uoj_data/batch_transfer/".$k) != true) {
+					if ($zip->open("/var/uoj_data/import_batch/".$k) != true) {
 						echo "<script>alert('解压失败')</script>";
 					}
-					$zip->extractTo("/var/uoj_data/batch_transfer/".$cur);
+					$zip->extractTo("/var/uoj_data/import_batch/".$cur);
 					$zip->close();
 					$cur = $cur + 1;
-
 				}
+				foreach($allow_files as $k => $v) {
+					system("rm /var/uoj_data/import_batch/".$k);
+				}
+				system("rm -rf /var/uoj_data/import_batch/__MACOSX");
 				echo "<script>alert('上传成功！')</script>";
 			} else {
 				$errmsg = "解压失败！";
@@ -218,8 +92,8 @@ if ($_POST['problem_data_file_submit']=='submit') {
 	<li class="nav-item"><a class="nav-link active" href="/problems/batch_import" role="tab">导入</a></li>
 </ul>
 <div class="top-buffer-md">
-			<?php $data_form->printHTML(); ?>
-		</div>
+	<?php $data_form2->printHTML(); ?>
+</div>
 <div class="modal fade" id="UploadDataModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
   		<div class="modal-dialog">
     			<div class="modal-content">
