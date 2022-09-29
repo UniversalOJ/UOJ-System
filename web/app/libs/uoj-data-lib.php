@@ -5,8 +5,8 @@
 	function dataNewProblem($id) {
 		mkdir("/var/uoj_data/upload/$id");
 		mkdir("/var/uoj_data/$id");
-		
 		exec("cd /var/uoj_data; rm $id.zip; zip $id.zip $id -r -q");
+		exec("cd /var/uoj_data/$id; echo '{\"title\":\"New Problem\",\"source\":\"uoj\"}' >> info.json;");
 	}
 
 	class UOJProblemConfException extends Exception {
@@ -327,13 +327,40 @@
 
 			return '';
 		}
+		public function loadbatch() {
+			$ret = '';
+			$this->problem = array();
+			$root_dir = "/var/uoj_data/import_batch/";
+			$fh = opendir($root_dir);
 
+			while(($entry = readdir($fh)) !== false) {
+				if ($entry == "." || $entry == ".."  || $entry == "__MACOSX") {
+					continue;
+				}
+				DB::query("insert into problems (title, is_hidden, submission_requirement) values ('New Problem', 1, '{}')");
+				$id = DB::insert_id();
+				DB::query("insert into problems_contents (id, statement, statement_md) values ($id, '', '')");
+				dataNewProblem($id);
+				
+				rmdir("/var/uoj_data/upload/".$id);
+
+				exec("cp -r $root_dir$entry /var/uoj_data/transfer/$id");
+
+				exec("cd /var/uoj_data/transfer/$id}; if [ `find . -maxdepth 1 -type f`File = File ]; then for sub_dir in `find -maxdepth 1 -type d ! -name .`; do mv -f \$sub_dir/* . && rm -rf \$sub_dir; done; fi");
+				// if (copy($root_dir.$entry, "/var/uoj_data/transfer/".$id) != TRUE) {
+				// 	throw new Exception("<strong>batch import </strong> : failed to copy to transfer");
+				// }
+				$this->problem['id'] = strval($id);
+				$ret = $ret.$this->load();
+			}
+			return $ret;
+		}
 
 		public function load() {
 			$id = $this->problem['id'];
 			if (!validateUInt($id)) {
 				error_log("load problem: hacker detected");
-				return "invalid problem id";
+				return "invalid problem id: ".$id;
 			}
 
 			$this->upload_dir = "/var/uoj_data/transfer/$id";
@@ -538,7 +565,7 @@
 				}
 			}
 			$export_zip_file->close();
-
+			exec("rm $this->upload_dir -r");
 			exec("rm {$this->data_dir} -r");
 			rename($this->prepare_dir, $this->data_dir);
 		
@@ -586,6 +613,9 @@
 	}
 	function exportProblem($problem, $user = null) {
 		return (new SyncProblemDataHandler($problem, $user))->export();
+	}
+	function problemImportBatch() {
+		return (new SyncProblemDataHandler(null, null))->loadbatch();
 	}
 	function problemLoadProblem($problem, $user = null) {
 		return (new SyncProblemDataHandler($problem, $user))->load();
