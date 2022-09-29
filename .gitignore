@@ -5,3 +5,6 @@
 .gitignore.swp
 /judger/uoj_judger/work/*
 /judger/uoj_judger/result/*
+/judger/.conf.json
+/judger/uoj_judger/include/uoj_work_path.h
+web/app/.config.php
