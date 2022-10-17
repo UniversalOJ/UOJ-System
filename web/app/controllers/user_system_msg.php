@@ -10,7 +10,7 @@
 </tr>
 EOD;
 	function echoSysMsg($msg) {
-		echo $msg['read_time'] == null ? '<tr class="warning">' : '<tr>';
+		echo $msg['read_time'] == null ? '<tr class="table-warning">' : '<tr>';
 		echo '<td>';
 		echo '<h4>'.$msg['title'].'</h4>';
 		echo $msg['content'];
