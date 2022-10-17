@@ -23,9 +23,10 @@ getAptPackage(){
     ln -s /bin/python2.7 /usr/bin/python
     #Install PHP extensions
     yes | pecl install yaml
-    git clone https://hub.fastgit.xyz/phpv8/v8js.git /tmp/pear/download/v8js-master
+    git clone https://github.com/phpv8/v8js.git /tmp/pear/download/v8js-master
     cd /tmp/pear/download/v8js-master
-    git checkout acd9431ec9d8212f6503490639bc7997c9488c46 && phpize && ./configure --with-php-config=/usr/bin/php-config --with-v8js=/opt/libv8-7.5 && make install && cd -
+    git checkout 4c026f3fb291797c109adcabda6aeba6491fe44f
+    phpize && ./configure --with-php-config=/usr/bin/php-config --with-v8js=/opt/libv8-7.5 && make install && cd -
 }
 
 setLAMPConf(){
