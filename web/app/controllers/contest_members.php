@@ -84,7 +84,7 @@
 				echo '<tr>';
 			} else {
 				if ($ip_owner[$user['remote_addr']] != $user['username']) {
-					echo '<tr class="danger">';
+					echo '<tr class="table-danger">';
 				} else {
 					echo '<tr>';
 				}
