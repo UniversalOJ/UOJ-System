@@ -7,7 +7,6 @@
 	if ($blog['is_hidden'] && !UOJContext::hasBlogPermission()) {
 		become403Page();
 	}
-	
 	$comment_form = new UOJForm('comment');
 	$comment_form->addVTextArea('comment', '内容', '',
 		function($comment) {
@@ -18,7 +17,7 @@
 			if (!$comment) {
 				return '评论不能为空';
 			}
-			if (strlen($comment) > 1000) {
+			if (strlen($comment) > 100000) {
 				return '不能超过1000个字节';
 			}
 			return '';
@@ -126,7 +125,6 @@
 		$reply_form->succ_href = getLongTablePageRawUri($page);
 	};
 	$reply_form->ctrl_enter_submit = true;
-	
 	$reply_form->runAtServer();
 	
 	$comments_pag = new Paginator(array(
@@ -140,6 +138,8 @@
 <?php
 	$REQUIRE_LIB['mathjax'] = '';
 	$REQUIRE_LIB['shjs'] = '';
+	$REQUIRE_LIB['blog'] = '';
+
 ?>
 <?php echoUOJPageHeader(HTML::stripTags($blog['title']) . ' - 博客') ?>
 <?php echoBlog($blog, array('show_title_only' => isset($_GET['page']) && $_GET['page'] != 1)) ?>
@@ -152,7 +152,6 @@
 		$poster = queryUser($comment['poster']);
 		$esc_email = HTML::escape($poster['email']);
 		$asrc = HTML::avatar_addr($poster, 80);
-		
 		$replies = DB::selectAll("select id, poster, content, post_time from blogs_comments where reply_id = {$comment['id']} order by id");
 		foreach ($replies as $idx => $reply) {
 			$replies[$idx]['poster_rating'] = queryUser($reply['poster'])['rating'];
@@ -171,7 +170,7 @@
 					<div class="col-sm-6"><?= getUserLink($poster['username']) ?></div>
 					<div class="col-sm-6 text-right"><?= getClickZanBlock('BC', $comment['id'], $comment['zan']) ?></div>
 				</div>
-				<div class="comtbox1"><?= $comment['content'] ?></div>
+				<div class="comtbox1" id="content-<?= $comment['id']?>"><?= $comment['content'] ?></div>
 				<ul class="text-right list-inline bot-buffer-no"><li><small class="text-muted"><?= $comment['post_time'] ?></small></li><li><a id="reply-to-<?= $comment['id'] ?>" href="#">回复</a></li></ul>
 				<?php if ($replies): ?>
 				<div id="replies-<?= $comment['id'] ?>" class="comtbox5"></div>
@@ -181,16 +180,28 @@
 		</div>
 	</div>
 	<?php endforeach ?>
+
 <?php endif ?>
+	<script>
+		$(".comtbox1").each(function (){
+			var text = $(this).text();
+			$(this).text("");
+			$(this).append(marked(text));
+		})
+	</script>
 </div>
 <?= $comments_pag->pagination() ?>
 
 <h3 class="mt-4">发表评论</h3>
 <p>可以用@mike来提到mike这个用户，mike会被高亮显示。如果你真的想打“@”这个字符，请用“@@”。</p>
-<?php $comment_form->printHTML() ?>
-
+<form method="post" class="form-horizontal" id="form-comment" enctype="multipart/form-data">
+<?php $comment_form->printHTML(); ?>
 <div id="div-form-reply" style="display:none">
-	<?php $reply_form->printHTML() ?>
+	<?php $reply_form->printHTML(); ?>
 </div>
-
+</form>
 <?php echoUOJPageFooter() ?>
+<script>
+	comment_editor_init("comment");
+</script>
+

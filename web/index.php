@@ -16,10 +16,8 @@ include UOJContext::documentRoot().'/app/controllers'.call_user_func(function() 
 		$_GET += $vars;
 		$path = substr($route['action'], 0, $q_pos);
 	}
-	
 	if (isset($route['onload'])) {
 		call_user_func($route['onload']);
 	}
-	
 	return $path;
 });

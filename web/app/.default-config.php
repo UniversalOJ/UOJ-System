@@ -11,19 +11,19 @@ return [
 	'database' => [
 		'database' => 'app_uoj233',
 		'username' => 'root',
-		'password' => '_database_password_',
+		'password' => 'root',
 		'host' => '127.0.0.1'
 	],
 	'web' => [
 		'domain' => null,
 		'main' => [
 			'protocol' => 'http',
-			'host' => '_httpHost_',
+			'host' => '127.0.0.1',
 			'port' => 80
 		],
 		'blog' => [
 			'protocol' => 'http',
-			'host' => '_httpHost_',
+			'host' => '127.0.0.1',
 			'port' => 80
 		]
 	],

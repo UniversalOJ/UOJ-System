@@ -1,2 +1,7 @@
 .idea
 .php_cs.cache
+.default-config.php
+../../LICENSE
+../../READMD.md
+../../SECURITY.md
+
