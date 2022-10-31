@@ -91,8 +91,14 @@ function queryZanVal($id, $type, $user) {
 	return $row['val'];
 }
 
+function queryBlogOfFile($id){
+	return DB::selectAll("select filename,path from blogs_file where blog_id='$id'");
+}
+
 function queryBlog($id) {
-	return DB::selectFirst("select * from blogs where id='$id'", MYSQLI_ASSOC);
+	$blog = DB::selectFirst("select * from blogs where id='$id'", MYSQLI_ASSOC);
+	$blog["files"]=queryBlogOfFile($id);
+	return $blog;
 }
 function queryBlogTags($id) {
 	$tags = array();
@@ -178,4 +184,5 @@ function deleteBlog($id) {
 	DB::delete("delete from blogs_comments where blog_id = $id");
 	DB::delete("delete from important_blogs where blog_id = $id");
 	DB::delete("delete from blogs_tags where blog_id = $id");
+	DB::delete("delete from blogs_file where blog_id=$id");
 }

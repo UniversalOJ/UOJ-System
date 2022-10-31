@@ -201,14 +201,29 @@ EOD;
 			$default_value = htmlspecialchars($default_value);
 			$this->is_big = true;
 			$html = <<<EOD
-<div id="div-$name" class="form-group">
-	<label for="input-$name" class="control-label">$label_text</label>
-	<textarea class="form-control" name="$name" id="input-$name">$default_value</textarea>
-	<span class="help-block" id="help-$name"></span>
-</div>
+			<div id="div-$name" class="form-group">
+				<label for="input-$name" class="control-label">$label_text</label>
+				<textarea class="form-control" name="$name" id="input-$name">$default_value</textarea>
+				<span class="help-block" id="help-$name"></span>
+			</div>
 EOD;
 			$this->add($name, $html, $validator_php, $validator_js);
 		}
+		public function addMdEditor($name, $label_text, $default_value, $validator_php, $validator_js)
+		{
+			$default_value = htmlspecialchars($default_value);
+			$this->is_big = true;
+			$html = <<<EOD
+			</div>
+			'<div id="'."div-$name".'">'
+			. '<label for="'."input-$name".'" class="control-label">'.$label_text.'</label>'
+			. '<textarea class="form-control" name="'.$name.'" id="'."input-$name".'">'.HTML::escape($default_value).'</textarea>'
+			. '<span class="help-block" id="'."help-$name".'"></span>'
+			. '</div>';
+EOD;
+			$this->add($name, $html, $validator_php, $validator_js);
+		}
+
 		public function addCheckBox($name, $label_text, $default_value) {
 			$default_value = htmlspecialchars($default_value);
 			$status = $default_value ? 'checked="checked" ' : '';
@@ -227,11 +242,11 @@ EOD;
 			$this->is_big = true;
 			
 			$html = <<<EOD
-<div id="div-$name">
-	<label for="input-$name" class="control-label">$label_text</label>
-	<textarea class="ckeditor" name="$name" id="input-$name">$default_value</textarea>
-	<span class="help-block" id="help-$name"></span>
-</div>
+			<div id="div-$name">
+				<label for="input-$name" class="control-label">$label_text</label>
+				<textarea class="ckeditor" name="$name" id="input-$name">$default_value</textarea>
+				<span class="help-block" id="help-$name"></span>
+			</div>
 EOD;
 			$this->add($name, $html, $validator_php, $validator_js);
 		}
@@ -389,7 +404,12 @@ EOD
 			$this->is_big = true;
 			$this->has_file = true;
 		}
-		
+		public function printMdEditor(){
+			if($this->form_name == "comment"){
+				$html_content = HTML::div_vtextarea("comment_content_md","内容","请输入内容");
+				echo $html_content;
+			}
+		}
 		public function printHTML() {
 			$form_entype_str = $this->is_big ? ' enctype="multipart/form-data"' : '';
 			echo '<form action="', $_SERVER['REQUEST_URI'], '" method="post" class="form-horizontal" id="form-', $this->form_name, '"', $form_entype_str, '>';
@@ -486,7 +506,7 @@ EOD;
 				async : false,
 
 				data : post_data,
-				success : function(data) {
+				success : function(data) {}
 
 EOD;
 				foreach ($this->data as $field) {

@@ -24,7 +24,6 @@ Route::group([
 		Route::any('/problems/batch_import', '/extension/batch_import.php');
 		Route::any('/problem/{id}/manage/transfer', '/extension/import.php');
 
-
 		Route::any('/contests', '/contests.php');
 		Route::any('/contest/new', '/add_contest.php');
 		Route::any('/contest/{id}', '/contest_inside.php');
@@ -50,7 +49,6 @@ Route::group([
 		}
 		Route::any('/blogs/{id}', '/blog_show.php');
 		Route::any('/post/{id}', '/blog_show.php');
-		
 		Route::any('/announcements', '/announcements.php');
 		
 		Route::any('/faq', '/faq.php');
@@ -66,11 +64,13 @@ Route::group([
 		Route::any('/user/msg', '/user_msg.php');
 		Route::any('/user/system-msg', '/user_system_msg.php');
 		Route::any('/super-manage(?:/{tab})?', '/super_manage.php');
-		
 		Route::any('/download.php', '/download.php');
-		
 		Route::any('/click-zan', '/click_zan.php');
-	}
+		Route::any("/post/download", '/subdomain/blog/download.php');
+		Route::any('/picture/upload','/picture_upload.php');
+		Route::any('/picture/v','/picture_download.php');
+
+}
 );
 
 Route::post('/judge/submit', '/judge/submit.php');

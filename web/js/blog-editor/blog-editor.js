@@ -1,3 +1,90 @@
+var fileNameList = [];
+var filePathList = [];
+// 文件上传部分
+var fileList = [];
+function GetFileOfBlog(fileName,filePath){
+	fileNameList.push(fileName);
+	filePathList.push(filePath);
+}
+$(document).ready(function (){
+	var fileCatcher = document.getElementById('form_example');
+	var files = document.getElementById("files"), renderFileList;
+	var fileListDisplay = document.getElementById('file-list-display'), sendFile;
+	fileCatcher.addEventListener("submit", function (event) {
+		event.preventDefault();
+		//上传文件
+		for (var i = 0; i < files.files.length; i++) {
+			if (fileNameList.indexOf(files.files[i].name) > -1) {
+				alert("该文件已上传,请重新选择");
+				while (fileList.length !== 0) fileList.pop();
+				files.reset();
+				return;
+			}
+		}
+		sendFile();
+	});
+	files.addEventListener("change", function (event) {
+		for (var i = 0; i < files.files.length; i++) {
+			fileList.push(files.files[i]);
+		}
+ 	});
+	var save_btn = $("#save_btn");
+	function set_saved(val) {
+		is_saved = val;
+		if (val) {
+			save_btn.removeClass('btn-warning');
+			save_btn.addClass('btn-success');
+			save_btn.html('<span class="glyphicon glyphicon-saved"></span>');
+			before_window_unload_message = null;
+		} else {
+			save_btn.removeClass('btn-success');
+			save_btn.addClass('btn-warning');
+			save_btn.html('<span class="glyphicon glyphicon-save"></span>');
+			before_window_unload_message = '您所编辑的内容尚未保存';
+		}
+	}
+	renderFileList = function () {
+		fileListDisplay.innerHTML = '';
+		fileNameList.forEach(function (file, index) {
+			var fileDisplayEl = document.createElement("li");
+			fileDisplayEl.innerHTML = (index + 1) + ":" + file;
+			fileDisplayEl.classList.add("list-group-item");
+			fileListDisplay.appendChild(fileDisplayEl);
+		})
+	};
+	renderFileList();
+	sendFile = function () {
+		var formData = new FormData();
+		var request = new XMLHttpRequest();
+		//循环添加到formData中
+		fileList.forEach(function (file) {
+			formData.append('file', file, file.name);
+		});
+		url = "";
+		dirs = window.location.href.split("/");
+		for(var i=0;i<dirs.length-1;i++){
+			url+=dirs[i]+"/";
+		}
+		url+="upload";
+		request.onreadystatechange = function (){
+			if(request.readyState === 4 && request.status === 200){
+				// 逻辑梳理 response.responseText
+				json = JSON.parse(request.responseText);
+				if(json["msg"]==="成功"){
+					fileNameList.push(json["filename"]);
+					filePathList.push(json["path"]);
+					renderFileList();
+					set_saved(false);
+					alert("上传成功");
+				}else{
+					alert("上传失败，请联系管理员解决" + json["status"]);
+				}
+			}
+		}
+		request.open("POST", url);
+		request.send(formData);
+	}
+})
 function blog_editor_init(name, editor_config) {
 	if (editor_config === undefined) {
 		editor_config = {};
@@ -12,12 +99,12 @@ function blog_editor_init(name, editor_config) {
 	var input_content_md = $("#input-" + name + "_content_md");
 	var input_is_hidden = $("#input-" + name + "_is_hidden");
 	var this_form = input_content_md[0].form;
-	
+
 	var is_saved;
 	var last_save_done = true;
 	
 	// init buttons
-	var save_btn = $('<button type="button" class="btn btn-sm"></button>');
+	var save_btn = $('<button type="button" class="btn btn-sm" id="save_btn"></button>');
 	var preview_btn = $('<button type="button" class="btn btn-secondary btn-sm"><span class="glyphicon glyphicon-eye-open"></span></button>');
 	var bold_btn = $('<button type="button" class="btn btn-secondary btn-sm ml-2"><span class="glyphicon glyphicon-bold"></span></button>');
 	var italic_btn = $('<button type="button" class="btn btn-secondary btn-sm"><span class="glyphicon glyphicon-italic"></span></button>');
@@ -146,7 +233,6 @@ function blog_editor_init(name, editor_config) {
 			return;
 		}
 		last_save_done = false;
-		
 		if (config.need_preview) {
 			set_preview_status(1);
 		}
@@ -159,7 +245,15 @@ function blog_editor_init(name, editor_config) {
 			post_data['need_preview'] = 'on';
 		}
 		post_data["save-" + name] = '';
-		
+		filePost=[];
+		for(var i=0;i<fileNameList.length;i++){
+			filePost.push({
+				"fileName" : fileNameList[i],
+				"filePath" : filePathList[i]
+			});
+		}
+		post_data["fileList"] = filePost;
+		console.log(post_data);
 		$.ajax({
 			type : 'POST',
 			data : post_data,
@@ -168,7 +262,6 @@ function blog_editor_init(name, editor_config) {
 				try {
 					data = JSON.parse(data)
 				} catch (e) {
-					alert(data);
 					if (config.need_preview) {
 						set_preview_status(0);
 					}

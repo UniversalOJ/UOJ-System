@@ -1,5 +1,5 @@
 INCLUDE_PATH = include
-CXXFLAGS = -I./include -O2
+CXXFLAGS = -I./include -O2 --std=c++17 -Wall -lstdc++fs
 
 EXE_CHECKER = \
 	builtin/checker/bcmp \
@@ -23,27 +23,39 @@ EXE_CHECKER = \
 	builtin/checker/yesno
 
 EXE = main_judger \
+	tests/test \
 	run/formatter \
 	run/run_program \
 	run/run_interaction \
-	builtin/judger/judger
+	run/compile \
+	builtin/judger/judger \
+	$(EXE_CHECKER)
 
-all: $(EXE) $(EXE_CHECKER)
-runner: $(EXE)
-checker: $(EXE_CHECKER)
+OBJ = tests/catch_amalgamated.o tests/test.o
+
+all: $(EXE)
 
 % : %.cpp
 	$(CXX) $(CXXFLAGS) $(EXTRA_CXXFLAGS) $< -o $@
 
-run/run_program: include/uoj_env.h run/run_program_conf.h
-run/formatter  : include/testlib.h
-run/run_interaction: run/run_interaction.cpp include/uoj_env.h
-	$(CXX) $(CXXFLAGS) --std=c++11 -pthread $< -o $@
+run/formatter       : include/testlib.h
+run/compile         : include/uoj_run.h
 
-builtin/judger/judger: include
-main_judger: include
+run/run_program     : run/run_program.cpp run/run_program_conf.h run/run_program_sandbox.h include/uoj_run.h
+	$(CXX) $(CXXFLAGS) $< -o $@ -lseccomp -pthread
+
+run/run_interaction : run/run_interaction.cpp include/uoj_run.h
+	$(CXX) $(CXXFLAGS) $< -o $@ -pthread
+
+builtin/judger/judger: include/*.h
+main_judger: include/*.h
+
+tests/test.o: include/*.h
+
+tests/test: tests/catch_amalgamated.o tests/test.o
+	$(CXX) $(CXXFLAGS) $^ -o $@ -pthread
 
 $(EXE_CHECKER): include/testlib.h
 
 clean:
-	rm -f $(EXE) $(EXE_CHECKER)
+	rm -f $(EXE) $(OBJ)
