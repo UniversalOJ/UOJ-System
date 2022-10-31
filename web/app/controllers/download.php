@@ -20,9 +20,7 @@
 			if (!$visible) {
 				become404Page();
 			}
-
 			$id = $_GET['id'];
-			
 			$file_name = "/var/uoj_data/$id/download.zip";
 			$download_name = "problem_$id.zip";
 			break;
@@ -30,12 +28,26 @@
 			$file_name = "/opt/uoj/judger/uoj_judger/include/testlib.h";
 			$download_name = "testlib.h";
 			break;
+		case 'exportbatch':
+			$file_name = '/var/uoj_data/export_batch.zip';
+			$download_name = "batch.zip";
+			break;
+		case 'export':
+			if (!validateUInt($_GET['id']) || !($problem = queryProblemBrief($_GET['id']))) {
+				become404Page();
+			}
+			$id = $_GET['id'];
+			$file_name = "/var/uoj_data/$id/export.zip";
+			$download_name = "problem_$id.zip";
+			break;
+		
 		default:
 			become404Page();
 	}
 	
 	$finfo = finfo_open(FILEINFO_MIME);
 	$mimetype = finfo_file($finfo, $file_name);
+
 	if ($mimetype === false) {
 		become404Page();
 	}

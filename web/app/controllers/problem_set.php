@@ -17,6 +17,23 @@
 		$new_problem_form->submit_button_config['smart_confirm'] = '';
 		
 		$new_problem_form->runAtServer();
+
+
+		$trans_problem_form = new UOJForm('trans_problem_form');
+		$trans_problem_form->handle = function() {
+			ob_start();
+			$root = (!empty($_SERVER['HTTPS']) ? 'https' : 'http') . '://' . $_SERVER['HTTP_HOST'] . '/';
+			header("LOCATION:problems/batch_export");
+			ob_end_flush();
+			die();
+		};
+		$trans_problem_form->submit_button_config['align'] = 'right';
+		$trans_problem_form->submit_button_config['class_str'] = 'btn btn-primary';
+		$trans_problem_form->submit_button_config['text'] = '批量迁移';
+		$trans_problem_form->submit_button_config['smart_confirm'] = '';
+		
+		$trans_problem_form->runAtServer();
+
 	}
 	
 	function echoProblem($problem) {
@@ -187,6 +204,7 @@ $('#input-show_submit_mode').click(function() {
 	
 	if (isSuperUser($myUser)) {
 		$new_problem_form->printHTML();
+		$trans_problem_form->printHTML();
 	}
 	
 	echo $pag->pagination();
