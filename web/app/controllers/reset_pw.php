@@ -63,7 +63,7 @@ $(document).ready(function() {
 		if (!validateResetPwPost()) {
 			return false;
 		}
-		$.post('<?=$_SERVER['REQUEST_URI']?>', {
+		$.post(<?= json_encode($_SERVER['REQUEST_URI']) ?>, {
 			reset : '',
 			newPW : md5($('#input-password').val(), "<?= getPasswordClientSalt() ?>")
 		}, function(res) {

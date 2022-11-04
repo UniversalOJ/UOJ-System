@@ -151,7 +151,7 @@ $(document).ready(function() {
 	$.ajaxSetup({async:false});
 	refreshConversations();
 	<?php if (isset($_GET['enter'])): ?>
-	enterConversation("<?= $_GET['enter'] ?>");
+	enterConversation(<?= json_encode($_GET['enter']) ?>);
 	<?php endif ?>
 });
 </script>
