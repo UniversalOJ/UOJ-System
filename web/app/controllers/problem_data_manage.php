@@ -789,7 +789,7 @@ EOD
   							<div class="form-group row">
     							<label for="time_limit" class="col-sm-5 control-label">time_limit</label>
     							<div class="col-sm-7">
-      								<input type="text" class="form-control" id="time_limit" name="time_limit" placeholder="时间限制（不能为小数！）">
+      								<input type="text" class="form-control" id="time_limit" name="time_limit" placeholder="时间限制（单位为秒，至多三位小数）">
     							</div>
   							</div>
   							<div class="form-group row">
