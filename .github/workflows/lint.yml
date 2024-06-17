@@ -7,6 +7,6 @@ jobs:
         steps:
             - uses: actions/checkout@v2
             - name: PHP-CS-Fixer
-              uses: docker://oskarstark/php-cs-fixer-ga
+              uses: docker://oskarstark/php-cs-fixer-ga:2.18.5
               with:
                   args: --config=./web/.php-cs-fixer.php --diff --dry-run
