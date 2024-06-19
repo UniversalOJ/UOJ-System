@@ -192,11 +192,11 @@
 		<?= HTML::js_src('/js/raphael.min.js') ?>
 		<?php endif ?>
 		
-		<?php if (isset($REQUIRE_LIB['shjs'])): ?>
-		<!-- shjs -->
-		<?= HTML::css_link('/css/sh_typical.min.css') ?>
-		<?= HTML::js_src('/js/sh_main.min.js') ?>
-		<script type="text/javascript">$(document).ready(function(){sh_highlightDocument()})</script>
+		<?php if (isset($REQUIRE_LIB['hljs'])): ?>
+		<!-- hljs -->
+		<?= HTML::css_link('/css/highlight_github.css') ?>
+		<?= HTML::js_src('/js/highlight.min.js') ?>
+		<script type="text/javascript">$(document).ready(function(){hljs.highlightAll()})</script>
 		<?php endif ?>
 		
 		<?php if (isset($REQUIRE_LIB['ckeditor'])): ?>

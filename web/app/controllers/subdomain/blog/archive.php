@@ -26,7 +26,7 @@
 	$all_tags = DB::selectAll("select distinct tag from blogs_tags where blog_id in (select id from blogs where $blogs_cond)");
 	
 	requireLib('mathjax');
-	requireLib('shjs');
+	requireLib('hljs');
 ?>
 <?php echoUOJPageHeader('日志') ?>
 

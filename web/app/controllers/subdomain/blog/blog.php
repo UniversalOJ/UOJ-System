@@ -139,7 +139,7 @@
 ?>
 <?php
 	$REQUIRE_LIB['mathjax'] = '';
-	$REQUIRE_LIB['shjs'] = '';
+	$REQUIRE_LIB['hljs'] = '';
 ?>
 <?php echoUOJPageHeader(HTML::stripTags($blog['title']) . ' - 博客') ?>
 <?php echoBlog($blog, array('show_title_only' => isset($_GET['page']) && $_GET['page'] != 1)) ?>

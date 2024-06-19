@@ -201,7 +201,7 @@ EOD
 		if (isset($_POST['need_preview'])) {
 			ob_start();
 			if ($this->type == 'blog') {
-				echoUOJPageHeader('博客预览', array('ShowPageHeader' => false, 'REQUIRE_LIB' => array('mathjax' => '', 'shjs' => '')));
+				echoUOJPageHeader('博客预览', array('ShowPageHeader' => false, 'REQUIRE_LIB' => array('mathjax' => '', 'hljs' => '')));
 				echo '<article>';
 				echo $this->post_data['content'];
 				echo '</article>';
