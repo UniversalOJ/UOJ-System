@@ -54,7 +54,7 @@
 	}
 ?>
 <?php
-	$REQUIRE_LIB['shjs'] = "";
+	$REQUIRE_LIB['hljs'] = "";
 ?>
 <?php echoUOJPageHeader(UOJLocale::get('problems::hack').' #'.$hack['id']) ?>
 

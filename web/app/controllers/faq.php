@@ -1,5 +1,5 @@
 <?php
-	requireLib('shjs');
+	requireLib('hljs');
 	requireLib('mathjax');
 	echoUOJPageHeader(UOJLocale::get('help')) 
 ?>

@@ -204,7 +204,7 @@ EOD
 ?>
 <?php
 	$REQUIRE_LIB['mathjax'] = '';
-	$REQUIRE_LIB['shjs'] = '';
+	$REQUIRE_LIB['hljs'] = '';
 ?>
 <?php echoUOJPageHeader(HTML::stripTags($problem['title']) . ' - ' . UOJLocale::get('problems::problem')) ?>
 <?php

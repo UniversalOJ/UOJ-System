@@ -9,7 +9,7 @@
 ?>
 <?php
 	$REQUIRE_LIB['mathjax'] = '';
-	$REQUIRE_LIB['shjs'] = '';
+	$REQUIRE_LIB['hljs'] = '';
 ?>
 <?php echoUOJPageHeader(UOJContext::user()['username'] . '的博客') ?>
 

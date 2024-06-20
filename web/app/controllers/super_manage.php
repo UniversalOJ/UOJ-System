@@ -356,7 +356,7 @@ EOD;
 	}
 ?>
 <?php
-	requireLib('shjs');
+	requireLib('hljs');
 	requireLib('morris');
 ?>
 <?php echoUOJPageHeader('系统管理') ?>
