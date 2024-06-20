@@ -697,6 +697,27 @@ LOCK TABLES `user_system_msg` WRITE;
 /*!40000 ALTER TABLE `user_system_msg` DISABLE KEYS */;
 /*!40000 ALTER TABLE `user_system_msg` ENABLE KEYS */;
 UNLOCK TABLES;
+
+create table pastes
+(
+	`index` varchar(20) null,
+	creator varchar(20) null,
+	created_at datetime null,
+	content text null
+);
+
+create unique index pastes_index_uindex
+	on pastes (`index`);
+
+create index pastes_created_at_index
+	on pastes (created_at);
+
+alter table pastes
+	add constraint pastes_pk
+		primary key (`index`);
+
+
+
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;

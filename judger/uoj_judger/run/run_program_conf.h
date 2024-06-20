@@ -160,7 +160,7 @@ inline bool is_writable_file(string name) {
 	if (name == "/") {
 		return writable_file_name_set.count("system_root");
 	}
-	return is_in_set_smart(name, writable_file_name_set) || is_in_set_smart(realpath(name), readable_file_name_set);
+	return is_in_set_smart(name, writable_file_name_set) || is_in_set_smart(realpath(name), writable_file_name_set);
 }
 inline bool is_readable_file(const string &name) {
 	if (is_writable_file(name)) {
@@ -193,6 +193,7 @@ int syscall_max_cnt_list_default[][2] = {
 	{__NR_write         , -1},
 	{__NR_readv         , -1},
 	{__NR_writev        , -1},
+	{__NR_pread64       , -1},
 	{__NR_open          , -1},
 	{__NR_unlink        , -1},
 	{__NR_close         , -1},
@@ -395,7 +396,7 @@ void init_conf(const RunProgramConfig &config) {
 		statable_file_name_set.insert("/usr/bin");
 		statable_file_name_set.insert("/usr/lib");
 		# ifdef UOJ_JUDGER_BASESYSTEM_UBUNTU1804
-		statable_file_name_set.insert("/usr/lib/python36.zip");
+		statable_file_name_set.insert("/usr/lib/python38.zip");
 		# endif
 	} else if (config.type == "java8") {
 		syscall_max_cnt[__NR_gettid         ] = -1;
@@ -408,6 +409,7 @@ void init_conf(const RunProgramConfig &config) {
 		syscall_max_cnt[__NR_clone          ] = 13;
 
 		syscall_max_cnt[__NR_getdents       ] = 4;
+		syscall_max_cnt[__NR_getdents64     ] = 4;
 
 		syscall_max_cnt[__NR_clock_getres   ] = 2;
 
@@ -455,6 +457,7 @@ void init_conf(const RunProgramConfig &config) {
 		syscall_max_cnt[__NR_clone          ] = 14;
 
 		syscall_max_cnt[__NR_getdents       ] = 4;
+		syscall_max_cnt[__NR_getdents64     ] = 4;
 
 		syscall_max_cnt[__NR_clock_getres   ] = 2;
 
@@ -474,6 +477,7 @@ void init_conf(const RunProgramConfig &config) {
 		syscall_max_cnt[__NR_pread64        ] = -1;
 		syscall_max_cnt[__NR_prctl          ] = -1;
 		syscall_max_cnt[__NR_nanosleep      ] = -1;
+		syscall_max_cnt[__NR_clock_nanosleep] = -1;
 		# endif
 
 		syscall_should_soft_ban[__NR_socket   ] = true;
@@ -518,6 +522,7 @@ void init_conf(const RunProgramConfig &config) {
 
 		syscall_max_cnt[__NR_setrlimit      ] = -1;
 		syscall_max_cnt[__NR_pipe           ] = -1;
+		syscall_max_cnt[__NR_pipe2           ] = -1;
 
 		syscall_max_cnt[__NR_getdents64     ] = -1;
 		syscall_max_cnt[__NR_getdents       ] = -1;
@@ -544,6 +549,7 @@ void init_conf(const RunProgramConfig &config) {
 		syscall_max_cnt[__NR_pread64        ] = -1;
 		syscall_max_cnt[__NR_prctl          ] = -1;
 		syscall_max_cnt[__NR_nanosleep      ] = -1;
+		syscall_max_cnt[__NR_clock_nanosleep] = -1;
 		syscall_max_cnt[__NR_socketpair     ] = -1;
 		# endif
 

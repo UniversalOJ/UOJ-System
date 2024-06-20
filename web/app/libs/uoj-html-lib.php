@@ -393,6 +393,96 @@ function echoSubmissionsList($cond, $tail, $config, $user) {
 		}, $table_config);
 }
 
+function echoPastesList() {
+	$header_row = '<tr>';
+	$col_names = ['`index`','creator','created_at'];
+	$header_row .= '<th>ID</th>';
+	$header_row .= '<th>'.UOJLocale::get("problems::submitter").'</th>';
+	$header_row .= '<th>'.UOJLocale::get('problems::submit time').'</th>';
+	$header_row .= '<th> 操作 </th>';
+	$header_row .= '</tr>';
+	$table_name = 'pastes';
+	echoLongTable($col_names, $table_name, "1", 'order by created_at desc', $header_row,
+		function($paste) {
+			$user = getUserLink($paste['creator']);
+			$token = HTML::hiddenToken();
+			echo <<<HTML
+<tr>
+	<td>
+		<a href="/pastes/{$paste['index']}">{$paste['index']}</a>
+	</td>
+	<td>
+		{$user}
+	</td>
+	<td>
+		{$paste['created_at']}
+	</td>
+	<td>
+		<form action="/super-manage/paste" method="post" class="form-horizontal">
+		{$token}
+		<input type="text" class="form-control" name="paste_deleter_name" id="input-paste_deleter_name" value="{$paste['index']}" style="display: none;">
+		<button type="submit" name="submit-paste_deleter" value="paste_deleter" class="btn btn-sm btn-danger" style="margin: 0">删除</button>
+		</form>
+	</td>
+</tr>
+HTML;
+		}, []);
+}
+
+function echoPasteContent($paste) {
+	$zip_file = new ZipArchive();
+	$submission_content = json_decode($paste['content'], true);
+	$zip_file->open(UOJContext::storagePath().$submission_content['file_name']);
+
+	$config = array();
+	foreach ($submission_content['config'] as $config_key => $config_val) {
+		$config[$config_val[0]] = $config_val[1];
+	}
+
+	$file_content = $zip_file->getFromName("paste.code");
+	$file_content = uojTextEncode($file_content, array('allow_CR' => true, 'html_escape' => true));
+	$file_language = htmlspecialchars($config["paste_language"]);
+	$footer_text = UOJLocale::get('problems::source code').', '.UOJLocale::get('problems::language').': '.$file_language;
+	$footer_text .= ", ".UOJLocale::get("problems::submitter") . <<<HTML
+: <a href="/user/profile/${paste['creator']}">${paste['creator']}</a>
+HTML;
+	$footer_text .= ", ".UOJLocale::get("problems::submit time").": ".$paste['created_at'];
+
+	switch ($file_language) {
+		case 'C++':
+		case 'C++11':
+			$sh_class = 'sh_cpp';
+			break;
+		case 'Python2':
+		case 'Python3':
+			$sh_class = 'sh_python';
+			break;
+		case 'Java8':
+		case 'Java11':
+			$sh_class = 'sh_java';
+			break;
+		case 'C':
+			$sh_class = 'sh_c';
+			break;
+		case 'Pascal':
+			$sh_class = 'sh_pascal';
+			break;
+		default:
+			$sh_class = '';
+			break;
+	}
+	echo '<div class="card border-info mb-3">';
+	echo '<div class="card-header bg-info">';
+	echo '<h4 class="card-title">Paste!</h4>';
+	echo '</div>';
+	echo '<div class="card-body">';
+	echo '<pre><code class="'.$sh_class.'">'.$file_content."\n".'</code></pre>';
+	echo '</div>';
+	echo '<div class="card-footer">'.$footer_text.'</div>';
+	echo '</div>';
+
+	$zip_file->close();
+}
 
 function echoSubmissionContent($submission, $requirement) {
 	$zip_file = new ZipArchive();

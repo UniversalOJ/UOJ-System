@@ -14,6 +14,8 @@
 #include <cstring>
 #include <string>
 #include <cstdarg>
+#include <locale>
+#include <codecvt>
 
 #include <unistd.h>
 #include <sys/file.h>
@@ -69,22 +71,25 @@ int executef(const char *fmt, ...) {
 /*========================= file ====================== */
 
 string file_preview(const string &name, const size_t &len = 100) {
-	FILE *f = fopen(name.c_str(), "r");
-	if (f == NULL) {
+	std::wifstream f(name);
+	if (!f)
 		return "";
+	f.imbue(std::locale("C.UTF-8"));
+
+	std::vector<wchar_t> buf(len + 5, 0);
+	f.read(&buf[0], len + 4);
+
+	auto it = std::find(buf.begin(), buf.end(), 0);
+	if (it - buf.begin() > len + 3) {
+		buf.resize(len);
+		for (wchar_t c: "...")
+			buf.push_back(c);
 	}
-	string res = "";
-	int c;
-	while (c = fgetc(f), c != EOF && res.size() < len + 4) {
-		res += c;
-	}
-	if (res.size() > len + 3) {
-		res.resize(len);
-		res += "...";
-	}
-	fclose(f);
-	return res;
+	
+	std::wstring_convert<std::codecvt_utf8<wchar_t>, wchar_t> cv;
+	return cv.to_bytes(&buf[0]);
 }
+
 void file_hide_token(const string &name, const string &token) {
 	executef("cp %s %s.bak", name.c_str(), name.c_str());
 

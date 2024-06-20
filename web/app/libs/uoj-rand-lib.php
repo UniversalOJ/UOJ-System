@@ -31,3 +31,7 @@ function uojRandAvaiableSubmissionFileName() {
 	}
 	return uojRandAvaiableFileName("/submission/$num/");
 }
+
+function uojRandAvaiablePasteFileName() {
+	return uojRandAvaiableFileName('/paste/');
+}

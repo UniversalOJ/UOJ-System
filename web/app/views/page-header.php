@@ -152,7 +152,7 @@
     			}
 			});
 		</script>
-		<script src="//cdn.bootcss.com/mathjax/2.6.0/MathJax.js?config=TeX-AMS_HTML"></script>
+		<script src="//cdn.bootcss.com/mathjax/2.7.7/MathJax.js?config=TeX-AMS_HTML"></script>
 		<?php endif ?>
 		
 		<?php if (isset($REQUIRE_LIB['jquery.form'])): ?>
@@ -202,6 +202,16 @@
 		<?php if (isset($REQUIRE_LIB['ckeditor'])): ?>
 		<!-- ckeditor -->
 		<?= HTML::js_src('/js/ckeditor/ckeditor.js') ?>
+		<?php endif ?>
+
+		<?php if (isset($REQUIRE_LIB['dracula'])): ?>
+			<!-- dracula.js -->
+			<?= HTML::js_src('/js/dracula.min.js') ?>
+		<?php endif ?>
+
+		<?php if (isset($REQUIRE_LIB['base64'])): ?>
+			<!-- base64.js -->
+			<?= HTML::js_src('/js/base64.min.js') ?>
 		<?php endif ?>
 
 		<!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->

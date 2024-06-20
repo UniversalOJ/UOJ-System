@@ -14,9 +14,8 @@ getAptPackage(){
     export DEBIAN_FRONTEND=noninteractive
     (echo "mysql-server mysql-server/root_password password $_database_password_";echo "mysql-server mysql-server/root_password_again password $_database_password_") | debconf-set-selections
     #Update apt sources and install
-    dpkg -s gnupg 2>/dev/null || (apt-get update && apt-get install -y gnupg)
     echo "deb http://ppa.launchpad.net/stesie/libv8/ubuntu bionic main" | tee /etc/apt/sources.list.d/stesie-libv8.list && apt-key adv --keyserver keyserver.ubuntu.com --recv-keys D858A0DF
-    apt-get update && apt-get install -y vim ntp zip unzip curl wget apache2 libapache2-mod-xsendfile libapache2-mod-php php php-dev php-pear php-zip php-mysql php-mbstring mysql-server cmake fp-compiler re2c libv8-7.5-dev libyaml-dev python python3 python3-requests openjdk-8-jdk openjdk-11-jdk
+    apt-get update && apt-get install -y libv8-7.5-dev
     #Install PHP extensions
     yes | pecl install yaml
     git clone https://github.com/phpv8/v8js.git --depth=1 /tmp/pear/download/v8js-master && cd /tmp/pear/download/v8js-master
@@ -84,6 +83,10 @@ UOJEOF
 
 setJudgeConf(){
     printf "\n\n==> Setting judger files\n"
+    #specify environment
+    cat > /etc/environment <<UOJEOF
+PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+UOJEOF
     #Add local_main_judger user
     useradd -m local_main_judger && usermod -a -G www-data local_main_judger
     #Set uoj_data path

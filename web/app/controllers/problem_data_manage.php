@@ -50,14 +50,14 @@
 			becomeMsgPage('<div>' . $errmsg . '</div><a href="/problem/'.$problem['id'].'/manage/data">返回</a>');
 		} else {
 			$zip_mime_types = array('application/zip', 'application/x-zip', 'application/x-zip-compressed');
-			if (in_array($_FILES["problem_data_file"]["type"], $zip_mime_types)) {
+			if (in_array($_FILES["problem_data_file"]["type"], $zip_mime_types) || $_FILES["problem_data_file"]["type"] == 'application/octet-stream' && substr($_FILES["problem_data_file"]["name"], -4) == '.zip') {
 				$up_filename="/tmp/".rand(0,100000000)."data.zip";
 				move_uploaded_file($_FILES["problem_data_file"]["tmp_name"], $up_filename);
 				$zip = new ZipArchive;
 				if ($zip->open($up_filename) === TRUE) {
 					$zip->extractTo("/var/uoj_data/upload/{$problem['id']}");
 					$zip->close();
-					exec("cd /var/uoj_data/upload/{$problem['id']}; if [ `find . -maxdepth 1 -type f`File = File ]; then for sub_dir in `find -maxdepth 1 -type d ! -name .`; do mv -f \$sub_dir/* . && rm -rf \$sub_dir; done; fi");
+					exec("cd /var/uoj_data/upload/{$problem['id']}; if [ -z \"`find . -maxdepth 1 -type f`\" ]; then for sub_dir in `find -maxdepth 1 -type d ! -name .`; do mv -f \$sub_dir/* . && rm -rf \$sub_dir; done; fi");
 					echo "<script>alert('上传成功！')</script>";
 				} else {
 					$errmsg = "解压失败！";

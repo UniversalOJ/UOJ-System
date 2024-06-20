@@ -34,7 +34,7 @@ void ordinary_test() {
 			po.scr = scale_score(po.scr, conf_int("point_score", i, 100 / n));
 			add_point_info(po);
 		}
-	} else if (nT == 1) {
+	} else if (nT == 1 && conf_str("subtask_type", 1, "packed") == "packed") {
 		for (int i = 1; i <= n; i++) {
 			report_judge_status_f("Judging Test #%d", i);
 			PointInfo po = test_point("answer", i);
