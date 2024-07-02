@@ -21,8 +21,8 @@ setWebConf(){
     cat >/docker-entrypoint-initdb.d/000-native_password.sql <<UOJEOF
 ALTER USER 'root'@'%' IDENTIFIED WITH mysql_native_password BY 'root';
 UOJEOF
-    curl $RAW_URL/install/db/app_uoj233.sql >/docker-entrypoint-initdb.d/001-app_uoj233.sql
-    curl $RAW_URL/install/judger/add_judger.sql >/docker-entrypoint-initdb.d/002-add_judger.sql
+    cp app_uoj233.sql /docker-entrypoint-initdb.d/001-app_uoj233.sql
+    cp add_judger.sql /docker-entrypoint-initdb.d/002-add_judger.sql
 }
 
 echo 'Preparing UOJ System db environment...'

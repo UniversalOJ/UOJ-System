@@ -3,21 +3,26 @@ genRandStr(){
     cat /dev/urandom | tr -dc [:alnum:] | head -c $1
 }
 #Set some vars
-_database_host_=uoj-db
-_database_password_=root
-_judger_socket_port_=2333
-_judger_socket_password_=_judger_socket_password_
+_database_host_="${DATABASE_HOST:-uoj-db}"
+_database_password_="${DATABASE_PASSWORD:-root}"
+_judger_socket_port_="${JUDGER_SOCKET_PORT:-2333}"
+_judger_socket_password_="${JUDGER_SOCKET_PASSWORD:-_judger_socket_password_}"
+_salt0_="${SALT_0:-salt0}"
+_salt1_="${SALT_1:-salt1}"
+_salt2_="${SALT_2:-salt2}"
+_salt3_="${SALT_3:-salt3}"
+_uoj_protocol_="${UOJ_PROTOCOL:-http}"
 
 getAptPackage(){
     printf "\n\n==> Getting environment packages\n"
-    #Update apt sources and install
+    # Update apt sources and install
     export DEBIAN_FRONTEND=noninteractive
     dpkg -s gnupg 2>/dev/null || (apt-get update && apt-get install -y gnupg)
     echo "deb http://ppa.launchpad.net/stesie/libv8/ubuntu bionic main" | tee /etc/apt/sources.list.d/stesie-libv8.list && apt-key adv --keyserver keyserver.ubuntu.com --recv-keys D858A0DF
-    apt-get update && apt-get install -y git vim ntp zip unzip curl wget apache2 libapache2-mod-xsendfile libapache2-mod-php php php-dev php-pear php-zip php-mysql php-mbstring g++ cmake re2c libv8-7.5-dev libyaml-dev
-    #Install PHP extensions
+    apt-get update && apt-get install -y git vim ntp zip unzip curl wget apache2 libapache2-mod-xsendfile libapache2-mod-php php php-dev php-pear php-zip php-mysql php-mbstring php-gd php-intl php-xsl g++ make re2c libv8-7.5-dev libyaml-dev
+    # Install PHP extensions
     yes | pecl install yaml
-    git clone https://github.com/phpv8/v8js.git --depth=1 /tmp/pear/download/v8js-master && cd /tmp/pear/download/v8js-master
+    git clone https://github.com/phpv8/v8js.git --depth=1 -b 4c026f3fb291797c109adcabda6aeba6491fe44f /tmp/pear/download/v8js-master && cd /tmp/pear/download/v8js-master
     phpize && ./configure --with-php-config=/usr/bin/php-config --with-v8js=/opt/libv8-7.5 && make install && cd -
 }
 
@@ -47,15 +52,16 @@ UOJEOF
     a2enmod rewrite headers && sed -i -e '172s/AllowOverride None/AllowOverride All/' /etc/apache2/apache2.conf
     #Create UOJ session save dir and make PHP extensions available
     mkdir --mode=733 /var/lib/php/uoj_sessions && chmod +t /var/lib/php/uoj_sessions
-    sed -i -e '912a\extension=v8js.so\nextension=yaml.so' /etc/php/7.2/apache2/php.ini
+    sed -i -e '912a\extension=v8js.so\nextension=yaml.so' /etc/php/7.4/apache2/php.ini
+	sed -i 's|;sys_temp_dir = "/tmp"|sys_temp_dir = "/tmp"|g' /etc/php/7.4/apache2/php.ini
 }
 
 setWebConf(){
     printf "\n\n==> Setting web files\n"
-    #Set webroot path
+    # Set webroot path
     ln -sf /opt/uoj/web /var/www/uoj
     chown -R www-data /var/www/uoj/app/storage
-    #Set web config file
+    # Set web config file
     php -a <<UOJEOF
 \$config = include '/var/www/uoj/app/.default-config.php';
 \$config['database']['host']='$_database_host_';
@@ -63,15 +69,15 @@ setWebConf(){
 \$config['judger']['socket']['port']='$_judger_socket_port_';
 file_put_contents('/var/www/uoj/app/.config.php', "<?php\nreturn ".str_replace('\'_httpHost_\'','UOJContext::httpHost()',var_export(\$config, true)).";\n");
 UOJEOF
-    #Prepare local sandbox
-    cd ../../judger/uoj_judger
+    # Prepare local sandbox
+    cd /opt/uoj/judger/uoj_judger
     cat >include/uoj_work_path.h <<UOJEOF
 #define UOJ_WORK_PATH "/opt/uoj/judger/uoj_judger"
 #define UOJ_JUDGER_BASESYSTEM_UBUNTU1804
-#define UOJ_JUDGER_PYTHON3_VERSION "3.8"
+#define UOJ_JUDGER_PYTHON3_VERSION "3.6"
 #define UOJ_JUDGER_FPC_VERSION "3.0.4"
 UOJEOF
-    make runner -j$(($(nproc) + 1)) && cd ../../install/web
+    make runner -j$(($(nproc) + 1)) && cd /opt/uoj/web
 }
 
 initProgress(){
@@ -80,7 +86,7 @@ initProgress(){
     mkdir -p /var/uoj_data/upload
     chown -R www-data:www-data /var/uoj_data
     #Replace password placeholders
-    sed -i -e "s/salt0/$(genRandStr 32)/g" -e "s/salt1/$(genRandStr 16)/g" -e "s/salt2/$(genRandStr 16)/g" -e "s/salt3/$(genRandStr 16)/g" -e "s/_judger_socket_password_/$_judger_socket_password_/g" /var/www/uoj/app/.config.php
+    sed -i -e "s/salt0/$_salt0_/g" -e "s/salt1/$_salt1_/g" -e "s/salt2/$_salt2_/g" -e "s/salt3/$_salt3_/g" -e "s/_judger_socket_password_/$_judger_socket_password_/g" /var/www/uoj/app/.config.php
     #Using cli upgrade to latest
     php /var/www/uoj/app/cli.php upgrade:latest
     #Start services
@@ -88,16 +94,19 @@ initProgress(){
     service apache2 restart
     #Touch SetupDone flag file
     touch /var/uoj_data/.UOJSetupDone
+	mkdir -p /opt/uoj/web/app/storage/submission
+	mkdir -p /opt/uoj/web/app/storage/tmp
+	chmod -R 777 /opt/uoj/web/app/storage
     printf "\n\n***Installation complete. Enjoy!***\n"
 }
 
 prepProgress(){
-    getAptPackage;setLAMPConf;setWebConf
+    setLAMPConf;setWebConf
 }
 
 if [ $# -le 0 ]; then
     echo 'Installing UOJ System web...'
-    prepProgress;initProgress
+    getAptPackage;prepProgress;initProgress
 fi
 while [ $# -gt 0 ]; do
     case "$1" in
