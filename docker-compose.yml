@@ -1,0 +1,66 @@
+version: '3'
+
+services:
+  uoj-db:
+	image: ghcr.io/UniversalOJ/uoj-db:latest
+    build:
+      context: ./db/
+      dockerfile: Dockerfile
+    container_name: uoj-db
+    restart: always
+    volumes:
+      - ./uoj_data/db/mysql:/var/lib/mysql
+    environment:
+      - MYSQL_DATABASE=app_uoj233
+      - MYSQL_ROOT_PASSWORD=root
+  
+  uoj-judger:
+	image: ghcr.io/UniversalOJ/uoj-judger:latest
+    build:
+      context: ./judger/
+      dockerfile: Dockerfile
+    container_name: uoj-judger
+    restart: always
+    stdin_open: true
+    tty: true
+    cap_add:
+      - SYS_PTRACE
+    volumes:
+      - ./uoj_data/judger/log:/opt/uoj_judger/log
+    environment:
+      - UOJ_PROTOCOL=http
+      - UOJ_HOST=uoj-web
+      - JUDGER_NAME=compose_judger
+      - JUDGER_PASSWORD=_judger_password_
+      - SOCKET_PORT=2333
+      - SOCKET_PASSWORD=_judger_socket_password_
+
+  uoj-web:
+	image: ghcr.io/UniversalOJ/uoj-web:latest
+    build:
+      context: ./
+      dockerfile: web/Dockerfile
+    container_name: uoj-web
+    restart: always
+    stdin_open: true
+    tty: true
+    cap_add:
+      - SYS_PTRACE
+    depends_on:
+      - uoj-db
+      - uoj-judger
+    volumes:
+      - ./uoj_data/web/data:/var/uoj_data
+    ports:
+      - "80:80"
+      - "3690:3690"
+    environment:
+      - DATABASE_HOST=uoj-db
+      - DATABASE_PASSWORD=root
+      - JUDGER_SOCKET_PORT=2333
+      - JUDGER_SOCKET_PASSWORD=_judger_socket_password_
+      - SALT_0=_salt_0_
+      - SALT_1=_salt_1_
+      - SALT_2=_salt_2_
+      - SALT_3=_salt_3_
+      - UOJ_PROTOCOL=http
