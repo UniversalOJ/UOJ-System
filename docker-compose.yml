@@ -2,7 +2,7 @@ version: '3'
 
 services:
   uoj-db:
-	image: ghcr.io/UniversalOJ/uoj-db:latest
+    image: ghcr.io/universaloj/uoj-db:latest
     build:
       context: ./db/
       dockerfile: Dockerfile
@@ -15,7 +15,7 @@ services:
       - MYSQL_ROOT_PASSWORD=root
   
   uoj-judger:
-	image: ghcr.io/UniversalOJ/uoj-judger:latest
+    image: ghcr.io/universaloj/uoj-judger:latest
     build:
       context: ./judger/
       dockerfile: Dockerfile
@@ -36,7 +36,7 @@ services:
       - SOCKET_PASSWORD=_judger_socket_password_
 
   uoj-web:
-	image: ghcr.io/UniversalOJ/uoj-web:latest
+    image: ghcr.io/universaloj/uoj-web:latest
     build:
       context: ./
       dockerfile: web/Dockerfile
