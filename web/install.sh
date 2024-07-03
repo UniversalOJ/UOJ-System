@@ -96,6 +96,7 @@ initProgress(){
     touch /var/uoj_data/.UOJSetupDone
 	mkdir -p /opt/uoj/web/app/storage/submission
 	mkdir -p /opt/uoj/web/app/storage/tmp
+	mkdir -p /opt/uoj/web/app/storage/paste
 	chmod -R 777 /opt/uoj/web/app/storage
     printf "\n\n***Installation complete. Enjoy!***\n"
 }
