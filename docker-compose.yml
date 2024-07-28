@@ -51,7 +51,7 @@ services:
       - uoj-judger
     volumes:
       - ./uoj_data/web/data:/var/uoj_data
-	  - ./uoj_data/web/storage:/opt/uoj/web/app/storage
+      - ./uoj_data/web/storage:/opt/uoj/web/app/storage
     ports:
       - "80:80"
       - "3690:3690"
