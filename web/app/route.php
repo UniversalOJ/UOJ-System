@@ -28,6 +28,7 @@ Route::group([
 		Route::any('/contest/{id}/submissions', '/contest_inside.php?tab=submissions');
 		Route::any('/contest/{id}/standings', '/contest_inside.php?tab=standings');
 		Route::any('/contest/{id}/backstage', '/contest_inside.php?tab=backstage');
+		Route::any('/contest/{id}/export_standings', '/export_contest_standings_table.php');
 		Route::any('/contest/{contest_id}/problem/{id}', '/problem.php');
 		Route::any('/contest/{contest_id}/problem/{id}/statistics', '/problem_statistics.php');
 		

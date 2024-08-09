@@ -396,6 +396,14 @@ EOD;
 		$contest_data = queryContestData($contest);
 		calcStandings($contest, $contest_data, $score, $standings);
 		
+		if ($contest['cur_progress'] >= CONTEST_FINISHED && hasContestPermission(Auth::user(), $contest)) {
+			echo <<<EOD
+				<div>
+					<a class="btn btn-info" href="/contest/{$contest['id']}/export_standings">下载排名</a>
+				</div>
+			EOD;
+		}
+		
 		uojIncludeView('contest-standings', [
 			'contest' => $contest,
 			'standings' => $standings,
