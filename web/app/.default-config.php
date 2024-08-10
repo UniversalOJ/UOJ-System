@@ -11,8 +11,8 @@ return [
 	'database' => [
 		'database' => 'app_uoj233',
 		'username' => 'root',
-		'password' => '_database_password_',
-		'host' => '127.0.0.1'
+		'password' => 'root',
+		'host' => 'uoj-db'
 	],
 	'web' => [
 		'domain' => null,
@@ -51,6 +51,7 @@ return [
 		]
 	],
 	'switch' => [
+		// 请在 page-header.php 中修改统计代码后再启用
 		'web-analytics' => false,
 		'blog-domain-mode' => 3
 	],

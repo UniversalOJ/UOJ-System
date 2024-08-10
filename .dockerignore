@@ -2,3 +2,5 @@
 .git/
 
 uoj_data/
+
+.config.local.php

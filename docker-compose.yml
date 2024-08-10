@@ -52,6 +52,9 @@ services:
     volumes:
       - ./uoj_data/web/data:/var/uoj_data
       - ./uoj_data/web/storage:/opt/uoj/web/app/storage
+      - type: bind
+        source: ./.config.local.php
+        target: /opt/uoj/web/app/.config.php
     ports:
       - "80:80"
       - "3690:3690"

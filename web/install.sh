@@ -3,14 +3,7 @@ genRandStr(){
     cat /dev/urandom | tr -dc [:alnum:] | head -c $1
 }
 #Set some vars
-_database_host_="${DATABASE_HOST:-uoj-db}"
-_database_password_="${DATABASE_PASSWORD:-root}"
 _judger_socket_port_="${JUDGER_SOCKET_PORT:-2333}"
-_judger_socket_password_="${JUDGER_SOCKET_PASSWORD:-_judger_socket_password_}"
-_salt0_="${SALT_0:-salt0}"
-_salt1_="${SALT_1:-salt1}"
-_salt2_="${SALT_2:-salt2}"
-_salt3_="${SALT_3:-salt3}"
 _uoj_protocol_="${UOJ_PROTOCOL:-http}"
 
 getAptPackage(){
@@ -64,8 +57,6 @@ setWebConf(){
     # Set web config file
     php -a <<UOJEOF
 \$config = include '/var/www/uoj/app/.default-config.php';
-\$config['database']['host']='$_database_host_';
-\$config['database']['password']='$_database_password_';
 \$config['judger']['socket']['port']='$_judger_socket_port_';
 file_put_contents('/var/www/uoj/app/.config.php', "<?php\nreturn ".str_replace('\'_httpHost_\'','UOJContext::httpHost()',var_export(\$config, true)).";\n");
 UOJEOF
@@ -85,8 +76,6 @@ initProgress(){
     #Set uoj_data path
     mkdir -p /var/uoj_data/upload
     chown -R www-data:www-data /var/uoj_data
-    #Replace password placeholders
-    sed -i -e "s/salt0/$_salt0_/g" -e "s/salt1/$_salt1_/g" -e "s/salt2/$_salt2_/g" -e "s/salt3/$_salt3_/g" -e "s/_judger_socket_password_/$_judger_socket_password_/g" /var/www/uoj/app/.config.php
     #Using cli upgrade to latest
     php /var/www/uoj/app/cli.php upgrade:latest
     #Start services
