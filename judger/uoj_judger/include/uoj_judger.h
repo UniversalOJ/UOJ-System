@@ -1157,11 +1157,19 @@ RunCompilerResult compile_cpp11(const string &name, const string &path = work_pa
 }
 RunCompilerResult compile_cpp14(const string &name, const string &path = work_path) {
 	return run_compiler(path.c_str(),
-			"/usr/bin/g++", "-o", name.c_str(), "-x", "c++", (name + ".code").c_str(), "-lm", "-O2", "-DONLINE_JUDGE", "-std=c++11", NULL);
+			"/usr/bin/g++", "-o", name.c_str(), "-x", "c++", (name + ".code").c_str(), "-lm", "-O2", "-DONLINE_JUDGE", "-std=c++14", NULL);
 }
 RunCompilerResult compile_cpp17(const string &name, const string &path = work_path) {
 	return run_compiler(path.c_str(),
-			"/usr/bin/g++", "-o", name.c_str(), "-x", "c++", (name + ".code").c_str(), "-lm", "-O2", "-DONLINE_JUDGE", "-std=c++11", NULL);
+			"/usr/bin/g++", "-o", name.c_str(), "-x", "c++", (name + ".code").c_str(), "-lm", "-O2", "-DONLINE_JUDGE", "-std=c++17", NULL);
+}
+RunCompilerResult compile_cpp20(const string &name, const string &path = work_path) {
+	return run_compiler(path.c_str(),
+			"/usr/bin/g++", "-o", name.c_str(), "-x", "c++", (name + ".code").c_str(), "-lm", "-O2", "-DONLINE_JUDGE", "-std=c++20", NULL);
+}
+RunCompilerResult compile_cpp23(const string &name, const string &path = work_path) {
+	return run_compiler(path.c_str(),
+			"/usr/bin/g++", "-o", name.c_str(), "-x", "c++", (name + ".code").c_str(), "-lm", "-O2", "-DONLINE_JUDGE", "-std=c++23", NULL);
 }
 RunCompilerResult compile_python2(const string &name, const string &path = work_path) {
 	return run_compiler(path.c_str(),
@@ -1202,7 +1210,7 @@ RunCompilerResult compile_java11(const string &name, const string &path = work_p
 RunCompilerResult compile(const char *name)  {
 	string lang = conf_str(string(name) + "_language");
 
-	if ((lang == "C++" || lang == "C++11" || lang == "C") && has_illegal_keywords_in_file(work_path + "/" + name + ".code"))
+	if ((lang == "C++" || lang == "C++11" || lang == "C" || lang == "C++14" || lang == "C++17" || lang == "C++20") && has_illegal_keywords_in_file(work_path + "/" + name + ".code"))
 	{
 		RunCompilerResult res;
 		res.type = RS_DGS;
@@ -1251,7 +1259,7 @@ RunCompilerResult compile(const char *name)  {
 	}
 
 	RunCompilerResult res = RunCompilerResult::failed_result();
-	res.info = "This language is not supported yet.";
+	res.info = "This language \"" + lang + "\" is not supported yet.";
 	return res;
 }
 
@@ -1339,7 +1347,7 @@ RunCompilerResult compile_with_implementer(const char *name)  {
 	}
 
 	RunCompilerResult res = RunCompilerResult::failed_result();
-	res.info = "This language is not supported yet.";
+	res.info = "This language \"" + lang + "\" is not supported yet.";
 	return res;
 }
 
