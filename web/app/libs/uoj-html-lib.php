@@ -451,6 +451,9 @@ HTML;
 	switch ($file_language) {
 		case 'C++':
 		case 'C++11':
+		case 'C++14':
+		case 'C++17':
+		case 'C++20':
 			$sh_class = 'sh_cpp';
 			break;
 		case 'Python2':
@@ -503,6 +506,9 @@ function echoSubmissionContent($submission, $requirement) {
 			switch ($file_language) {
 				case 'C++':
 				case 'C++11':
+				case 'C++14':
+				case 'C++17':
+				case 'C++20':
 					$sh_class = 'sh_cpp';
 					break;
 				case 'Python2':

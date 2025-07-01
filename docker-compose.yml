@@ -8,6 +8,8 @@ services:
       dockerfile: Dockerfile
     container_name: uoj-db
     restart: always
+    ports:
+      - "3306:3306"
     volumes:
       - ./uoj_data/db/mysql:/var/lib/mysql
     environment:
