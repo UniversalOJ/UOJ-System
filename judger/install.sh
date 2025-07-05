@@ -3,6 +3,20 @@
 getAptPackage(){
     printf "\n\n==> Getting environment packages\n"
     export DEBIAN_FRONTEND=noninteractive
+    
+    apt-get update && apt-get install -y software-properties-common
+
+    # ✅ 添加新的 GCC 工具链源
+    add-apt-repository ppa:ubuntu-toolchain-r/test -y
+    apt-get update
+
+    # ✅ 安装 g++-13
+    apt-get install -y g++-13 gcc-13
+
+    # ✅ 设置 g++ 默认版本为 g++-13
+    update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-13 100
+    update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-13 100
+
     apt-get update && apt-get install -y vim ntp zip unzip curl wget build-essential fp-compiler python2.7 python3.8 python3-requests
 }
 
