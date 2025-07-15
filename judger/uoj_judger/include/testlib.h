@@ -2762,8 +2762,8 @@ InStream::InStream() {
 InStream::InStream(const InStream &baseStream, std::string content) {
 
     // UOJ Modified Here
-    file = (FILE*)0xbadfeed;
-    stdfile = false;
+    //file = (FILE*)0xbadfeed;
+    //stdfile = false;
     // End of modification
 
     reader = new StringInputStreamReader(content);
@@ -3206,7 +3206,7 @@ void InStream::init(std::string fileName, TMode mode) {
     //stdfile = false;
     if (fileName == "/dev/stdin"){
         name = "stdin";
-        this->file = stdin;
+        //this->file = stdin;
         stdfile = true;
     }else{
         name = fileName;

@@ -7,8 +7,16 @@ def run(cmd: list[str], capture=False, **kw):
 
 def compile_checker(host_src: str, container: str = "uoj-judger") -> None:
     chk_cpp = os.path.join(host_src, "chk.cpp")
+    checker_cpp = os.path.join(host_src, "checker.cpp")
+
+    # 如果 chk.cpp 不存在但 checker.cpp 存在，就复制一份
     if not os.path.isfile(chk_cpp):
-        sys.exit(f"❌ 找不到 {chk_cpp}")
+        if os.path.isfile(checker_cpp):
+            shutil.copy(checker_cpp, chk_cpp)
+            print(f"✅ 已将 checker.cpp 复制为 chk.cpp")
+            chk_cpp = os.path.join(host_src, "chk.cpp")
+        else:
+            sys.exit(f"❌ 找不到 {chk_cpp} 或 {checker_cpp}")
 
     # 1. 容器内临时目录
     tmp_dir = f"/tmp/chk_build_{uuid.uuid4().hex[:8]}"

@@ -21,9 +21,11 @@ def renamePrefixToA(folderPath: str) -> Tuple[str, int]:
 
             oldPath = os.path.join(folderPath, fileName)
             newPath = os.path.join(folderPath, f"a{k}.ans")
-            if os.path.exists(newPath):
-                raise FileExistsError(f"{newPath} 已存在，避免覆盖")
-            os.rename(oldPath, newPath)
+            if not os.path.exists(newPath):
+                os.rename(oldPath, newPath)
+            #else:
+            #    raise FileExistsError(f"{newPath} 已存在，避免覆盖")
+            
 
             print(f"{fileName} → a{k}.ans")
 
@@ -34,9 +36,8 @@ def renamePrefixToA(folderPath: str) -> Tuple[str, int]:
 
             oldPath = os.path.join(folderPath, fileName)
             newPath = os.path.join(folderPath, f"a{k}.in")
-            if os.path.exists(newPath):
-                raise FileExistsError(f"{newPath} 已存在，避免覆盖")
-            os.rename(oldPath, newPath)
+            if not os.path.exists(newPath):
+                os.rename(oldPath, newPath)
 
             print(f"{fileName} → a{k}.in")
 
@@ -54,7 +55,7 @@ input_pre a
 input_suf in
 output_pre a
 output_suf ans
-time_limit 1
+time_limit 2
 memory_limit 512
 output_limit 64
 use_builtin_judger on
