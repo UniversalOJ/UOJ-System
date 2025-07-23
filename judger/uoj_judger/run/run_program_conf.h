@@ -398,7 +398,36 @@ void init_conf(const RunProgramConfig &config) {
 		# ifdef UOJ_JUDGER_BASESYSTEM_UBUNTU1804
 		statable_file_name_set.insert("/usr/lib/python38.zip");
 		# endif
-	} else if (config.type == "java8") {
+	} else if (config.type == "pypy3") {
+		
+		syscall_max_cnt[__NR_set_tid_address] = 1;
+		syscall_max_cnt[__NR_set_robust_list] = 1;
+		syscall_max_cnt[__NR_futex          ] = -1;
+
+		syscall_max_cnt[__NR_getdents       ] = -1;
+		syscall_max_cnt[__NR_getdents64     ] = -1;
+
+		# ifdef UOJ_JUDGER_BASESYSTEM_UBUNTU1804
+		syscall_max_cnt[__NR_prlimit64      ] = -1;
+		syscall_max_cnt[__NR_getrandom      ] = -1;
+		syscall_max_cnt[__NR_sysinfo        ] = -1;
+		syscall_max_cnt[__NR_getpid         ] = -1;
+		# endif
+
+		readable_file_name_set.insert("/usr/bin/pypy3");
+		readable_file_name_set.insert("/usr/lib/pypy3/");
+
+		# ifdef UOJ_JUDGER_PYPY3_VERSION
+		readable_file_name_set.insert("/usr/bin/pypy3-" UOJ_JUDGER_PYPY3_VERSION);
+		readable_file_name_set.insert("/usr/lib/pypy3-" UOJ_JUDGER_PYPY3_VERSION "/");
+		readable_file_name_set.insert("/usr/bin/lib/pypy3-" UOJ_JUDGER_PYPY3_VERSION "/");
+		readable_file_name_set.insert("/usr/local/lib/pypy3-" UOJ_JUDGER_PYPY3_VERSION "/");
+		# endif
+		
+		statable_file_name_set.insert("/usr");
+		statable_file_name_set.insert("/usr/bin");
+		statable_file_name_set.insert("/usr/lib");
+	}else if (config.type == "java8") {
 		syscall_max_cnt[__NR_gettid         ] = -1;
 		syscall_max_cnt[__NR_set_tid_address] = 1;
 		syscall_max_cnt[__NR_set_robust_list] = 14;

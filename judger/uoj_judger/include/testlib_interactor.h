@@ -25,7 +25,7 @@
  * Copyright (c) 2005-2013
  */
 
-#define VERSION "0.9.5"
+#define VERSION "0.9.5-uoj"
 
 /* 
  * Mike Mirzayanov
@@ -1574,6 +1574,8 @@ struct InStream
     int wordReserveSize;
     std::string _tmpReadToken;
 
+    int readManyIteration;
+
     void init(std::string fileName, TMode mode);
     void init(std::FILE* f, TMode mode);
 
@@ -1660,6 +1662,21 @@ struct InStream
     /* As "readInt()" but ensures that value in the range [minv,maxv]. */
     
 	int readInt(int minv, int maxv, const std::string& variableName = "");
+
+    /* Reads space-separated sequence of integers. */
+    std::vector<int>
+    readIntegers(int size, int minv, int maxv, const std::string &variablesName = "", int indexBase = 1);
+
+    /* Reads space-separated sequence of integers. */
+    std::vector<int> readIntegers(int size, int indexBase = 1);
+
+    /* Reads space-separated sequence of integers. */
+    std::vector<int> readInts(int size, int minv, int maxv, const std::string &variablesName = "", int indexBase = 1);
+
+    /* Reads space-separated sequence of integers. */
+    std::vector<int> readInts(int size, int indexBase = 1);
+
+
     /* 
      * Reads new double. Ignores white-spaces into the non-strict mode 
      * (strict mode is used in validators usually). 
@@ -1676,6 +1693,16 @@ struct InStream
     /* As "readDouble()" but ensures that value in the range [minv,maxv]. */
     double readDouble(double minv, double maxv, const std::string& variableName = "");
     
+    std::vector<double>
+    readReals(int size, double minv, double maxv, const std::string &variablesName = "", int indexBase = 1);
+
+    std::vector<double> readReals(int size, int indexBase = 1);
+
+    std::vector<double>
+    readDoubles(int size, double minv, double maxv, const std::string &variablesName = "", int indexBase = 1);
+
+    std::vector<double> readDoubles(int size, int indexBase = 1);
+
     /* 
      * As "readReal()" but ensures that value in the range [minv,maxv] and
      * number of digit after the decimal point is in range [minAfterPointDigitCount,maxAfterPointDigitCount]
@@ -1684,6 +1711,10 @@ struct InStream
     double readStrictReal(double minv, double maxv,
             int minAfterPointDigitCount, int maxAfterPointDigitCount,
             const std::string& variableName = "");
+
+    std::vector<double> readStrictReals(int size, double minv, double maxv,
+                                        int minAfterPointDigitCount, int maxAfterPointDigitCount,
+                                        const std::string &variablesName = "", int indexBase = 1);
     /* 
      * As "readDouble()" but ensures that value in the range [minv,maxv] and
      * number of digit after the decimal point is in range [minAfterPointDigitCount,maxAfterPointDigitCount]
@@ -1692,6 +1723,10 @@ struct InStream
     double readStrictDouble(double minv, double maxv,
             int minAfterPointDigitCount, int maxAfterPointDigitCount,
             const std::string& variableName = "");
+
+    std::vector<double> readStrictDoubles(int size, double minv, double maxv,
+                                          int minAfterPointDigitCount, int maxAfterPointDigitCount,
+                                          const std::string &variablesName = "", int indexBase = 1);
     
     /* As readLine(). */
     std::string readString();
@@ -1705,6 +1740,14 @@ struct InStream
     void readStringTo(std::string& result, const pattern& p, const std::string& variableName = "");
     /* The same as "readLine()/readString()", but ensures that line matches to the given pattern. */
     void readStringTo(std::string& result, const std::string& ptrn, const std::string& variableName = "");
+
+    /* Read many lines. */
+    std::vector<std::string>
+    readStrings(int size, const pattern &p, const std::string &variableName = "", int indexBase = 1);
+
+    /* Read many lines. */
+    std::vector<std::string>
+    readStrings(int size, const std::string &ptrn, const std::string &variableName = "", int indexBase = 1);
 
     /* 
      * Reads line from the current position to EOLN or EOF. Moves stream pointer to 
@@ -1721,6 +1764,13 @@ struct InStream
     void readLineTo(std::string& result, const pattern& p, const std::string& variableName = "");
     /* The same as "readLine()", but ensures that line matches to the given pattern. */
     void readLineTo(std::string& result, const std::string& ptrn, const std::string& variableName = "");
+
+    std::vector<std::string>
+    readLines(int size, const pattern &p, const std::string &variableName = "", int indexBase = 1);
+
+    /* Read many lines. */
+    std::vector<std::string>
+    readLines(int size, const std::string &ptrn, const std::string &variableName = "", int indexBase = 1);
 
     /* Reads EOLN or fails. Use it in validators. Calls "eoln()" method internally. */
     void readEoln();
@@ -1831,6 +1881,8 @@ static std::string toString(const T& t)
     return vtos(t);
 }
 
+const static int NO_INDEX = INT_MAX;
+
 InStream::InStream()
 {
     file = NULL;
@@ -1839,6 +1891,7 @@ InStream::InStream()
     strict = false;
     stdfile = false;
     wordReserveSize = 4;
+    readManyIteration = NO_INDEX;
 }
 
 InStream::InStream(const InStream& baseStream, std::string content)
@@ -2881,6 +2934,98 @@ std::string InStream::readLine(const pattern& p, const std::string& variableName
 std::string InStream::readLine(const std::string& ptrn, const std::string& variableName)
 {
     return readString(ptrn, variableName);
+}
+
+#define __testlib_readMany(readMany, readOne, typeName, space)                  \
+    if (size < 0)                                                               \
+        quit(_fail, #readMany ": size should be non-negative.");                \
+    if (size > 100000000)                                                       \
+        quit(_fail, #readMany ": size should be at most 100000000.");           \
+                                                                                \
+    std::vector<typeName> result(size);                                         \
+    readManyIteration = indexBase;                                              \
+                                                                                \
+    for (int i = 0; i < size; i++)                                              \
+    {                                                                           \
+        result[i] = readOne;                                                    \
+        readManyIteration++;                                                    \
+        if (strict && space && i + 1 < size)                                              \
+            readSpace();                                                        \
+    }                                                                           \
+                                                                                \
+    readManyIteration = NO_INDEX;                                               \
+    return result;                                                              \
+
+std::vector<int> InStream::readInts(int size, int minv, int maxv, const std::string &variablesName, int indexBase) {
+    __testlib_readMany(readInts, readInt(minv, maxv, variablesName), int, true)
+}
+
+std::vector<int> InStream::readInts(int size, int indexBase) {
+    __testlib_readMany(readInts, readInt(), int, true)
+}
+
+std::vector<int> InStream::readIntegers(int size, int minv, int maxv, const std::string &variablesName, int indexBase) {
+    __testlib_readMany(readIntegers, readInt(minv, maxv, variablesName), int, true)
+}
+
+std::vector<int> InStream::readIntegers(int size, int indexBase) {
+    __testlib_readMany(readIntegers, readInt(), int, true)
+}
+
+std::vector<double>
+InStream::readReals(int size, double minv, double maxv, const std::string &variablesName, int indexBase) {
+    __testlib_readMany(readReals, readReal(minv, maxv, variablesName), double, true)
+}
+
+std::vector<double> InStream::readReals(int size, int indexBase) {
+    __testlib_readMany(readReals, readReal(), double, true)
+}
+
+std::vector<double>
+InStream::readDoubles(int size, double minv, double maxv, const std::string &variablesName, int indexBase) {
+    __testlib_readMany(readDoubles, readDouble(minv, maxv, variablesName), double, true)
+}
+
+std::vector<double> InStream::readDoubles(int size, int indexBase) {
+    __testlib_readMany(readDoubles, readDouble(), double, true)
+}
+
+std::vector<double> InStream::readStrictReals(int size, double minv, double maxv,
+                                              int minAfterPointDigitCount, int maxAfterPointDigitCount,
+                                              const std::string &variablesName, int indexBase) {
+    __testlib_readMany(readStrictReals,
+                       readStrictReal(minv, maxv, minAfterPointDigitCount, maxAfterPointDigitCount, variablesName),
+                       double, true)
+}
+
+std::vector<double> InStream::readStrictDoubles(int size, double minv, double maxv,
+                                                int minAfterPointDigitCount, int maxAfterPointDigitCount,
+                                                const std::string &variablesName, int indexBase) {
+    __testlib_readMany(readStrictDoubles,
+                       readStrictDouble(minv, maxv, minAfterPointDigitCount, maxAfterPointDigitCount, variablesName),
+                       double, true)
+}
+
+std::vector<std::string>
+InStream::readStrings(int size, const pattern &p, const std::string &variablesName, int indexBase) {
+    __testlib_readMany(readStrings, readString(p, variablesName), std::string, false)
+}
+
+std::vector<std::string>
+InStream::readStrings(int size, const std::string &ptrn, const std::string &variablesName, int indexBase) {
+    pattern p(ptrn);
+    __testlib_readMany(readStrings, readString(p, variablesName), std::string, false)
+}
+
+std::vector<std::string>
+InStream::readLines(int size, const pattern &p, const std::string &variablesName, int indexBase) {
+    __testlib_readMany(readLines, readString(p, variablesName), std::string, false)
+}
+
+std::vector<std::string>
+InStream::readLines(int size, const std::string &ptrn, const std::string &variablesName, int indexBase) {
+    pattern p(ptrn);
+    __testlib_readMany(readLines, readString(p, variablesName), std::string, false)
 }
 
 void InStream::close()

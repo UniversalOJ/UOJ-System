@@ -2,48 +2,38 @@
 import os
 import re
 import sys
-from typing import Tuple
+from typing import Tuple, List, Dict
 
 def renamePrefixToA(folderPath: str) -> Tuple[str, int]:
-    """
-    将 <prefix><k>.ans 重命名为 a<k>.ans。
-    返回 (prefix, maxK)；若未匹配到文件，则返回 ("", -1)。
-    """
-    pattern_ans = re.compile(r'^([^\d]*)(\d+)\.ans$', re.IGNORECASE)
-    pattern_input = re.compile(r'^([^\d]*)(\d+)\.in$', re.IGNORECASE)
-    foundPrefix, maxK = "", -1
+    try:
+        all_files = os.listdir(folderPath)
+    except FileNotFoundError:
+        print(f"❌ 错误: 文件夹 '{folderPath}' 不存在。")
+        return 0
 
-    for fileName in os.listdir(folderPath):
-        if (m := pattern_ans.match(fileName)):
-            prefix, kStr = m.groups()
-            k = int(kStr)
-            foundPrefix, maxK = prefix, max(maxK, k)
+    # 1. 使用集合操作快速找到成对文件的基本名
+    in_files = {f[:-3] for f in all_files if f.endswith('.in')}
+    ans_files = {f[:-4] for f in all_files if f.endswith('.ans')}
+    
+    # 2. 获取交集并排序
+    paired_basenames = sorted(list(in_files.intersection(ans_files)))
 
-            oldPath = os.path.join(folderPath, fileName)
-            newPath = os.path.join(folderPath, f"a{k}.ans")
-            if not os.path.exists(newPath):
-                os.rename(oldPath, newPath)
-            #else:
-            #    raise FileExistsError(f"{newPath} 已存在，避免覆盖")
-            
+    if not paired_basenames:
+        print("⚠️ 未找到匹配的文件对。")
+        return 0
+    
+    # 3. 遍历排序后的列表并重命名
+    for i, basename in enumerate(paired_basenames, 1):
+        new_in_path = os.path.join(folderPath, f"a{i}.in")
+        new_ans_path = os.path.join(folderPath, f"a{i}.ans")
 
-            print(f"{fileName} → a{k}.ans")
+        # 安全检查，防止覆盖现有文件
+        if not (os.path.exists(new_in_path) or os.path.exists(new_ans_path)):
+            os.rename(os.path.join(folderPath, f"{basename}.in"), new_in_path)
+            os.rename(os.path.join(folderPath, f"{basename}.ans"), new_ans_path)
+            print(f"{basename}.in/.ans → a{i}.in/.ans")
 
-        elif (m := pattern_input.match(fileName)):
-            prefix, kStr = m.groups()
-            k = int(kStr)
-            foundPrefix, maxK = prefix, max(maxK, k)
-
-            oldPath = os.path.join(folderPath, fileName)
-            newPath = os.path.join(folderPath, f"a{k}.in")
-            if not os.path.exists(newPath):
-                os.rename(oldPath, newPath)
-
-            print(f"{fileName} → a{k}.in")
-
-    if maxK == -1:
-        print("⚠️  未找到匹配文件")
-    return foundPrefix, maxK
+    return len(paired_basenames)
 
 def generate_problem_conf(folder_path: str, n_tests: int):
     content = f"""n_tests {n_tests}
@@ -58,6 +48,7 @@ output_suf ans
 time_limit 2
 memory_limit 512
 output_limit 64
+checker_time_limit 2
 use_builtin_judger on
 """
     conf_path = os.path.join(folder_path, "problem.conf")
@@ -71,5 +62,6 @@ if __name__ == "__main__":
         print(f"用法: {sys.argv[0]} <目标目录>")
         sys.exit(1)
 
-    prefix, maxK = renamePrefixToA(sys.argv[1])
-    print(f"原前缀: “{prefix}”  最大 k: {maxK}")
+    maxK = renamePrefixToA(sys.argv[1])
+    print(f"最大 k: {maxK}")
+    generate_problem_conf(sys.argv[1], maxK)

@@ -29,7 +29,7 @@ services:
       - SYS_PTRACE
     volumes:
       - ./uoj_data/judger/log:/opt/uoj_judger/log
-      - ./judger/uoj_judger/include:/opt/uoj_judger/include
+      #- ./judger/uoj_judger/include:/opt/uoj_judger/include
     environment:
       - UOJ_PROTOCOL=http
       - UOJ_HOST=uoj-web

@@ -1,11 +1,12 @@
 import json
 import pymysql
 import zipfile
-import os
+import os, re
 import random
 import string
 import sys
 from pathlib import Path
+import argparse
 
 from database_interface import UOJDatabaseInterface, sync_problem
 from compile_checker import compile_checker
@@ -72,7 +73,7 @@ def setup_problems(base_folder, db_interface, uoj_problem_base):
         
         # 2. 重命名测试数据并生成problem.conf
         try:
-            prefix, max_k = renamePrefixToA(str(folder))
+            max_k = renamePrefixToA(str(folder))
             if max_k > 0:
                 generate_problem_conf(str(folder), max_k)
                 print(f"✓ 生成problem.conf，共 {max_k} 组数据")
@@ -95,6 +96,13 @@ def setup_problems(base_folder, db_interface, uoj_problem_base):
     
     print(f"\n✅ 题目配置完成，映射表已保存至: {mapping_file}")
     return problem_mapping
+
+def code_process(code):
+    lang = 'C++17' if '#include' in code else 'Python3'
+    if lang == 'C++17':
+        code = code.replace('std::endl', "'\\n'")
+        code = code.replace('endl', "'\\n'")
+    return code, lang
 
 def submit_all_solutions(base_folder, submission_base_folder, db_interface, storage_path):
     """
@@ -166,12 +174,13 @@ def submit_all_solutions(base_folder, submission_base_folder, db_interface, stor
                 print(f"  ❌ 无法读取 {cpp_file.name}: {e}")
                 continue
             
+            _code, _lang = code_process(code)
             # 提交代码
             submission_id = db_interface.submit_code(
                 problem_id=problem_id,
-                username='admin',  # 可以根据需要修改
-                code=code,
-                language='C++17',  # 可以根据需要修改
+                username='admin',
+                code=_code,
+                language=_lang,
                 storage_path=storage_path
             )
             
@@ -184,7 +193,7 @@ def submit_all_solutions(base_folder, submission_base_folder, db_interface, stor
     
     # 保存提交映射表到提交文件夹中
     with open(submission_mapping_file, 'w', encoding='utf-8') as f:
-        json.dump(submission_mapping, f, indent=2, ensure_ascii=False)
+        json.dump(submission_mapping, f, indent=2, ensure_ascii=False, sort_keys=True)
     
     print(f"\n✅ 提交完成，共提交 {total_submissions} 份代码")
     print(f"提交映射表已保存至: {submission_mapping_file}")
@@ -205,6 +214,7 @@ def fetch_all_results(submission_base_folder, db_interface):
     submission_base_path = Path(submission_base_folder).expanduser().resolve()
     submission_mapping_file = submission_base_path / "submission_mapping.json"
     results_file = submission_base_path / "submission_results.json"
+    short_results_file = submission_base_path / "submission_short_results.json"
     
     # 读取提交映射表
     print(submission_mapping_file)
@@ -233,13 +243,23 @@ def fetch_all_results(submission_base_folder, db_interface):
         
     #json.dump(results, open(results_file, 'w', encoding='utf-8'), indent=2, ensure_ascii=False)
     formal_results = {}
+    short_results = {}
     for key in submission_mapping.keys():
         if submission_mapping[key] in results:
             formal_results[key] = results[submission_mapping[key]]
+            res = results[submission_mapping[key]]
+            details = res.get("details", "")
+            matches = re.findall(r'info="([^"]+)"', details)
+            info = matches[-1] if matches else "N/A"
+            res_s = {"score": res.get("score", 0), "info": info, "submission_id": submission_mapping[key]}
+            if "error" in res:
+                res_s["info"] = res["error"]
+            short_results[key] = res_s
         else:
             print(f"⚠️  提交 {key} 的结果未找到")
 
     json.dump(formal_results, open(results_file, 'w', encoding='utf-8'), indent=2, ensure_ascii=False)
+    json.dump(short_results, open(short_results_file, 'w', encoding='utf-8'), indent=2, ensure_ascii=False, sort_keys=True)
     print(f"\n✅ 结果已保存至: {results_file}")
     return results
 
@@ -256,27 +276,36 @@ if __name__ == "__main__":
     }
     
     # 路径配置
-    base_folder = "~/problem_datas/"  # 包含所有题目文件夹的目录
-    submission_folder = "~/submissions/"   # 每个题目文件夹内的提交文件夹名
+    base_folder = "~/judge2/problems/"  # 包含所有题目文件夹的目录
+    submission_folder = "~/judge2/submissions/"   # 每个题目文件夹内的提交文件夹名
     uoj_problem_base = "~/UOJ-System/uoj_data/web/data"
     storage_path = "~/UOJ-System/uoj_data/web/storage/"
-    
+
+    parser = argparse.ArgumentParser(description="UOJ Judger Controller")
+    parser.add_argument("command", choices=["setup", "submit", "fetch"], help="要执行的命令")
+    parser.add_argument("--base", default=base_folder, help="题目文件夹目录")
+    parser.add_argument("--submission", default=submission_folder, help="提交文件夹目录")
+
+    args = parser.parse_args()
+    base_folder = Path(args.base).expanduser().resolve()
+    submission_folder = Path(args.submission).expanduser().resolve()
+
     # 创建数据库接口
     db = UOJDatabaseInterface(db_config, storage_path)
-    
+
     # 1. 配置题目
     # python main.py setup
-    if len(sys.argv) > 1 and sys.argv[1] == "setup":
+    if args.command == "setup":
         setup_problems(base_folder, db, uoj_problem_base)
     
     # 2. 提交评测
     # python main.py submit
-    elif len(sys.argv) > 1 and sys.argv[1] == "submit":
+    elif args.command == "submit":
         submit_all_solutions(base_folder, submission_folder, db, storage_path)
     
     # 3. 获取结果
     # python main.py fetch
-    elif len(sys.argv) > 1 and sys.argv[1] == "fetch":
+    elif args.command == "fetch":
         fetch_all_results(submission_folder, db)
     
     else:

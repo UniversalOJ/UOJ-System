@@ -1,5 +1,3 @@
-
-
 /*
  * It is strictly recommended to include "testlib.h" before any other include
  * in your code. In this case testlib overrides compiler specific "random()".
@@ -315,7 +313,8 @@ const char *latestFeatures[] = {
 #   define NORETURN
 #endif
 
-static char __testlib_format_buffer[16777216];
+//static char __testlib_format_buffer[16777216];
+static char __testlib_format_buffer[4096];
 static int __testlib_format_buffer_usage_count = 0;
 
 #define FMT_TO_RESULT(fmt, cstr, result)  std::string result;                              \

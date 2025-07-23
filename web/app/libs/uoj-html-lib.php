@@ -458,6 +458,7 @@ HTML;
 			break;
 		case 'Python2':
 		case 'Python3':
+		case 'PyPy3':
 			$sh_class = 'sh_python';
 			break;
 		case 'Java8':
@@ -513,6 +514,7 @@ function echoSubmissionContent($submission, $requirement) {
 					break;
 				case 'Python2':
 				case 'Python3':
+				case 'PyPy3':
 					$sh_class = 'sh_python';
 					break;
 				case 'Java8':

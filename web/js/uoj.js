@@ -609,6 +609,8 @@ function get_codemirror_mode(lang) {
 		case 'Python2':
 		case 'Python3':
 			return 'text/x-python';
+		case 'PyPy3':
+			return 'text/x-python';
 		case 'Java8':
 		case 'Java11':
 			return 'text/x-java';

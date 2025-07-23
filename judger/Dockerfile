@@ -12,7 +12,7 @@ ARG CLONE_ADDFLAG
 RUN apt-get update && \
     apt-get install -y --no-install-recommends gnupg ca-certificates apt-transport-https && \
     apt-get update && \
-    for pkg in git vim ntp zip unzip curl wget build-essential fp-compiler python python3 python3-requests openjdk-8-jdk openjdk-11-jdk tzdata; do \
+    for pkg in git vim ntp zip unzip curl wget build-essential fp-compiler python python3 python3-requests pypy3 openjdk-8-jdk openjdk-11-jdk tzdata; do \
         cnt=10 && \
         while ! apt-get install -y "$pkg"; do \
             if [ $cnt -le 0 ]; then \
@@ -22,6 +22,9 @@ RUN apt-get update && \
             cnt=$((cnt - 1)); \
         done; \
     done
+
+ENV PYTHONNOUSERSITE=1
+ENV PYTHONDONTWRITEBYTECODE=1
 
 ADD . /opt/uoj_judger
 WORKDIR /opt/uoj_judger

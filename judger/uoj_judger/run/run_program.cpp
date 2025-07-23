@@ -248,6 +248,9 @@ void parse_args(int argc, char **argv) {
 	} else if (run_program_config.type == "java11") {
 		string pre[3] = {"/usr/lib/jvm/java-11-openjdk-amd64/bin/java", "-Xmx1024m", "-Xss1024m"};
 		run_program_config.argv.insert(run_program_config.argv.begin(), pre, pre + 3);
+	} else if (run_program_config.type == "pypy3") {
+		string pre[3] = {"/usr/bin/pypy3", "-B", "-S"};
+		run_program_config.argv.insert(run_program_config.argv.begin(), pre, pre + 3);
 	}
 }
 

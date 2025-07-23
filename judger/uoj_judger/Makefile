@@ -38,7 +38,7 @@ checker: $(EXE_CHECKER)
 run/run_program: include/uoj_env.h run/run_program_conf.h
 run/formatter  : include/testlib.h
 run/run_interaction: run/run_interaction.cpp include/uoj_env.h
-	$(CXX) $(CXXFLAGS) --std=c++17 -pthread $< -o $@
+	$(CXX) $(CXXFLAGS) --std=c++17 -O2 -pthread $< -o $@
 
 builtin/judger/judger: include
 main_judger: include
