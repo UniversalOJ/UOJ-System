@@ -61,6 +61,9 @@ def setup_problems(base_folder, db_interface, uoj_problem_base):
                 else:
                     print(f"❌ 无法为文件夹 '{folder_name}' 创建题目")
                     continue
+            
+            print(f"✅ 题目已经配置完毕: {problem_id}")
+            continue
         
         print(f"\n处理题目: {folder_name} (ID: {problem_id})")
         

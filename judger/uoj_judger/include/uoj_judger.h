@@ -1182,9 +1182,27 @@ RunCompilerResult compile_python3(const string &name, const string &path = work_
 	return run_compiler(path.c_str(),
 			"/usr/bin/python3", "-I", "-B", "-O", "-c", ("import py_compile\nimport sys\ntry:\n    py_compile.compile('" + name + ".code'" + ", '" + name + "', doraise=True)\n    sys.exit(0)\nexcept Exception as e:\n    print(e)\n    sys.exit(1)").c_str(), NULL);
 }
+// RunCompilerResult compile_pypy3(const string &name, const string &path = work_path) {
+// 	return run_compiler(path.c_str(),
+// 			"/usr/bin/pypy3", "-B", "-O", "-S", "-c", ("import py_compile\nimport sys\ntry:\n    py_compile.compile('" + name + ".code'" + ", '" + name + "', doraise=True)\n    sys.exit(0)\nexcept Exception as e:\n    print(e)\n    sys.exit(1)").c_str(), NULL);
+// }
+
 RunCompilerResult compile_pypy3(const string &name, const string &path = work_path) {
-	return run_compiler(path.c_str(),
-			"/usr/bin/pypy3", "-B", "-O", "-S", "-c", ("import py_compile\nimport sys\ntry:\n    py_compile.compile('" + name + ".code'" + ", '" + name + "', doraise=True)\n    sys.exit(0)\nexcept Exception as e:\n    print(e)\n    sys.exit(1)").c_str(), NULL);
+	return run_compiler(
+		path.c_str(),
+		"/usr/bin/pypy3", "-B", "-O", "-S", "-c",
+		(
+			"import py_compile, shutil, sys\n"
+			"try:\n"
+			"    py_compile.compile('" + name + ".code', doraise=True)\n"
+			"    shutil.copyfile('" + name + ".code', '" + name + "')\n"
+			"    sys.exit(0)\n"
+			"except Exception as e:\n"
+			"    print(e)\n"
+			"    sys.exit(1)"
+		).c_str(),
+		NULL
+	);
 }
 
 RunCompilerResult compile_java8(const string &name, const string &path = work_path) {

@@ -34,6 +34,7 @@ def compile_checker(host_src: str, container: str = "uoj-judger") -> None:
         f"-I{tmp_dir}",            # 本地 include（如果 chk.cpp 里有 #include "xxx.h"）
         "--std=c++17", "-lm",
         "-DONLINE_JUDGE",
+        "-w",
         "-o", f"{tmp_dir}/chk",
         remote_cpp,
     ]
