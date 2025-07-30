@@ -101,7 +101,7 @@ def setup_problems(base_folder, db_interface, uoj_problem_base):
     return problem_mapping
 
 def code_process(code):
-    lang = 'C++17' if '#include' in code else 'Python3'
+    lang = 'C++17' if '#include' in code else 'PyPy3'#'Python3'
     if lang == 'C++17':
         code = code.replace('std::endl', "'\\n'")
         code = code.replace('endl', "'\\n'")
@@ -202,6 +202,123 @@ def submit_all_solutions(base_folder, submission_base_folder, db_interface, stor
     print(f"提交映射表已保存至: {submission_mapping_file}")
     return submission_mapping
 
+def resubmit_problems(base_folder, submission_base_folder, db_interface, storage_path, problem_names):
+    """
+    重新提交指定题目的所有解答
+    
+    Args:
+        base_folder: 包含problem_mapping.json的基础目录（题目配置目录）
+        submission_base_folder: 独立的提交文件夹，包含与题目同名的子文件夹
+        db_interface: UOJDatabaseInterface实例
+        storage_path: UOJ提交存储路径
+        problem_names: 要重新提交的题目名称列表
+    
+    Returns:
+        submission_mapping: 更新后的提交映射表
+    """
+    base_path = Path(base_folder).expanduser().resolve()
+    submission_base_path = Path(submission_base_folder).expanduser().resolve()
+    
+    mapping_file = base_path / "problem_mapping.json"
+    submission_mapping_file = submission_base_path / "submission_mapping.json"
+    
+    # 读取题号映射表
+    if not mapping_file.exists():
+        print("❌ 题号映射表不存在，请先运行 setup_problems")
+        return {}
+    
+    with open(mapping_file, 'r', encoding='utf-8') as f:
+        problem_mapping = json.load(f)
+    
+    # 读取提交映射表
+    if submission_mapping_file.exists():
+        with open(submission_mapping_file, 'r', encoding='utf-8') as f:
+            submission_mapping = json.load(f)
+    else:
+        submission_mapping = {}
+    
+    total_submissions = 0
+    total_resubmissions = 0
+    
+    # 检查指定的题目是否存在
+    invalid_problems = [name for name in problem_names if name not in problem_mapping]
+    if invalid_problems:
+        print(f"⚠️  以下题目不存在于题号映射表中: {', '.join(invalid_problems)}")
+        valid_problems = [name for name in problem_names if name in problem_mapping]
+        if not valid_problems:
+            print("❌ 没有有效的题目可以重新提交")
+            return submission_mapping
+        problem_names = valid_problems
+    
+    print(f"开始重新提交 {len(problem_names)} 个题目: {', '.join(problem_names)}")
+    
+    # 只处理指定的题目
+    for folder_name in problem_names:
+        problem_id = problem_mapping[folder_name]
+        
+        # 在提交文件夹中查找对应的题目文件夹
+        submission_folder = submission_base_path / folder_name
+        
+        if not submission_folder.exists():
+            print(f"⚠️  提交文件夹中没有题目 {folder_name} 的文件夹")
+            continue
+        
+        # 查找所有cpp文件
+        cpp_files = list(submission_folder.glob("*.cpp"))
+        if not cpp_files:
+            print(f"⚠️  题目 {folder_name} 文件夹中没有cpp文件")
+            continue
+        
+        print(f"\n重新提交题目 {folder_name} (ID: {problem_id}) 的 {len(cpp_files)} 个提交")
+        
+        for cpp_file in cpp_files:
+            # 使用相对于submission_base_path的路径作为key
+            file_key = str(cpp_file.relative_to(submission_base_path))
+            
+            # 读取代码
+            try:
+                with open(cpp_file, 'r', encoding='utf-8') as f:
+                    code = f.read()
+            except Exception as e:
+                print(f"  ❌ 无法读取 {cpp_file.name}: {e}")
+                continue
+            
+            _code, _lang = code_process(code)
+            
+            # 提交代码（无论是否已经提交过都重新提交）
+            submission_id = db_interface.submit_code(
+                problem_id=problem_id,
+                username='admin',
+                code=_code,
+                language=_lang,
+                storage_path=storage_path
+            )
+            
+            if submission_id:
+                # 检查是否是重新提交
+                if file_key in submission_mapping:
+                    old_id = submission_mapping[file_key]
+                    print(f"  🔄 {cpp_file.name} 重新提交成功，新ID: {submission_id} (旧ID: {old_id})")
+                    total_resubmissions += 1
+                else:
+                    print(f"  ✓ {cpp_file.name} 首次提交成功，ID: {submission_id}")
+                
+                submission_mapping[file_key] = submission_id
+                total_submissions += 1
+            else:
+                print(f"  ❌ {cpp_file.name} 提交失败")
+    
+    # 保存更新后的提交映射表
+    with open(submission_mapping_file, 'w', encoding='utf-8') as f:
+        json.dump(submission_mapping, f, indent=2, ensure_ascii=False, sort_keys=True)
+    
+    print(f"\n✅ 重新提交完成")
+    print(f"  - 总提交数: {total_submissions}")
+    print(f"  - 重新提交数: {total_resubmissions}")
+    print(f"  - 首次提交数: {total_submissions - total_resubmissions}")
+    print(f"提交映射表已保存至: {submission_mapping_file}")
+    return submission_mapping
+
 
 def fetch_all_results(submission_base_folder, db_interface):
     """
@@ -285,9 +402,10 @@ if __name__ == "__main__":
     storage_path = "~/UOJ-System/uoj_data/web/storage/"
 
     parser = argparse.ArgumentParser(description="UOJ Judger Controller")
-    parser.add_argument("command", choices=["setup", "submit", "fetch"], help="要执行的命令")
+    parser.add_argument("command", choices=["setup", "submit", "fetch", "resubmit"], help="要执行的命令")
     parser.add_argument("--base", default=base_folder, help="题目文件夹目录")
     parser.add_argument("--submission", default=submission_folder, help="提交文件夹目录")
+    parser.add_argument("--problems", nargs='+', help="要重新提交的题目名称列表")
 
     args = parser.parse_args()
     base_folder = Path(args.base).expanduser().resolve()
@@ -310,11 +428,20 @@ if __name__ == "__main__":
     # python main.py fetch
     elif args.command == "fetch":
         fetch_all_results(submission_folder, db)
+
+    elif args.command == "resubmit":
+        if not args.problems:
+            print("❌ 请使用 --problems 参数指定要重新提交的题目")
+            print("示例: python main.py resubmit --problems problem1 problem2")
+            print("使用 'python main.py list' 查看所有可用题目")
+        else:
+            resubmit_problems(base_folder, submission_folder, db, storage_path, args.problems)
     
     else:
         print("用法:")
         print("  python main.py setup   - 配置题目")
         print("  python main.py submit  - 提交评测")
         print("  python main.py fetch   - 获取结果")
+        print("  python main.py resubmit --problems prob1 prob2 prob3    - 重新提交指定题目")
     
     db.close()
