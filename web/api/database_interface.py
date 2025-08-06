@@ -91,7 +91,7 @@ class UOJDatabaseInterface:
 
         try:
             # 确保 zip 文件所在的目录存在
-            zip_file_full_path.parent.mkdir(parents=True, exist_ok=True)
+            zip_file_full_path.parent.mkdir(mode=0o777, parents=True, exist_ok=True)
             with zipfile.ZipFile(zip_file_full_path, 'w', zipfile.ZIP_DEFLATED) as zf:
                 zf.writestr(internal_filename, code.encode('utf-8'))
         except Exception as e:

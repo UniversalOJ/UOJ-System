@@ -73,6 +73,8 @@ Route::group([
 
 		// Custom routes
 		Route::post('/batchsetup', '/batchsetup.php');
+		Route::post('/adminsubmit', '/adminsubmit.php');
+		Route::get('/getresult', '/getresult.php');
 	}
 );
 
