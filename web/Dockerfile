@@ -27,6 +27,9 @@ service ntp start\n\
 service apache2 start\n\
 exec bash\n" >/opt/up && chmod +x /opt/up
 
+RUN apt-get install -y python3 python3-pip
+RUN pip3 install pymysql
+
 ENV LANG=C.UTF-8 TZ=Asia/Shanghai
 EXPOSE 80
 CMD /opt/up
