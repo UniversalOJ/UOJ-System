@@ -15,6 +15,17 @@ def compile_checker(src_dir: str) -> None:
     """
     chk_cpp = os.path.join(src_dir, "chk.cpp")
     checker_cpp = os.path.join(src_dir, "checker.cpp")
+    chk_exec = os.path.join(src_dir, "chk")
+    checker_exec = os.path.join(src_dir, "checker")
+
+    if os.path.isfile(chk_exec) and os.access(chk_exec, os.X_OK):
+        print(f"✅ 检查器已存在且可执行: {chk_exec}", file=sys.stderr, flush=True)
+        return
+    
+    if os.path.isfile(checker_exec) and os.access(checker_exec, os.X_OK):
+        os.rename(checker_exec, chk_exec)
+        print("✅ 已将 checker 可执行文件重命名为 chk", file=sys.stderr, flush=True)
+        return
 
     # 如果 chk.cpp 不存在，则尝试从 checker.cpp 复制
     if not os.path.isfile(chk_cpp):
