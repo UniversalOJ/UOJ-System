@@ -1,5 +1,6 @@
 .idea
 uoj_data/
+confs/
 .php-cs-fixer.cache
 .config.local.php
 *.pcap
