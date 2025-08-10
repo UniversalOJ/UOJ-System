@@ -59,7 +59,7 @@ class UOJDatabaseInterface:
         submission_dir = Path("submission") / str(num)
         
         full_submission_path = storage_path / submission_dir
-        full_submission_path.mkdir(parents=True, exist_ok=True)
+        full_submission_path.mkdir(parents=True, exist_ok=True, mode=0o777)
         
         # 返回一个 pathlib.Path 对象, 例如: "submission/1234/randomstring..."
         return UOJDatabaseInterface._uoj_rand_avaiable_file_name(submission_dir, storage_path)
@@ -91,7 +91,7 @@ class UOJDatabaseInterface:
 
         try:
             # 确保 zip 文件所在的目录存在
-            zip_file_full_path.parent.mkdir(parents=True, exist_ok=True)
+            zip_file_full_path.parent.mkdir(parents=True, exist_ok=True, mode=0o777)
             with zipfile.ZipFile(zip_file_full_path, 'w', zipfile.ZIP_DEFLATED) as zf:
                 zf.writestr(internal_filename, code.encode('utf-8'))
         except Exception as e:

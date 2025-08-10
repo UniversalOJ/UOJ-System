@@ -17,7 +17,7 @@ services:
       - MYSQL_ROOT_PASSWORD=root
   
   uoj-judger:
-    image: ghcr.io/universaloj/uoj-judger:latest
+    image: yanagiorigami/uoj-judger:latest
     build:
       context: ./judger/
       dockerfile: Dockerfile
@@ -39,7 +39,7 @@ services:
       - SOCKET_PASSWORD=_judger_socket_password_
 
   uoj-web:
-    image: ghcr.io/universaloj/uoj-web:latest
+    image: yanagiorigami/uoj-web:latest
     build:
       context: ./
       dockerfile: web/Dockerfile

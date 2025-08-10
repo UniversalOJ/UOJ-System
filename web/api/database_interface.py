@@ -59,7 +59,7 @@ class UOJDatabaseInterface:
         submission_dir = Path("submission") / str(num)
         
         full_submission_path = storage_path / submission_dir
-        full_submission_path.mkdir(parents=True, exist_ok=True)
+        full_submission_path.mkdir(parents=True, exist_ok=True, mode=0o777)
         
         # 返回一个 pathlib.Path 对象, 例如: "submission/1234/randomstring..."
         return UOJDatabaseInterface._uoj_rand_avaiable_file_name(submission_dir, storage_path)
