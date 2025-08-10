@@ -2,7 +2,7 @@
 set -euo pipefail
 
 # === 可配置 ===
-IMAGE="ghcr.io/universaloj/uoj-judger:latest"
+IMAGE="yanagiorigami/uoj-judger:latest"
 NETWORK="uoj-system_default"
 UOJ_HOST_NAME="uoj-web"            # 与 UOJ 主容器在同一网络下的容器名；用名字避免写死 IP
 MYSQL_CONT="uoj-db"            # MySQL 容器名
