@@ -597,6 +597,8 @@ struct RunProgramConfig {
 			type = "python2";
 		} else if (lang == "Python3") {
 			type = "python3";
+		} else if (lang == "PyPy3") {
+			type = "pypy3";
 		} else if (lang == "Java8") {
 			program_name += "." + conf_str(name + "_main_class");
 			type = "java8";
@@ -1155,6 +1157,22 @@ RunCompilerResult compile_cpp11(const string &name, const string &path = work_pa
 	return run_compiler(path.c_str(),
 			"/usr/bin/g++", "-o", name.c_str(), "-x", "c++", (name + ".code").c_str(), "-lm", "-O2", "-DONLINE_JUDGE", "-std=c++11", NULL);
 }
+RunCompilerResult compile_cpp14(const string &name, const string &path = work_path) {
+	return run_compiler(path.c_str(),
+			"/usr/bin/g++", "-o", name.c_str(), "-x", "c++", (name + ".code").c_str(), "-lm", "-O2", "-DONLINE_JUDGE", "-std=c++14", NULL);
+}
+RunCompilerResult compile_cpp17(const string &name, const string &path = work_path) {
+	return run_compiler(path.c_str(),
+			"/usr/bin/g++", "-o", name.c_str(), "-x", "c++", (name + ".code").c_str(), "-lm", "-O2", "-DONLINE_JUDGE", "-std=c++17", NULL);
+}
+RunCompilerResult compile_cpp20(const string &name, const string &path = work_path) {
+	return run_compiler(path.c_str(),
+			"/usr/bin/g++", "-o", name.c_str(), "-x", "c++", (name + ".code").c_str(), "-lm", "-O2", "-DONLINE_JUDGE", "-std=c++20", NULL);
+}
+RunCompilerResult compile_cpp23(const string &name, const string &path = work_path) {
+	return run_compiler(path.c_str(),
+			"/usr/bin/g++", "-o", name.c_str(), "-x", "c++", (name + ".code").c_str(), "-lm", "-O2", "-DONLINE_JUDGE", "-std=c++23", NULL);
+}
 RunCompilerResult compile_python2(const string &name, const string &path = work_path) {
 	return run_compiler(path.c_str(),
 			"/usr/bin/python2", "-E", "-s", "-B", "-O", "-c",
@@ -1164,6 +1182,29 @@ RunCompilerResult compile_python3(const string &name, const string &path = work_
 	return run_compiler(path.c_str(),
 			"/usr/bin/python3", "-I", "-B", "-O", "-c", ("import py_compile\nimport sys\ntry:\n    py_compile.compile('" + name + ".code'" + ", '" + name + "', doraise=True)\n    sys.exit(0)\nexcept Exception as e:\n    print(e)\n    sys.exit(1)").c_str(), NULL);
 }
+// RunCompilerResult compile_pypy3(const string &name, const string &path = work_path) {
+// 	return run_compiler(path.c_str(),
+// 			"/usr/bin/pypy3", "-B", "-O", "-S", "-c", ("import py_compile\nimport sys\ntry:\n    py_compile.compile('" + name + ".code'" + ", '" + name + "', doraise=True)\n    sys.exit(0)\nexcept Exception as e:\n    print(e)\n    sys.exit(1)").c_str(), NULL);
+// }
+
+RunCompilerResult compile_pypy3(const string &name, const string &path = work_path) {
+	return run_compiler(
+		path.c_str(),
+		"/usr/bin/pypy3", "-B", "-O", "-S", "-c",
+		(
+			"import py_compile, shutil, sys\n"
+			"try:\n"
+			"    py_compile.compile('" + name + ".code', doraise=True)\n"
+			"    shutil.copyfile('" + name + ".code', '" + name + "')\n"
+			"    sys.exit(0)\n"
+			"except Exception as e:\n"
+			"    print(e)\n"
+			"    sys.exit(1)"
+		).c_str(),
+		NULL
+	);
+}
+
 RunCompilerResult compile_java8(const string &name, const string &path = work_path) {
 	RunCompilerResult ret = prepare_java_source(name, path);
 	if (!ret.succeeded)
@@ -1194,7 +1235,7 @@ RunCompilerResult compile_java11(const string &name, const string &path = work_p
 RunCompilerResult compile(const char *name)  {
 	string lang = conf_str(string(name) + "_language");
 
-	if ((lang == "C++" || lang == "C++11" || lang == "C") && has_illegal_keywords_in_file(work_path + "/" + name + ".code"))
+	if ((lang == "C++" || lang == "C++11" || lang == "C" || lang == "C++14" || lang == "C++17" || lang == "C++20") && has_illegal_keywords_in_file(work_path + "/" + name + ".code"))
 	{
 		RunCompilerResult res;
 		res.type = RS_DGS;
@@ -1211,11 +1252,26 @@ RunCompilerResult compile(const char *name)  {
 	if (lang == "C++11") {
 		return compile_cpp11(name);
 	}
+	if (lang == "C++14") {
+		return compile_cpp14(name);
+	}
+	if (lang == "C++17") {
+		return compile_cpp17(name);
+	}
+	if (lang == "C++20") {
+		return compile_cpp20(name);
+	}
+	if (lang == "C++23") {
+		return compile_cpp23(name);
+	}
 	if (lang == "Python2") {
 		return compile_python2(name);
 	}
 	if (lang == "Python3") {
 		return compile_python3(name);
+	}
+	if (lang == "PyPy3") {
+		return compile_pypy3(name);
 	}
 	if (lang == "Java8") {
 		return compile_java8(name);
@@ -1231,7 +1287,7 @@ RunCompilerResult compile(const char *name)  {
 	}
 
 	RunCompilerResult res = RunCompilerResult::failed_result();
-	res.info = "This language is not supported yet.";
+	res.info = "This language \"" + lang + "\" is not supported yet.";
 	return res;
 }
 
@@ -1251,6 +1307,22 @@ RunCompilerResult compile_cpp_with_implementer(const string &name, const string 
 RunCompilerResult compile_cpp11_with_implementer(const string &name, const string &path = work_path) {
 	return run_compiler(path.c_str(),
 			"/usr/bin/g++", "-o", name.c_str(), "implementer.cpp", "-x", "c++", (name + ".code").c_str(), "-lm", "-O2", "-DONLINE_JUDGE", "-std=c++11", NULL);
+}
+RunCompilerResult compile_cpp14_with_implementer(const string &name, const string &path = work_path) {
+	return run_compiler(path.c_str(),
+			"/usr/bin/g++", "-o", name.c_str(), "implementer.cpp", "-x", "c++", (name + ".code").c_str(), "-lm", "-O2", "-DONLINE_JUDGE", "-std=c++14", NULL);
+}
+RunCompilerResult compile_cpp17_with_implementer(const string &name, const string &path = work_path) {
+	return run_compiler(path.c_str(),
+			"/usr/bin/g++", "-o", name.c_str(), "implementer.cpp", "-x", "c++", (name + ".code").c_str(), "-lm", "-O2", "-DONLINE_JUDGE", "-std=c++17", NULL);
+}
+RunCompilerResult compile_cpp20_with_implementer(const string &name, const string &path = work_path) {
+	return run_compiler(path.c_str(),
+			"/usr/bin/g++", "-o", name.c_str(), "implementer.cpp", "-x", "c++", (name + ".code").c_str(), "-lm", "-O2", "-DONLINE_JUDGE", "-std=c++20", NULL);
+}
+RunCompilerResult compile_cpp23_with_implementer(const string &name, const string &path = work_path) {
+	return run_compiler(path.c_str(),
+			"/usr/bin/g++", "-o", name.c_str(), "implementer.cpp", "-x", "c++", (name + ".code").c_str(), "-lm", "-O2", "-DONLINE_JUDGE", "-std=c++23", NULL);
 }
 /*
 RunCompilerResult compile_python2(const string &name, const string &path = work_path) {
@@ -1283,6 +1355,18 @@ RunCompilerResult compile_with_implementer(const char *name)  {
 	if (lang == "C++11") {
 		return compile_cpp11_with_implementer(name);
 	}
+	if (lang == "C++14") {
+		return compile_cpp14_with_implementer(name);
+	}
+	if (lang == "C++17") {
+		return compile_cpp17_with_implementer(name);
+	}
+	if (lang == "C++20") {
+		return compile_cpp20_with_implementer(name);
+	}
+	if (lang == "C++23") {
+		return compile_cpp23_with_implementer(name);
+	}
 	if (lang == "C") {
 		return compile_c_with_implementer(name);
 	}
@@ -1291,7 +1375,7 @@ RunCompilerResult compile_with_implementer(const char *name)  {
 	}
 
 	RunCompilerResult res = RunCompilerResult::failed_result();
-	res.info = "This language is not supported yet.";
+	res.info = "This language \"" + lang + "\" is not supported yet.";
 	return res;
 }
 

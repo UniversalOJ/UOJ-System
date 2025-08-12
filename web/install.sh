@@ -17,6 +17,9 @@ getAptPackage(){
     yes | pecl install yaml
     git clone https://github.com/phpv8/v8js.git --depth=1 -b 4c026f3fb291797c109adcabda6aeba6491fe44f /tmp/pear/download/v8js-master && cd /tmp/pear/download/v8js-master
     phpize && ./configure --with-php-config=/usr/bin/php-config --with-v8js=/opt/libv8-7.5 && make install && cd -
+    apt install -y python3 python3-pip
+    python3 -m pip install --upgrade pip
+    pip3 install pymysql
 }
 
 setLAMPConf(){

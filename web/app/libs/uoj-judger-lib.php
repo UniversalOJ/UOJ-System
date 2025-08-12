@@ -1,6 +1,6 @@
 <?php
 	global $uojSupportedLanguages, $uojMainJudgerWorkPath;
-	$uojSupportedLanguages = array('C', 'C++', 'C++11', 'Java8', 'Java11', 'Pascal', 'Python2', 'Python3');
+	$uojSupportedLanguages = array('C', 'C++', 'C++11', 'C++14', 'C++17', 'C++20', 'Java8', 'Java11', 'Pascal', 'Python2', 'Python3', 'PyPy3');
 	$uojMainJudgerWorkPath = "/opt/uoj/judger/uoj_judger";
 	
 	function authenticateJudger() {

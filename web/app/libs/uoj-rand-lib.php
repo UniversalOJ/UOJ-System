@@ -27,7 +27,8 @@ function uojRandAvaiableTmpFileName() {
 function uojRandAvaiableSubmissionFileName() {
 	$num = uojRand(1, 10000);
 	if (!file_exists(UOJContext::storagePath()."/submission/$num")) {
-		system("mkdir ".UOJContext::storagePath()."/submission/$num");
+		//system("mkdir ".UOJContext::storagePath()."/submission/$num");
+		system("mkdir -m 777 ".UOJContext::storagePath()."/submission/$num");
 	}
 	return uojRandAvaiableFileName("/submission/$num/");
 }

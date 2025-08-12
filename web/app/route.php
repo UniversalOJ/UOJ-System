@@ -70,6 +70,11 @@ Route::group([
 		Route::any('/pastes/{rand_str_id}', '/paste_view.php');
 
 		Route::any('/map_visualizer', '/map_visualizer.php');
+
+		// Custom routes
+		Route::post('/batchsetup', '/batchsetup.php');
+		Route::post('/adminsubmit', '/adminsubmit.php');
+		Route::get('/getresult', '/getresult.php');
 	}
 );
 
@@ -80,3 +85,6 @@ Route::post('/judge/download/submission/{id}/{rand_str_id}', '/judge/download.ph
 Route::post('/judge/download/tmp/{rand_str_id}', '/judge/download.php?type=tmp');
 Route::post('/judge/download/problem/{id}', '/judge/download.php?type=problem');
 Route::post('/judge/download/judger', '/judge/download.php?type=judger');
+
+//Here is the costumed functions. Dangerous, no auth required.
+

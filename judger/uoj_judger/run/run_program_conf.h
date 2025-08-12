@@ -16,6 +16,9 @@ typedef long int reg_val_t;
 #define REG_ARG3 esx
 #endif
 
+#pragma once
+#include <cstring>
+
 const size_t MaxPathLen = 200;
 
 set<string> writable_file_name_set;
@@ -398,7 +401,27 @@ void init_conf(const RunProgramConfig &config) {
 		# ifdef UOJ_JUDGER_BASESYSTEM_UBUNTU1804
 		statable_file_name_set.insert("/usr/lib/python38.zip");
 		# endif
-	} else if (config.type == "java8") {
+	} else if (config.type == "pypy3") {
+		memset(syscall_max_cnt, -1, sizeof(syscall_max_cnt));
+
+		readable_file_name_set.insert("/usr/bin/pypy3");
+		readable_file_name_set.insert("/usr/lib/pypy3/");
+
+		# ifdef UOJ_JUDGER_PYPY3_VERSION
+		readable_file_name_set.insert("/usr/bin/pypy3-" UOJ_JUDGER_PYPY3_VERSION);
+		readable_file_name_set.insert("/usr/lib/pypy3-" UOJ_JUDGER_PYPY3_VERSION "/");
+		readable_file_name_set.insert("/usr/bin/lib/pypy3-" UOJ_JUDGER_PYPY3_VERSION "/");
+		readable_file_name_set.insert("/usr/local/lib/pypy3-" UOJ_JUDGER_PYPY3_VERSION "/");
+		# endif
+		
+		statable_file_name_set.insert("/usr");
+		statable_file_name_set.insert("/usr/bin");
+		statable_file_name_set.insert("/usr/lib");
+
+		readable_file_name_set.insert("/");
+		statable_file_name_set.insert("/");
+
+	}else if (config.type == "java8") {
 		syscall_max_cnt[__NR_gettid         ] = -1;
 		syscall_max_cnt[__NR_set_tid_address] = 1;
 		syscall_max_cnt[__NR_set_robust_list] = 14;

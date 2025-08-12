@@ -601,11 +601,15 @@ function get_codemirror_mode(lang) {
 	switch (lang) {
 		case 'C++':
 		case 'C++11':
+		case 'C++14':
+		case 'C++17':
 			return 'text/x-c++src';
 		case 'C':
 			return 'text/x-csrc';
 		case 'Python2':
 		case 'Python3':
+			return 'text/x-python';
+		case 'PyPy3':
 			return 'text/x-python';
 		case 'Java8':
 		case 'Java11':

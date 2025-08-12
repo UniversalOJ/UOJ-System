@@ -3,7 +3,22 @@
 getAptPackage(){
     printf "\n\n==> Getting environment packages\n"
     export DEBIAN_FRONTEND=noninteractive
+    
+    apt-get update && apt-get install -y software-properties-common
+
+    # ✅ 添加新的 GCC 工具链源
+    add-apt-repository ppa:ubuntu-toolchain-r/test -y
+    apt-get update
+
+    # ✅ 安装 g++-13
+    apt-get install -y g++-13 gcc-13
+
+    # ✅ 设置 g++ 默认版本为 g++-13
+    update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-13 100
+    update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-13 100
+
     apt-get update && apt-get install -y vim ntp zip unzip curl wget build-essential fp-compiler python2.7 python3.8 python3-requests
+    apt-get install -y pypy3
 }
 
 setJudgeConf(){
@@ -26,6 +41,7 @@ cat >uoj_judger/include/uoj_work_path.h <<UOJEOF
 #define UOJ_JUDGER_BASESYSTEM_UBUNTU1804
 #define UOJ_JUDGER_PYTHON3_VERSION "3.8"
 #define UOJ_JUDGER_FPC_VERSION "3.0.4"
+#define UOJ_PYPY3_VERSION "3.6"
 UOJEOF
 cd uoj_judger && make -j$(($(nproc) + 1))
 EOD

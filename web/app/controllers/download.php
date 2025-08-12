@@ -26,6 +26,10 @@
 			$file_name = "/var/uoj_data/$id/download.zip";
 			$download_name = "problem_$id.zip";
 			break;
+		case 'data':
+			$file_name = "/var/uoj_data/$id.zip";
+			$download_name = "data_$id.zip";
+			break;
 		case 'testlib.h':
 			$file_name = "/opt/uoj/judger/uoj_judger/include/testlib.h";
 			$download_name = "testlib.h";
