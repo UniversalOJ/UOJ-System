@@ -165,11 +165,329 @@
 				$this->requirement = array();
 				$this->problem_extra_config = json_decode($this->problem['extra_config'], true);
 
-				mkdir($this->prepare_dir, 0755);
-				if (!is_file("{$this->upload_dir}/problem.conf")) {
-					throw new UOJFileNotFoundException("problem.conf");
+				$chk = 'ncmp';
+				$submit = 'off';
+				$samples = 1;
+				$sub_inconf = 0;
+				if(is_file("{$this->upload_dir}/problem.conf"))
+				{
+					$conf = getUOJConf("{$this->upload_dir}/problem.conf");
+					$chk = getUOJConfVal($conf, 'use_builtin_checker','ncmp');
+					$submit = getUOJConfVal($conf,'submit_answer','off');
+					$samples = getUOJConfVal($conf,'n_sample_tests',1);
+					$sub_inconf = getUOJConfVal($conf,'n_subtasks',0);
 				}
 
+				mkdir($this->prepare_dir, 0755);
+				$files = my_dir($this->upload_dir);
+				sort($files,SORT_NATURAL);
+				$n = count($files);
+				$in_files = array();
+				$out_files = array();
+				$sub_end = array();
+				$sub_dep = array();
+				$sub_dep_num = array();
+				$sub_scores = array();
+				$n_tests = 0;
+				$customized_checker = 0;
+				$customized_judger = 0;
+				$ans = 0;
+				$name_uoj_style = 0;
+				$ex_num = 0;
+				$traditional = 1;
+				$sub_task = 0;
+				for($num = 1; $num <= $n; $num++)
+				{
+					$cur = array_shift($files);
+					$name = basename($cur);
+					if(!strcmp($name,"Makefile"))
+					{
+						$traditional = 0;
+					}
+					$str = explode('.',$name);
+					$pre = $str[0];
+					$suf = $str[1];
+					if(!strcmp($suf,"in"))
+					{
+						array_push($in_files,$pre);
+					}
+					else if(!strcmp($suf,"out"))
+					{
+						array_push($out_files,$pre);	
+					}
+					else if(!strcmp($suf,"ans"))
+					{
+						$ans = 1;
+						array_push($out_files,$pre);
+					}
+					else if(!strcmp($suf,"txt"))
+					{
+						$name_uoj_style = 1;
+						$sub = substr($pre,0,4);
+						if(!strcmp($sub,"ex_i"))
+						{
+							$ex_num = $ex_num + 1;
+						}
+						else if(!strcmp($sub,"inpu"))
+						{
+							$n_tests = $n_tests + 1;
+						}
+					}
+					else if(!strcmp($suf,"cpp"))
+					{
+						if(!strcmp($pre,"chk"))
+						{
+							$customized_checker = 1;
+						}
+						else if(!strcmp($pre,"judger"))
+						{
+							$customized_judger = 1;
+						}
+					}
+
+					if(is_dir("{$this->upload_dir}/".$cur))
+					{
+						if(!strcmp($name,"require"))
+						{
+							$traditional = 0;
+						}
+						$sub = substr($name,0,7);
+						
+						if(!strcmp($sub,"subtask"))
+						{
+							$sub_task ++;
+							$sonfiles = my_dir("{$this->upload_dir}/".$name);
+							sort($sonfiles,SORT_NATURAL);
+							$sn = count($sonfiles);
+
+							$sin_files = array();
+							$sout_files = array();
+							$sn_tests = 0;
+							$score = 0;
+							$dependencies = 'none';
+							if(is_file("{$this->upload_dir}/problem.conf"))
+							{
+								$score = getUOJConfVal($conf,"subtask_score_".$sub_task,0);
+								$dependencies = getUOJConfVal($conf,"subtask_dependence_".$sub_task,"none");
+								$dep_arr=array();
+								$dep_num = 0;
+								if(!strcmp($dependencies,"many"))
+								{
+									for ($i = 1; $i <= $sub_task;$i ++)
+									{
+										$dependencies = getUOJConfVal($conf,"subtask_dependence_".$sub_task."_".$i,0);
+										if($dependencies > 0)
+										{
+											$dep_num ++;
+											array_push($dep_arr,$dependencies);
+										}
+									}
+									array_push($sub_dep,$dep_arr);
+								}
+								array_push($sub_dep_num,$dep_num);
+							}
+							array_push($sub_scores,$score);
+							for($i = 1;$i <= $sn;$i++)
+							{
+								$cur = array_shift($sonfiles);
+								$name1 = basename($cur);
+								$str = explode('.',$name1);
+								$pre = $str[0];
+								$suf = $str[1];
+								if(!strcmp($suf,"in"))
+								{
+									array_push($sin_files,$pre);
+								}
+								else if(!strcmp($suf,"out"))
+								{
+									array_push($sout_files,$pre);	
+								}
+								else if(!strcmp($suf,"ans"))
+								{
+									$ans = 1;
+									array_push($sout_files,$pre);
+								}
+							}
+							
+							$sn = count($sin_files);
+							for($i = 0; $i < $sn; $i++)
+							{
+								$in = array_shift($sin_files);
+								if(!in_array($in,$sout_files))
+								{
+									if(!$ans)
+									{
+										throw new UOJFileNotFoundException($in.".out");
+									}
+									else
+									{
+										throw new UOJFileNotFoundException($in.".ans");
+									}
+								}
+								$key = array_search($in,$sout_files);
+								unset($sout_files[$key]);
+								$n_tests =$n_tests + 1;
+								copy("{$this->upload_dir}/".$name."/".$in.".in","{$this->upload_dir}/auto".$n_tests.".in");
+								if(!$ans)
+								{
+									copy("{$this->upload_dir}/".$name."/".$in.".out","{$this->upload_dir}/auto".$n_tests.".out");
+								}
+								else
+								{
+									copy("{$this->upload_dir}/".$name."/".$in.".ans","{$this->upload_dir}/auto".$n_tests.".ans");
+								}
+									
+
+							}
+							array_push($sub_end,$n_tests);
+							if(!empty($sout_files))
+							{
+								$out = array_shift($sout_files);
+								throw new UOJFileNotFoundException($out.".in");
+							}
+
+					}
+					}
+				}
+				if(!$name_uoj_style && $traditional && ($sub_inconf == 0))
+				{
+					$n = count($in_files);
+					for($num = 0; $num < $n; $num++)
+					{
+						$in = array_shift($in_files);
+						if(!in_array($in,$out_files))
+						{
+							if(!$ans)
+							{
+								throw new UOJFileNotFoundException($in.".out");
+							}
+							else
+							{
+								throw new UOJFileNotFoundException($in.".ans");
+							}
+						}
+						$key = array_search($in,$out_files);
+						unset($out_files[$key]);
+						$sub = substr($in,0,3);
+						if(!strcmp($sub,"ex_"))
+						{
+							$ex_num = $ex_num + 1;
+							rename("{$this->upload_dir}/".$in.".in","{$this->upload_dir}/ex_auto".$ex_num.".in");
+							if(!$ans)
+							{
+								rename("{$this->upload_dir}/".$in.".out","{$this->upload_dir}/ex_auto".$ex_num.".out");
+							}
+							else
+							{
+								rename("{$this->upload_dir}/".$in.".ans","{$this->upload_dir}/ex_auto".$ex_num.".ans");
+							}
+						}
+						else
+						{
+							$n_tests =$n_tests + 1;
+							rename("{$this->upload_dir}/".$in.".in","{$this->upload_dir}/auto".$n_tests.".in");
+							if(!$ans)
+							{
+								rename("{$this->upload_dir}/".$in.".out","{$this->upload_dir}/auto".$n_tests.".out");
+							}
+							else
+							{
+								rename("{$this->upload_dir}/".$in.".ans","{$this->upload_dir}/auto".$n_tests.".ans");
+							}
+							
+						}
+					}
+					if(!empty($out_files))
+					{
+						$out = array_shift($out_files);
+						throw new UOJFileNotFoundException($out.".in");
+					}
+				}
+
+				if($traditional && ($sub_inconf == 0)){
+
+					$conf = fopen("{$this->upload_dir}/problem.conf", "w");
+					fwrite($conf,"n_tests ".$n_tests);
+					if($ex_num > 0)
+					{
+						fwrite($conf,"\nn_ex_tests ".$ex_num);
+					}
+					if(!strcmp($submit,"on"))
+					{
+						fwrite($conf,"\nsubmit_answer on\n");
+					}
+					else
+					{
+						fwrite($conf,"\nn_sample_tests ".$samples."\n");
+					}
+					if($sub_task > 0)
+					{
+						fwrite($conf,"n_subtasks ".$sub_task);
+						for($i = 1;$i <= $sub_task; $i ++)
+						{
+							$end = array_shift($sub_end);
+							fwrite($conf,"\nsubtask_end_".$i." ".$end);
+							$score = array_shift($sub_scores);
+							if($score > 0)
+							{
+								fwrite($conf,"\nsubtask_score_".$i." ".$score);
+							}
+							$dep_n=array_shift($sub_dep_num);
+							if($dep_n > 0)
+							{
+								fwrite($conf,"\nsubtask_dependence_".$i." many");
+								$dep_arr =array_shift($sub_dep);
+								for($j = 1;$j <= $dep_n;$j ++)
+								{
+									
+									$dep = array_shift($dep_arr);
+									fwrite($conf,"\nsubtask_dependence_".$i."_".$j." ".$dep);
+								}
+							}
+						}
+						fwrite($conf,"\n");
+					}
+					if(!$name_uoj_style)
+					{
+						fwrite($conf,"input_pre auto\n");
+						fwrite($conf,"input_suf in\n");
+						fwrite($conf,"output_pre auto\n");
+					}
+					else if($traditional)
+					{
+						fwrite($conf,"input_pre input\n");
+						fwrite($conf,"input_suf txt\n");
+						fwrite($conf,"output_pre output\n");
+					}
+					if(!$ans)
+					{
+						if(!$name_uoj_style)
+							fwrite($conf,"output_suf out\n");
+						else
+							fwrite($conf,"output_suf txt\n");
+					}
+					else
+					{
+						fwrite($conf,"output_suf ans\n");
+					}
+					
+					if(!$customized_judger)
+					{
+						fwrite($conf,"\nuse_builtin_judger on");
+					}
+					if(!$customized_checker)
+					{
+						fwrite($conf,"\nuse_builtin_checker ".$chk);
+					}
+				}
+				else if(!is_file("{$this->upload_dir}/problem.conf"))
+				{
+					$conf = fopen("{$this->upload_dir}/problem.conf", "w");
+					fwrite($conf,"\ntime_limit 1\nmemory_limit 256\noutput_limit 64");
+					fclose($conf);
+				}
+				
+				#throw new UOJFileNotFoundException("problem.conf");
 				$this->problem_conf = getUOJConf("{$this->upload_dir}/problem.conf");
 				$this->final_problem_conf = $this->problem_conf;
 				if ($this->problem_conf === -1) {
@@ -178,9 +496,7 @@
 					throw new UOJProblemConfException("syntax error");
 				}
 
-				$this->allow_files = array_flip(array_filter(scandir($this->upload_dir), function($x) {
-					return $x !== '.' && $x !== '..';
-				}));
+				$this->allow_files = array_flip(array_filter(scandir($this->upload_dir), function($x){return $x !== '.' && $x !== '..';}));
 
 				$zip_file = new ZipArchive();
 				if ($zip_file->open("{$this->prepare_dir}/download.zip", ZipArchive::CREATE) !== true) {
@@ -354,6 +670,24 @@
 			rejudgeProblemAC($problem);
 		} else {
 			error_log('hack successfully but sync failed.');
+		}
+	}
+	function my_dir($dir) 
+	{
+		$num = 0;
+		$files = array();
+		if(@$handle = opendir($dir)) 
+		{
+			while(($file = readdir($handle)) !== false) 
+			{
+				if($file != ".." && $file != ".") 
+				{
+					array_push($files, $file);
+					$num ++;
+				}
+			}
+			closedir($handle);
+			return $files;
 		}
 	}
 ?>
