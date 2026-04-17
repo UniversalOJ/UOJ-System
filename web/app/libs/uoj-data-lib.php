@@ -33,15 +33,16 @@
 	}
 
 	class SyncProblemDataHandler {
-		private $problem, $user;
+		private $problem, $user, $allow_nonbuiltin_judger;
 		private $upload_dir, $data_dir, $prepare_dir;
 		private $requirement, $problem_extra_config;
 		private $problem_conf, $final_problem_conf;
 		private $allow_files;
 
-		public function __construct($problem, $user) {
+		public function __construct($problem, $user, $allow_nonbuiltin_judger = false) {
 			$this->problem = $problem;
 			$this->user = $user;
+			$this->allow_nonbuiltin_judger = $allow_nonbuiltin_judger;
 		}
 
 		private function check_conf_on($name) {
@@ -308,7 +309,7 @@
 						$this->requirement[] = array('name' => 'answer', 'type' => 'source code', 'file_name' => 'answer.code');
 					}
 				} else {
-					if (!isSuperUser($this->user)) {
+					if (!$this->allow_nonbuiltin_judger && !isSuperUser($this->user)) {
 						throw new UOJProblemConfException("use_builtin_judger must be on.");
 					} else {
 						foreach ($this->allow_files as $file_name => $file_num) {
@@ -350,10 +351,10 @@
 		}
 	}
 
-	function dataSyncProblemData($problem, $user = null) {
-		return (new SyncProblemDataHandler($problem, $user))->handle();
+	function dataSyncProblemData($problem, $user = null, $allow_nonbuiltin_judger = false) {
+		return (new SyncProblemDataHandler($problem, $user, $allow_nonbuiltin_judger))->handle();
 	}
-	function dataAddExtraTest($problem, $input_file_name, $output_file_name) {
+	function dataAddExtraTest($problem, $input_file_name, $output_file_name, $user = null) {
 		$id = $problem['id'];
 
 		$cur_dir = "/var/uoj_data/upload/$id";
@@ -371,7 +372,7 @@
 		move_uploaded_file($input_file_name, "$cur_dir/$new_input_name");
 		move_uploaded_file($output_file_name, "$cur_dir/$new_output_name");
 
-		if (dataSyncProblemData($problem) === '') {
+		if (dataSyncProblemData($problem, $user, true) === '') {
 			rejudgeProblemAC($problem);
 		} else {
 			error_log('hack successfully but sync failed.');

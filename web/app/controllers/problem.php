@@ -214,7 +214,7 @@ EOD
 ?>
 <div class="row d-flex justify-content-center">
 	<span class="badge badge-secondary mr-1">时间限制:<?=$time_limit!=null?"$time_limit s":"N/A"?></span>
-	<span class="badge badge-secondary mr-1">空间限制:<?=$memory_limit!=null?"$memory_limit MB":"N/A"?></span>
+	<span class="badge badge-secondary mr-1">空间限制:<?=$memory_limit!=null?"$memory_limit MiB":"N/A"?></span>
 </div>
 <div class="float-right">
 	<?= getClickZanBlock('P', $problem['id'], $problem['zan']) ?>

@@ -287,7 +287,7 @@ bool file_move(const string &a, const string &b) {  // move a to b
 /*====================== parameter ==================== */
 
 const runp::limits_t RL_DEFAULT(1, 256, 64);
-const runp::limits_t RL_JUDGER_DEFAULT(600, 10 * 1024, 128);  // 10GB. change it if needed
+const runp::limits_t RL_JUDGER_DEFAULT(600, 10 * 1024, 128);  // 10GiB. change it if needed
 const runp::limits_t RL_CHECKER_DEFAULT(5, 256, 64);
 const runp::limits_t RL_INTERACTOR_DEFAULT(1, 256, 64);
 const runp::limits_t RL_VALIDATOR_DEFAULT(5, 256, 64);
@@ -610,7 +610,7 @@ runp::limits_t conf_run_limit(string pre, const int &num, const runp::limits_t &
     limits.memory = conf_int(pre + "memory_limit", num, val.memory);
     limits.output = conf_int(pre + "output_limit", num, val.output);
     limits.real_time = conf_double(pre + "real_time_limit", num, val.real_time);
-    limits.stack = conf_int(pre + "stack_limit", num, val.real_time);
+    limits.stack = conf_int(pre + "stack_limit", num, val.stack);
     return limits;
 }
 runp::limits_t conf_run_limit(const int &num, const runp::limits_t &val) {

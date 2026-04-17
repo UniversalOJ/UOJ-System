@@ -117,7 +117,8 @@
 
 	$info_form = new UOJForm('info');
 	$http_host = HTML::escape(UOJContext::httpHost());
-	$download_url = HTML::url("/download.php?type=problem&id={$problem['id']}");
+	$download_url = HTML::url("/download/problem/{$problem['id']}/attachment.zip");
+	$full_download_url = HTML::url("/download/problem/{$problem['id']}/main.zip");
 	$info_form->appendHTML(<<<EOD
 <div class="form-group row">
 	<!--<label class="col-sm-3 control-label">zip上传数据</label>
@@ -134,10 +135,18 @@ EOD
 	);
 	$info_form->appendHTML(<<<EOD
 <div class="form-group row">
-	<label class="col-sm-3 control-label">problem_{$problem['id']}.zip</label>
+	<label class="col-sm-3 control-label">附件/样例包</label>
 	<div class="col-sm-9">
 		<div class="form-control-static">
-			<a href="$download_url">$download_url</a>
+			<a href="$download_url">problem-{$problem['id']}-attachment.zip</a>
+		</div>
+	</div>
+</div>
+<div class="form-group row">
+	<label class="col-sm-3 control-label">完整数据包</label>
+	<div class="col-sm-9">
+		<div class="form-control-static">
+			<a href="$full_download_url">problem-{$problem['id']}-main.zip</a>
 		</div>
 	</div>
 </div>
@@ -464,10 +473,10 @@ EOD
 
 	$hackable_form = new UOJForm('hackable');
 	$hackable_form->handle = function() {
-		global $problem;
+		global $problem, $myUser;
 		$problem['hackable'] = !$problem['hackable'];
 		//$problem['hackable'] = 0;
-		$ret = dataSyncProblemData($problem);
+		$ret = dataSyncProblemData($problem, $myUser);
 		if ($ret) {
 			becomeMsgPage('<div>' . $ret . '</div><a href="/problem/'.$problem['id'].'/manage/data">返回</a>');
 		}

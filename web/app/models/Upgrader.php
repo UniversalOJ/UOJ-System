@@ -6,9 +6,13 @@ class Upgrader {
 	}
 		
 	public static function runSQL($filename) {
-		passthru('mysql '.escapeshellarg(UOJConfig::$data['database']['database'])
-		        .' -u '.escapeshellarg(UOJConfig::$data['database']['username'])
+		$cmd = 'mysql';
+		if (isset(UOJConfig::$data['database']['host'])) {
+			$cmd .= ' -h '.escapeshellarg(UOJConfig::$data['database']['host']);
+		}
+		passthru($cmd.' -u '.escapeshellarg(UOJConfig::$data['database']['username'])
 		        .' --password='.escapeshellarg(UOJConfig::$data['database']['password'])
+		        .' '.escapeshellarg(UOJConfig::$data['database']['database'])
 		        .'<'.escapeshellarg($filename), $ret);
 		if ($ret !== 0) {
 			die("run sql failed: ".HTML::escape($filename)."\n");

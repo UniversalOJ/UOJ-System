@@ -32,9 +32,9 @@ struct run_event {
 argp_option run_program_argp_options[] = {
     {"tl", 'T', "TIME_LIMIT", 0, "Set time limit (in second)", 1},
     {"rtl", 'R', "TIME_LIMIT", 0, "Set real time limit (in second)", 2},
-    {"ml", 'M', "MEMORY_LIMIT", 0, "Set memory limit (in mb)", 3},
-    {"ol", 'O', "OUTPUT_LIMIT", 0, "Set output limit (in mb)", 4},
-    {"sl", 'S', "STACK_LIMIT", 0, "Set stack limit (in mb)", 5},
+    {"ml", 'M', "MEMORY_LIMIT", 0, "Set memory limit (in MiB)", 3},
+    {"ol", 'O', "OUTPUT_LIMIT", 0, "Set output limit (in MiB)", 4},
+    {"sl", 'S', "STACK_LIMIT", 0, "Set stack limit (in MiB)", 5},
     {"in", 'i', "IN", 0, "Set input file name", 6},
     {"out", 'o', "OUT", 0, "Set output file name", 7},
     {"err", 'e', "ERR", 0, "Set error file name", 8},
@@ -347,7 +347,7 @@ std::string get_usage_summary(struct rusage *rusep) {
     sout << rusep->ru_utime.tv_sec * 1000 + rusep->ru_utime.tv_usec / 1000 << "ms / ";
     sout << total_cpu.tv_sec * 1000 + total_cpu.tv_usec / 1000 << "ms / ";
     sout << elapsed.tv_sec * 1000 + elapsed.tv_usec / 1000 << "ms." << '\n';
-    sout << "max RSS: " << rusep->ru_maxrss << "kb." << '\n';
+    sout << "max RSS: " << rusep->ru_maxrss << "KiB." << '\n';
     sout << "total number of threads: " << total_rp_children + 1 << "." << '\n';
     sout << "voluntary / total context switches: " << rusep->ru_nvcsw << " / "
          << rusep->ru_nvcsw + rusep->ru_nivcsw << ".";
@@ -576,11 +576,11 @@ void dispatch_event(run_event &&e) {
         case ET_MLE:
             stop_all(runp::result(
                 runp::RS_MLE,
-                "max RSS >" + std::to_string(run_program_config.limits.memory) + "MB"));
+                "max RSS >" + std::to_string(run_program_config.limits.memory) + "MiB"));
         case ET_OLE:
             stop_all(runp::result(runp::RS_OLE,
                                   "output limit exceeded: >"
-                                      + std::to_string(run_program_config.limits.output) + "MB"));
+                                      + std::to_string(run_program_config.limits.output) + "MiB"));
         case ET_EXIT:
             if (run_program_config.need_show_trace_details) {
                 fprintf(stderr, "exit     : %d\n", e.exitcode);

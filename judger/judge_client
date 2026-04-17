@@ -11,7 +11,7 @@ import shutil
 
 import traceback
 import time
-from contextlib import closing
+from contextlib import ExitStack, closing
 
 import requests
 
@@ -284,7 +284,7 @@ def judge():
 
     submission_judged = False
     report_thread.start()
-    execute('cd %s && ./main_judger' % (pipes.quote(uoj_judger_path())))
+    execute("cd %s && ./main_judger" % (pipes.quote(uoj_judger_path())))
     submission_judged = True
     report_thread.join()
 
@@ -331,16 +331,7 @@ def send_and_fetch(result=None, fetch_new=True):
             data["is_hack"] = True
             data["id"] = submission["hack"]["id"]
             if result != False and result["score"]:
-                try:
-                    print("succ hack!", file=sys.stderr)
-                    files = {
-                        ("hack_input", open("uoj_judger/work/hack_input.txt", "r")),
-                        ("std_output", open("uoj_judger/work/std_output.txt", "r")),
-                    }
-                except Exception:
-                    print_judge_client_status()
-                    traceback.print_exc()
-                    result = False
+                print("succ hack!", file=sys.stderr)
         elif "is_custom_test" in submission:
             data["is_custom_test"] = True
             data["id"] = submission["id"]
@@ -354,7 +345,24 @@ def send_and_fetch(result=None, fetch_new=True):
 
     while True:
         try:
-            ret = uoj_interact(data, files)
+            if (
+                result is not None
+                and "is_hack" in submission
+                and result != False
+                and result["score"]
+            ):
+                with ExitStack() as stack:
+                    files = {
+                        "hack_input": stack.enter_context(
+                            open("uoj_judger/work/hack_input.txt", "rb")
+                        ),
+                        "std_output": stack.enter_context(
+                            open("uoj_judger/work/std_output.txt", "rb")
+                        ),
+                    }
+                    ret = uoj_interact(data, files)
+            else:
+                ret = uoj_interact(data, files)
             print(ret)
         except Exception:
             print_judge_client_status()

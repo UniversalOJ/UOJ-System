@@ -257,7 +257,7 @@ typedef runp::result RunResult;
 
 const RunLimit RL_DEFAULT = RunLimit(1, 256, 64);
 const RunLimit RL_GENERATOR_DEFAULT = RunLimit(2, 512, 64);
-const RunLimit RL_JUDGER_DEFAULT = RunLimit(600, 2048, 128);  // 2048 = 2GB. change it if needed
+const RunLimit RL_JUDGER_DEFAULT = RunLimit(600, 2048, 128);  // 2048 = 2GiB. change it if needed
 const RunLimit RL_CHECKER_DEFAULT = RunLimit(5, 256, 64);
 const RunLimit RL_INTERACTOR_DEFAULT = RunLimit(1, 256, 64);
 const RunLimit RL_VALIDATOR_DEFAULT = RunLimit(5, 256, 64);

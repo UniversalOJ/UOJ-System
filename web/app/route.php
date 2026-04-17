@@ -18,6 +18,8 @@ Route::group([
 		Route::any('/problem/{id}/manage/statement', '/problem_statement_manage.php');
 		Route::any('/problem/{id}/manage/managers', '/problem_managers_manage.php');
 		Route::any('/problem/{id}/manage/data', '/problem_data_manage.php');
+		Route::any('/download/problem/{id}/main.zip', '/download.php?type=problem-main-data');
+		Route::any('/download/problem/{id}/attachment.zip', '/download.php?type=problem');
 		
 		Route::any('/contests', '/contests.php');
 		Route::any('/contest/new', '/add_contest.php');
@@ -78,5 +80,5 @@ Route::post('/judge/sync-judge-client', '/judge/sync_judge_client.php');
 
 Route::post('/judge/download/submission/{id}/{rand_str_id}', '/judge/download.php?type=submission');
 Route::post('/judge/download/tmp/{rand_str_id}', '/judge/download.php?type=tmp');
-Route::post('/judge/download/problem/{id}', '/judge/download.php?type=problem');
+Route::post('/judge/download/problem/{id}', '/judge/download.php?type=problem-main-data');
 Route::post('/judge/download/judger', '/judge/download.php?type=judger');

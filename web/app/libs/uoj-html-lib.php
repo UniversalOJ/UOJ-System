@@ -212,7 +212,7 @@ function echoSubmission($submission, $config, $user) {
 		$used_memory_str = "/";
 	} else {
 		$used_time_str = $submission['used_time'] . 'ms';
-		$used_memory_str = $submission['used_memory'] . 'kb';
+		$used_memory_str = $submission['used_memory'] . 'KiB';
 	}
 	
 	$status = explode(', ', $submission['status'])[0];
@@ -260,9 +260,9 @@ function echoSubmission($submission, $config, $user) {
 	echo '<td>', '<a href="/submission/', $submission['id'], '">', $submission['language'], '</a>', '</td>';
 
 	if ($submission['tot_size'] < 1024) {
-		$size_str = $submission['tot_size'] . 'b';
+		$size_str = $submission['tot_size'] . 'B';
 	} else {
-		$size_str = sprintf("%.1f", $submission['tot_size'] / 1024) . 'kb';
+		$size_str = sprintf("%.1f", $submission['tot_size'] / 1024) . 'KiB';
 	}
 	echo '<td>', $size_str, '</td>';
 
@@ -718,7 +718,7 @@ class JudgementDetailsPrinter {
 
 			echo '<div class="col-sm-3">';
 			if ($test_memory >= 0) {
-				echo 'memory: ', $test_memory, 'kb';
+				echo 'memory: ', $test_memory, 'KiB';
 			}
 			echo '</div>';
 
@@ -771,7 +771,7 @@ class JudgementDetailsPrinter {
 
 			echo '<div class="col-sm-3">';
 			if ($test_memory >= 0) {
-				echo 'memory: ', $test_memory, 'kb';
+				echo 'memory: ', $test_memory, 'KiB';
 			}
 			echo '</div>';
 

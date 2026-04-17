@@ -36,6 +36,7 @@ RUN sh web/install.sh -p && \
       'if [ ! -f "/var/uoj_data/.UOJSetupDone" ]; then' \
       '  cd /opt/uoj/web && sh install.sh -i' \
       'fi' \
+      'php /opt/uoj/web/app/cli.php upgrade:latest' \
       'apache2ctl -D FOREGROUND' > /opt/up && \
     chmod +x /opt/up
 

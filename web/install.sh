@@ -71,14 +71,16 @@ initProgress(){
     #Using cli upgrade to latest
     php /var/www/uoj/app/cli.php upgrade:latest
     #Start services
-    service ntpd restart
+    if service ntpd status >/dev/null 2>&1; then
+        service ntpd restart
+    fi
     service apache2 restart
     #Touch SetupDone flag file
     touch /var/uoj_data/.UOJSetupDone
-	mkdir -p /opt/uoj/web/app/storage/submission
-	mkdir -p /opt/uoj/web/app/storage/tmp
-	mkdir -p /opt/uoj/web/app/storage/paste
-	chmod -R 777 /opt/uoj/web/app/storage
+    mkdir -p /opt/uoj/web/app/storage/submission
+    mkdir -p /opt/uoj/web/app/storage/tmp
+    mkdir -p /opt/uoj/web/app/storage/paste
+    chmod -R 777 /opt/uoj/web/app/storage
     printf "\n\n***Installation complete. Enjoy!***\n"
 }
 

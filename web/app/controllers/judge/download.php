@@ -14,7 +14,7 @@
 			$file_name = UOJContext::storagePath()."/tmp/{$_GET['rand_str_id']}";
 			$download_name = "tmp";
 			break;
-		case 'problem':
+		case 'problem-main-data':
 			$id = $_GET['id'];
 			if (!validateUInt($id) || !($problem = queryProblemBrief($id))) {
 				become404Page();

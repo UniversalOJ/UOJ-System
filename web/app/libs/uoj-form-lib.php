@@ -709,7 +709,7 @@ EOD;
 					if ($stat['size'] > $max_size * 1024) {
 						$zip_file->close();
 						unlink(UOJContext::storagePath().$zip_file_name);
-						becomeMsgPage("源代码长度不能超过 {$max_size}KB。");
+						becomeMsgPage("源代码长度不能超过 {$max_size}KiB。");
 					}
 				}
 				

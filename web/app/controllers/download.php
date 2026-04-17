@@ -24,7 +24,21 @@
 			$id = $_GET['id'];
 			
 			$file_name = "/var/uoj_data/$id/download.zip";
-			$download_name = "problem_$id.zip";
+			$download_name = "problem-$id-attachment.zip";
+			break;
+		case 'problem-main-data':
+			if (!validateUInt($_GET['id']) || !($problem = queryProblemBrief($_GET['id']))) {
+				become404Page();
+			}
+
+			if (!hasProblemPermission($myUser, $problem)) {
+				become404Page();
+			}
+
+			$id = $_GET['id'];
+
+			$file_name = "/var/uoj_data/$id.zip";
+			$download_name = "problem-$id-main.zip";
 			break;
 		case 'testlib.h':
 			$file_name = "/opt/uoj/judger/uoj_judger/include/testlib.h";
